@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: product-service
+  datasource:
+    url: jdbc:postgresql://${DB_URL:localhost:5433/product_database}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:root}
+  elasticsearch:
+    uris: http://${ELASTICSEARCH_URL:localhost:9200}
+    username: ${ELASTICSEARCH_USERNAME:elastic}
+    password: ${ELASTICSEARCH_PASSWORD:elastic}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+server:
+  port: ${SERVER_PORT:8081}

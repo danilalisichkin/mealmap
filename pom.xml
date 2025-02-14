@@ -18,17 +18,27 @@
     <packaging>pom</packaging>
 
     <modules>
-
+        <module>product-service</module>
     </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <mongock.version>5.5.0</mongock.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Mongock BOM -->
+            <dependency>
+                <groupId>io.mongock</groupId>
+                <artifactId>mongock-bom</artifactId>
+                <version>${mongock.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

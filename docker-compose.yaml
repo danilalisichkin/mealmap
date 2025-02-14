@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+
+  product-pg-database:
+    image: postgres:17
+    container_name: mealmap-product-pg-database
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: product_database
+    ports:
+      - "5433:5432"
+    volumes:
+      - product-pg-database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
+  elasticsearch:
+    image: elasticsearch:7.14.2
+    container_name: mealmap-product-elasticsearch
+    restart: on-failure
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+      ELASTIC_PASSWORD: elastic
+    healthcheck:
+      test: curl --silent --fail http://localhost:9200/_cluster/health || exit 1
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    networks:
+      - mealmap-network
+
+volumes:
+  product-pg-database_data:
+
+networks:
+  mealmap-network:
+    driver: bridge
