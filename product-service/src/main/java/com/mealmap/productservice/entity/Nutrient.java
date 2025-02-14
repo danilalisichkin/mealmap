@@ -19,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "nutrients")
-public class NutrientEntity {
+public class Nutrient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

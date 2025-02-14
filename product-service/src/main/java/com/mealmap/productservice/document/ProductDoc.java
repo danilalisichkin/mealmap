@@ -10,31 +10,39 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "nutrients")
-public class NutrientDocument {
+@Document(indexName = "products")
+public class ProductDoc {
     @Id
     private Long id;
 
-    @Field(type = FieldType.Integer)
-    private Integer calories;
+    @Field(type = FieldType.Text)
+    private String name;
 
     @Field(type = FieldType.Integer)
-    private Integer proteins;
+    private Integer price;
 
     @Field(type = FieldType.Integer)
-    private Integer fats;
+    private Integer weight;
 
-    @Field(type = FieldType.Integer)
-    private Integer carbs;
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private NutrientDoc nutrients;
 
-    @Field(type = FieldType.Integer)
-    private Integer fibers;
+    @Field(type = FieldType.Text)
+    private String description;
 
-    @Field(type = FieldType.Integer)
-    private Integer sugars;
+    @Field(type = FieldType.Boolean)
+    private boolean isNew;
+
+    @Field(type = FieldType.Keyword)
+    private Integer supplierId;
+
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private List<CategoryDoc> categories;
 }

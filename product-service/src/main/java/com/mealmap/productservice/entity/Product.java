@@ -29,7 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "products")
-public class ProductEntity {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,7 +45,7 @@ public class ProductEntity {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "nutrients_id")
-    private NutrientEntity nutrients;
+    private Nutrient nutrients;
 
     private String description;
 
@@ -60,5 +60,5 @@ public class ProductEntity {
             name = "product_categories",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<CategoryEntity> categories;
+    private List<Category> categories;
 }

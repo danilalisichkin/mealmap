@@ -1,5 +1,6 @@
 package com.mealmap.productservice.document;
 
+import com.mealmap.productservice.core.dto.category.CategoryShortInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = "categories")
-public class CategoryDocument {
+public class CategoryDoc {
     @Id
     private Long id;
 
@@ -26,8 +27,8 @@ public class CategoryDocument {
     private String name;
 
     @Field(type = FieldType.Text)
-    private String parent;
+    private CategoryShortInfo parent;
 
     @Field(type = FieldType.Text)
-    private List<String> children;
+    private List<CategoryShortInfo> children;
 }

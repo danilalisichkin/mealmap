@@ -1,9 +1,9 @@
 package com.mealmap.productservice.repository;
 
-import com.mealmap.productservice.entity.ProductEntity;
+import com.mealmap.productservice.entity.Nutrient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductEntityRepository extends JpaRepository<ProductEntity, Long> {
+public interface NutrientRepository extends JpaRepository<Nutrient, Long> {
 }

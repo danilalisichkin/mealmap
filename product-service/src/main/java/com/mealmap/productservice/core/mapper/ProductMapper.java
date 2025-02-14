@@ -1,0 +1,32 @@
+package com.mealmap.productservice.core.mapper;
+
+import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
+import com.mealmap.productservice.core.dto.product.ProductDto;
+import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
+import com.mealmap.productservice.document.ProductDoc;
+import com.mealmap.productservice.entity.Product;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+
+@Mapper(
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = {
+                CategoryMapper.class,
+                NutrientMapper.class,
+                NewnessMapper.class})
+public interface ProductMapper {
+    @Mapping(target = "isNew", source = "createdAt")
+    ProductDoc entityToDocument(Product entity);
+
+    ProductDto documentToDto(ProductDoc document);
+
+    @Mapping(target = "categories", ignore = true)
+    Product dtoToEntity(ProductCreatingDto dto);
+
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void updateEntityFromDto(@MappingTarget Product entity, ProductUpdatingDto dto);
+}

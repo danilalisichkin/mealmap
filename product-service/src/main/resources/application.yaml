@@ -14,5 +14,8 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+business:
+  newness:
+    period: 10
 server:
   port: ${SERVER_PORT:8081}

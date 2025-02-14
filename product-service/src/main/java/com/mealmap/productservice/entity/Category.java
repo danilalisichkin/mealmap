@@ -25,7 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "categories")
-public class CategoryEntity {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,11 +35,11 @@ public class CategoryEntity {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    private CategoryEntity parent;
+    private Category parent;
 
     @OneToMany(mappedBy = "parent")
-    private List<CategoryEntity> children;
+    private List<Category> children;
 
     @ManyToMany(mappedBy = "categories")
-    private List<ProductEntity> products;
+    private List<Product> products;
 }
