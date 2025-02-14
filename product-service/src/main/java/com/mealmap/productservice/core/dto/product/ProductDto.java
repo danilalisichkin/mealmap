@@ -1,7 +1,7 @@
 package com.mealmap.productservice.core.dto.product;
 
-import com.mealmap.productservice.core.dto.nutrient.NutrientDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
+import com.mealmap.productservice.core.dto.nutrient.NutrientDto;
 import lombok.Builder;
 import lombok.Value;
 

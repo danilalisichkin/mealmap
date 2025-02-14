@@ -16,6 +16,6 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
 business:
   newness:
-    period: 10
+    period: ${NEWNESS_PERIOD:10}
 server:
   port: ${SERVER_PORT:8081}
