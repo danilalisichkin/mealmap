@@ -9,6 +9,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import java.util.List;
 
 @Mapper(
         componentModel = MappingConstants.ComponentModel.SPRING,
@@ -22,11 +26,25 @@ public interface ProductMapper {
 
     ProductDto documentToDto(ProductDoc document);
 
+    @Mapping(target = "isNew", source = "createdAt")
+    ProductDto entityToDto(Product entity);
+
     @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     Product dtoToEntity(ProductCreatingDto dto);
 
     @Mapping(target = "categories", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     void updateEntityFromDto(@MappingTarget Product entity, ProductUpdatingDto dto);
+
+    List<ProductDto> docListToDtoList(List<ProductDoc> docList);
+
+    default Page<ProductDto> docPageToDtoPage(Page<ProductDoc> docPage) {
+        return new PageImpl<>(
+                docListToDtoList(docPage.getContent()),
+                docPage.getPageable(),
+                docPage.getTotalElements());
+    }
 }

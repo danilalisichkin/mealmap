@@ -1,5 +1,7 @@
 package com.mealmap.productservice.exception.handler;
 
+import com.mealmap.productservice.exception.ConflictException;
+import com.mealmap.productservice.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +20,11 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ProblemDetail> handleNotFoundException(Exception e) {
-        return ResponseEntity
-                .status(NOT_FOUND)
-                .body(ProblemDetail.forStatusAndDetail(NOT_FOUND, e.getMessage()));
-    }
-
     @ExceptionHandler({
             HttpMessageNotReadableException.class,
             MethodArgumentTypeMismatchException.class,
@@ -59,6 +55,27 @@ public class RestExceptionHandler {
         return ResponseEntity
                 .status(BAD_REQUEST)
                 .body(ProblemDetail.forStatusAndDetail(BAD_REQUEST, errorMap.toString()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNotFoundException(Exception e) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(ProblemDetail.forStatusAndDetail(NOT_FOUND, e.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(ProblemDetail.forStatusAndDetail(NOT_FOUND, e.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ProblemDetail> handleConflictException(ConflictException e) {
+        return ResponseEntity
+                .status(CONFLICT)
+                .body(ProblemDetail.forStatusAndDetail(CONFLICT, e.getMessage()));
     }
 
     private void getValidationErrors(Map<String, List<String>> errorMap, Exception e) {

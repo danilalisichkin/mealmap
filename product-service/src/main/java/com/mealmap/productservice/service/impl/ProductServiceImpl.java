@@ -1,0 +1,150 @@
+package com.mealmap.productservice.service.impl;
+
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import com.mealmap.productservice.core.dto.filter.ProductFilterDto;
+import com.mealmap.productservice.core.dto.page.PageDto;
+import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
+import com.mealmap.productservice.core.dto.product.ProductDto;
+import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
+import com.mealmap.productservice.core.enums.sort.ProductSortField;
+import com.mealmap.productservice.core.mapper.PageMapper;
+import com.mealmap.productservice.core.mapper.ProductMapper;
+import com.mealmap.productservice.document.ProductDoc;
+import com.mealmap.productservice.entity.Category;
+import com.mealmap.productservice.entity.Product;
+import com.mealmap.productservice.exception.ResourceNotFoundException;
+import com.mealmap.productservice.repository.CategoryRepository;
+import com.mealmap.productservice.repository.ProductRepository;
+import com.mealmap.productservice.service.ElasticsearchQueryService;
+import com.mealmap.productservice.service.ProductService;
+import com.mealmap.productservice.util.PageBuilder;
+import com.mealmap.productservice.validator.ProductValidator;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+
+import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGORIES_NOT_FOUND;
+import static com.mealmap.productservice.core.message.ApplicationMessages.PRODUCT_NOT_FOUND;
+
+@Service
+@RequiredArgsConstructor
+public class ProductServiceImpl implements ProductService {
+    private final ElasticsearchQueryService esQueryService;
+
+    private final ElasticsearchClient esClient;
+
+    private final ProductValidator productValidator;
+
+    private final ProductMapper productMapper;
+
+    private final PageMapper pageMapper;
+
+    private final ProductRepository productRepository;
+
+    private final CategoryRepository categoryRepository;
+
+    @Override
+    @SneakyThrows
+    public PageDto<ProductDto> getPageOfProducts(
+            Integer offset, Integer limit, ProductSortField sortBy, Sort.Direction sortOrder,
+            ProductFilterDto filter, String search) {
+
+        PageRequest pageRequest = PageBuilder.buildPageRequest(
+                offset, limit, sortBy.getValue(), sortOrder);
+
+        Query searchQuery = esQueryService.buildQueryForProducts(pageRequest, filter, search);
+        SearchRequest searchRequest = SearchRequest.of(sr -> sr
+                .query(searchQuery)
+                .index("products"));
+
+        SearchResponse<ProductDoc> response =esClient.search(searchRequest, ProductDoc.class);
+
+        return pageMapper.pageToPageDto(
+                productMapper.docPageToDtoPage(
+                        PageBuilder.buildPage(response, pageRequest)));
+    }
+
+    @Override
+    public ProductDto getProduct(Long id) {
+        return productMapper.entityToDto(
+                getProductEntity(id));
+    }
+
+    @Override
+    @Transactional
+    public ProductDto createProduct(ProductCreatingDto productDto) {
+        productValidator.validateNameUniqueness(productDto.getName());
+
+        List<Category> categories = getCategoryEntities(productDto.getCategories());
+        Product productToCreate = productMapper.dtoToEntity(productDto);
+        productToCreate.setCategories(categories);
+
+        return productMapper.entityToDto(
+                productRepository.save(productToCreate));
+    }
+
+    @Override
+    @Transactional
+    public ProductDto updateProduct(Long id, ProductUpdatingDto productDto) {
+        Product productToUpdate = getProductEntity(id);
+
+        if (!productToUpdate.getName().equals(productDto.getName())) {
+            productValidator.validateNameUniqueness(productDto.getName());
+        }
+
+        productMapper.updateEntityFromDto(productToUpdate, productDto);
+        updateCategories(productToUpdate, productDto.getCategories());
+
+        return productMapper.entityToDto(
+                productRepository.save(productToUpdate));
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(Long id) {
+        productValidator.validateExistenceOfProductWithId(id);
+
+        productRepository.deleteById(id);
+    }
+
+    private Product getProductEntity(Long id) {
+        return productRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_NOT_FOUND.formatted(id)));
+    }
+
+    private List<Category> getCategoryEntities(Collection<Long> ids) {
+        List<Category> categories = categoryRepository.findAllById(ids);
+
+        if (categories.size() < ids.size()) {
+            List<Long> missingIds = ids.stream()
+                    .filter(id -> categories.stream()
+                            .noneMatch(category -> category
+                                    .getId()
+                                    .equals(id)))
+                    .toList();
+
+            throw new ResourceNotFoundException(CATEGORIES_NOT_FOUND.formatted(missingIds.toString()));
+        }
+
+        return categories;
+    }
+
+    private void updateCategories(Product productToUpdate, Collection<Long> newCategoryIds) {
+        if (newCategoryIds == null || newCategoryIds.isEmpty()) {
+            productToUpdate.setCategories(null);
+        } else {
+            productToUpdate.setCategories(
+                    getCategoryEntities(newCategoryIds));
+        }
+    }
+}

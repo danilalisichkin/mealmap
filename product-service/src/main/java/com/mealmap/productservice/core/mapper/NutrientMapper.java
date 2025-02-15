@@ -14,6 +14,8 @@ public interface NutrientMapper {
 
     NutrientDto documentToDto(NutrientDoc document);
 
+    NutrientDto entityToDto(Nutrient entity);
+
     @Mapping(target = "id", ignore = true)
     Nutrient dtoToEntity(NutrientDto dto);
 
