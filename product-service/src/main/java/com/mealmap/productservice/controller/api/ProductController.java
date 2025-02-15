@@ -6,10 +6,12 @@ import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.core.enums.sort.ProductSortField;
+import com.mealmap.productservice.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
 public class ProductController {
+    private final ProductService productService;
+
     @GetMapping
     public ResponseEntity<PageDto<ProductDto>> getPageOfProducts(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -38,30 +43,37 @@ public class ProductController {
             @ModelAttribute @Valid ProductFilterDto filter,
             @RequestParam(required = false) String search) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        var page = productService.getPageOfProducts(offset, limit, sortBy, sortOrder, filter, search);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+        ProductDto product = productService.getProduct(id);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductCreatingDto productDto) {
+        ProductDto product = productService.createProduct(productDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(
             @PathVariable Long id, @RequestBody @Valid ProductUpdatingDto productDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        ProductDto product = productService.updateProduct(id, productDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

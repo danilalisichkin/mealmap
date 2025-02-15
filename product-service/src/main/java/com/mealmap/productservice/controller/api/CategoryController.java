@@ -5,10 +5,12 @@ import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
 import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
+import com.mealmap.productservice.service.CategoryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
+    private final CategoryService categoryService;
+
     @GetMapping
     public ResponseEntity<PageDto<CategoryDto>> getPageOfCategories(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -35,30 +40,37 @@ public class CategoryController {
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
             @RequestParam(required = false) String search) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<CategoryDto> page = categoryService.getPageOfCategories(offset, limit, sortBy, sortOrder, search);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id) {
+        CategoryDto category = categoryService.getCategory(id);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CategoryCreatingDto categoryDto) {
+        CategoryDto category = categoryService.createCategory(categoryDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> updateCategory(
             @PathVariable Long id, @RequestBody @Valid CategoryUpdatingDto categoryDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        CategoryDto category = categoryService.updateCategory(id, categoryDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
