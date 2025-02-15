@@ -17,5 +17,10 @@ spring:
 business:
   newness:
     period: ${NEWNESS_PERIOD:10}
+  elastic:
+    products:
+      sync-interval: ${ELASTIC_PRODUCTS_SYNC_INTERVAL:3600}
+    categories:
+      sync-interval: ${ELASTIC_CATEGORIES_SYNC_INTERVAL:36000}
 server:
   port: ${SERVER_PORT:8081}
