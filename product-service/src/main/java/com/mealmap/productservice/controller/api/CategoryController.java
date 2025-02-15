@@ -6,6 +6,9 @@ import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
 import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
     @GetMapping
     public ResponseEntity<PageDto<CategoryDto>> getPageOfCategories(
-            @RequestParam(defaultValue = "0") Integer offset,
-            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
+            @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "id") CategorySortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
             @RequestParam(required = false) String search) {
@@ -55,7 +58,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
