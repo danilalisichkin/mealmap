@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.WriteTypeHint;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "products")
+@Document(indexName = "products", writeTypeHint = WriteTypeHint.FALSE)
 public class ProductDoc {
     @Id
     private Long id;
@@ -38,7 +39,7 @@ public class ProductDoc {
     private String description;
 
     @Field(type = FieldType.Boolean)
-    private boolean isNew;
+    private Boolean isNew;
 
     @Field(type = FieldType.Keyword)
     private Integer supplierId;
