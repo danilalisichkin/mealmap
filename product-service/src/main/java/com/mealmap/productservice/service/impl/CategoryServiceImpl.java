@@ -21,6 +21,10 @@ import com.mealmap.productservice.util.PageBuilder;
 import com.mealmap.productservice.validator.CategoryValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGO
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheResolver = "categoryCacheResolver")
 public class CategoryServiceImpl implements CategoryService {
     private final ElasticsearchQueryService esQueryService;
 
@@ -44,6 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Cacheable
     @SneakyThrows
     public PageDto<CategoryDto> getPageOfCategories(
             Integer offset, Integer limit, CategorySortField sortBy, Sort.Direction sortOrder, String search) {
@@ -64,6 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(key = "#id")
     public CategoryDto getCategory(Long id) {
         return categoryMapper.entityToDto(
                 getCategoryEntity(id));
@@ -71,6 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
+    @CachePut(key = "#result.id")
     public CategoryDto createCategory(CategoryCreatingDto categoryDto) {
         categoryValidator.validateNameUniqueness(categoryDto.getName());
 
@@ -83,6 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
+    @CachePut(key = "#result.id")
     public CategoryDto updateCategory(Long id, CategoryUpdatingDto categoryDto) {
         Category categoryToUpdate = getCategoryEntity(id);
 
@@ -99,6 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public void deleteCategory(Long id) {
         categoryValidator.validateExistenceOfCategoryWithId(id);
 

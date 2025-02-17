@@ -2,29 +2,33 @@ package com.mealmap.productservice.core.dto.product;
 
 import com.mealmap.productservice.core.dto.category.CategorySimpleDto;
 import com.mealmap.productservice.core.dto.nutrient.NutrientDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductDto {
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    Integer price;
+    private Integer price;
 
-    Integer weight;
+    private Integer weight;
 
-    NutrientDto nutrients;
+    private NutrientDto nutrients;
 
-    String description;
+    private String description;
 
-    Boolean isNew;
+    private Boolean isNew;
 
-    Integer supplierId;
+    private Integer supplierId;
 
-    List<CategorySimpleDto> categories;
+    private List<CategorySimpleDto> categories;
 }

@@ -2,21 +2,23 @@ package com.mealmap.productservice.core.dto.page;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Value
+@Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class PageDto<T> {
-    int currentPage;
+    private int currentPage;
 
-    int pageSize;
+    private int pageSize;
 
-    int totalPages;
+    private int totalPages;
 
-    long totalElements;
+    private long totalElements;
 
-    List<T> items;
+    private List<T> items;
 }

@@ -1,14 +1,18 @@
 package com.mealmap.productservice.core.dto.category;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategorySimpleDto {
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    CategoryShortInfo parent;
+    private CategoryShortInfo parent;
 }

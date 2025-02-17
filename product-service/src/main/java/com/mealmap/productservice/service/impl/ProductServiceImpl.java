@@ -24,6 +24,10 @@ import com.mealmap.productservice.util.PageBuilder;
 import com.mealmap.productservice.validator.ProductValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,7 @@ import static com.mealmap.productservice.core.message.ApplicationMessages.PRODUC
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheResolver = "productCacheResolver")
 public class ProductServiceImpl implements ProductService {
     private final ElasticsearchQueryService esQueryService;
 
@@ -53,6 +58,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Cacheable
     @SneakyThrows
     public PageDto<ProductDto> getPageOfProducts(
             Integer offset, Integer limit, ProductSortField sortBy, Sort.Direction sortOrder,
@@ -66,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
                 .query(searchQuery)
                 .index("products"));
 
-        SearchResponse<ProductDoc> response =esClient.search(searchRequest, ProductDoc.class);
+        SearchResponse<ProductDoc> response = esClient.search(searchRequest, ProductDoc.class);
 
         return pageMapper.pageToPageDto(
                 productMapper.docPageToDtoPage(
@@ -74,6 +80,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable(key = "#id")
     public ProductDto getProduct(Long id) {
         return productMapper.entityToDto(
                 getProductEntity(id));
@@ -81,6 +88,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CachePut(key = "#result.id")
     public ProductDto createProduct(ProductCreatingDto productDto) {
         productValidator.validateNameUniqueness(productDto.getName());
 
@@ -94,6 +102,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CachePut(key = "#id")
     public ProductDto updateProduct(Long id, ProductUpdatingDto productDto) {
         Product productToUpdate = getProductEntity(id);
 
@@ -110,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public void deleteProduct(Long id) {
         productValidator.validateExistenceOfProductWithId(id);
 

@@ -9,6 +9,12 @@ spring:
     uris: http://${ELASTICSEARCH_URL:localhost:9200}
     username: ${ELASTICSEARCH_USERNAME:elastic}
     password: ${ELASTICSEARCH_PASSWORD:elastic}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6380}
+      password: ${REDIS_PASSWORD:password}
+      database: ${REDIS_DATABASE:0}
   jpa:
     hibernate:
       ddl-auto: none
@@ -17,10 +23,21 @@ spring:
 business:
   newness:
     period: ${NEWNESS_PERIOD:10}
-  elastic:
-    products:
-      sync-interval: ${ELASTIC_PRODUCTS_SYNC_INTERVAL:3600}
-    categories:
-      sync-interval: ${ELASTIC_CATEGORIES_SYNC_INTERVAL:36000}
+  elasticsearch:
+    product:
+      sync:
+        enabled: ${ELASTIC_PRODUCT_SYNC_ENABLED:true}
+        interval: ${ELASTIC_PRODUCT_SYNC_INTERVAL:3600}
+    category:
+      sync:
+        enabled: ${ELASTIC_CATEGORY_SYNC_ENABLED:true}
+        interval: ${ELASTIC_CATEGORY_SYNC_INTERVAL:36000}
+  cache:
+    product:
+      name: ${CACHE_PRODUCT_NAME:productCache}
+      ttl: ${CACHE_PRODUCT_TTL:3600}
+    category:
+      name: ${CACHE_CATEGORY_NAME:categoryCache}
+      ttl: ${CACHE_CATEGORY_TTL:36000}
 server:
   port: ${SERVER_PORT:8081}

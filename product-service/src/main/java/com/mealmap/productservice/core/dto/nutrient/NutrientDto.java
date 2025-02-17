@@ -2,32 +2,36 @@ package com.mealmap.productservice.core.dto.nutrient;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class NutrientDto {
     @NotNull
-    Integer calories;
+    private Integer calories;
 
     @NotNull
     @Positive
-    Integer proteins;
+    private Integer proteins;
 
     @NotNull
     @Positive
-    Integer fats;
+    private Integer fats;
 
     @NotNull
     @Positive
-    Integer carbs;
+    private Integer carbs;
 
     @NotNull
     @Positive
-    Integer fibers;
+    private Integer fibers;
 
     @NotNull
     @Positive
-    Integer sugars;
+    private Integer sugars;
 }

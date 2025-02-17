@@ -9,7 +9,7 @@ import com.mealmap.productservice.repository.ProductRepository;
 import com.mealmap.productservice.service.ElasticsearchSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class ElasticsearchSyncServiceImpl implements ElasticsearchSyncService {
 
     @Override
     @Transactional(readOnly = true)
-    @Scheduled(fixedRateString = "${business.elastic.products.sync-interval}000")
+    @CacheEvict(cacheResolver = "productCacheResolver", allEntries = true)
     public void syncProducts() {
         log.info("Start sync products");
 
@@ -46,7 +46,7 @@ public class ElasticsearchSyncServiceImpl implements ElasticsearchSyncService {
 
     @Override
     @Transactional(readOnly = true)
-    @Scheduled(fixedRateString = "${business.elastic.categories.sync-interval}000")
+    @CacheEvict(cacheResolver = "categoryCacheResolver", allEntries = true)
     public void syncCategories() {
         log.info("Start sync categories");
 
