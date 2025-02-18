@@ -1,8 +1,10 @@
 package com.mealmap.productservice.exception.handler;
 
+import com.mealmap.productservice.core.message.ErrorCauseMessages;
 import com.mealmap.productservice.exception.ConflictException;
 import com.mealmap.productservice.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,8 +23,10 @@ import java.util.function.BiConsumer;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+@Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
     @ExceptionHandler({
@@ -76,6 +80,15 @@ public class RestExceptionHandler {
         return ResponseEntity
                 .status(CONFLICT)
                 .body(ProblemDetail.forStatusAndDetail(CONFLICT, e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleOtherException(Exception e) {
+        log.error("Internal error", e);
+
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(ProblemDetail.forStatusAndDetail(INTERNAL_SERVER_ERROR, ErrorCauseMessages.INTERNAL_SERVER_ERROR));
     }
 
     private void getValidationErrors(Map<String, List<String>> errorMap, Exception e) {
