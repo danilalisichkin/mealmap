@@ -38,7 +38,7 @@ public class ProductController {
     public ResponseEntity<PageDto<ProductDto>> getPageOfProducts(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
-            @RequestParam(defaultValue = "id") ProductSortField sortBy,
+            @RequestParam(defaultValue = "ID") ProductSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
             @ModelAttribute @Valid ProductFilterDto filter,
             @RequestParam(required = false) String search) {

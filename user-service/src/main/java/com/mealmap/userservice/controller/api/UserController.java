@@ -10,6 +10,7 @@ import com.mealmap.userservice.core.dto.user.UserUpdatingDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
 import com.mealmap.userservice.core.enums.sort.UserSortField;
 import com.mealmap.userservice.entity.enums.UserRole;
+import com.mealmap.userservice.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -38,36 +39,45 @@ import java.util.UUID;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
+    private final UserService userService;
+
     @GetMapping
     public ResponseEntity<PageDto<UserDto>> getPageOfUsers(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
-            @RequestParam(defaultValue = "id") UserSortField sortBy,
+            @RequestParam(defaultValue = "ID") UserSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
             @ModelAttribute @Valid UserFilterDto filter,
             @RequestParam(required = false) String name) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<UserDto> page = userService.getPageOfUsers(offset, limit, sortBy, sortOrder, filter, name);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
+        UserDto user = userService.getUser(id);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable UUID id, @RequestBody @Valid UserUpdatingDto userDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        UserDto user = userService.updateUser(id, userDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @PutMapping("/{id}/role")
     public ResponseEntity<UserDto> updateUserRole(
             @PathVariable UUID id, @RequestBody @NotNull UserRole role) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        UserDto user = userService.updateUserRole(id, role);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @GetMapping("/{id}/status-history")
@@ -75,45 +85,58 @@ public class UserController {
             @PathVariable UUID id,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
-            @RequestParam(defaultValue = "id") StatusHistorySortField sortBy,
+            @RequestParam(defaultValue = "ID") StatusHistorySortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
             @ModelAttribute @Valid UserStatusHistoryFilterDto filter) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<StatusHistoryDto> page =
+                userService.getUserStatusHistory(id, offset, limit, sortBy, sortOrder, filter);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @PostMapping("/{id}/activate")
     public ResponseEntity<StatusHistoryDto> activateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        StatusHistoryDto history = userService.activateUser(id, statusDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
     @PostMapping("/{id}/deactivate")
     public ResponseEntity<StatusHistoryDto> deactivateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        StatusHistoryDto history = userService.deactivateUser(id, statusDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
     @PostMapping("/{id}/block")
     public ResponseEntity<StatusHistoryDto> blockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        StatusHistoryDto history = userService.blockUser(id, statusDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
     @PostMapping("/{id}/temporary-block")
     public ResponseEntity<StatusHistoryDto> temporaryBlockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        StatusHistoryDto history = userService.temporaryBlockUser(id, statusDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
     @PostMapping("/{id}/unblock")
     public ResponseEntity<StatusHistoryDto> unblockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        StatusHistoryDto history = userService.unblockUser(id, statusDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 }

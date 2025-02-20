@@ -1,7 +1,6 @@
 package com.mealmap.userservice.validator;
 
 import com.mealmap.userservice.exception.ConflictException;
-import com.mealmap.userservice.exception.ResourceNotFoundException;
 import com.mealmap.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,8 +20,8 @@ public class UserValidator {
     }
 
     public void validateEmailUniqueness(String email) {
-        if (!userRepository.existsByEmail(email)) {
-            throw new ResourceNotFoundException(USER_WITH_EMAIL_ALREADY_EXISTS);
+        if (userRepository.existsByEmail(email)) {
+            throw new ConflictException(USER_WITH_EMAIL_ALREADY_EXISTS);
         }
     }
 }

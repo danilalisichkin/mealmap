@@ -80,10 +80,10 @@ public class UserServiceImpl implements UserService {
         User userToUpdate = getUserEntity(id);
 
         if (!userToUpdate.getPhoneNumber().equals(userDto.getPhoneNumber())) {
-            userValidator.validatePhoneNumberUniqueness(userToUpdate.getPhoneNumber());
+            userValidator.validatePhoneNumberUniqueness(userDto.getPhoneNumber());
         }
         if (!userToUpdate.getEmail().equals(userDto.getEmail())) {
-            userValidator.validateEmailUniqueness(userToUpdate.getEmail());
+            userValidator.validateEmailUniqueness(userDto.getEmail());
         }
 
         userMapper.updateEntityFromDto(userToUpdate, userDto);
