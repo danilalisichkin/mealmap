@@ -1,7 +1,7 @@
 package com.mealmap.userservice.core.mapper;
 
-import com.mealmap.userservice.core.dto.user.StatusHistoryCreatingDto;
-import com.mealmap.userservice.core.dto.user.StatusHistoryDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryCreatingDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.entity.UserStatusHistory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

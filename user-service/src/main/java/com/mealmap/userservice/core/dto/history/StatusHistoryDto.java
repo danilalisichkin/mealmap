@@ -1,4 +1,4 @@
-package com.mealmap.userservice.core.dto.user;
+package com.mealmap.userservice.core.dto.history;
 
 import com.mealmap.userservice.entity.enums.StatusEvent;
 import lombok.AllArgsConstructor;

@@ -23,7 +23,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="reason"
-                    type="VARCHAR(255)"/>
+                    type="VARCHAR(50)"/>
             <column name="changed_by"
                     type="UUID">
                 <constraints nullable="false"/>
