@@ -1,5 +1,10 @@
 package com.mealmap.userservice.exception.handler;
 
+import com.mealmap.userservice.core.message.ErrorCauseMessages;
+import com.mealmap.userservice.exception.BadRequestException;
+import com.mealmap.userservice.exception.ConflictException;
+import com.mealmap.userservice.exception.ResourceNotFoundException;
+import com.mealmap.userservice.exception.ValidationException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
@@ -19,6 +24,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
@@ -31,7 +38,9 @@ public class RestExceptionHandler {
     public ResponseEntity<ProblemDetail> handleHttpMessageNotReadableException(Exception e) {
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(ProblemDetail.forStatusAndDetail(BAD_REQUEST, e.getMessage()));
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -42,7 +51,9 @@ public class RestExceptionHandler {
 
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(ProblemDetail.forStatusAndDetail(BAD_REQUEST, errorMap.toString()));
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        errorMap.toString()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -53,14 +64,65 @@ public class RestExceptionHandler {
 
         return ResponseEntity
                 .status(BAD_REQUEST)
-                .body(ProblemDetail.forStatusAndDetail(BAD_REQUEST, errorMap.toString()));
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        errorMap.toString()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ProblemDetail> handleBadRequestException(BadRequestException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ProblemDetail> handleValidationException(ValidationException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFoundException(Exception e) {
         return ResponseEntity
                 .status(NOT_FOUND)
-                .body(ProblemDetail.forStatusAndDetail(NOT_FOUND, e.getMessage()));
+                .body(ProblemDetail.forStatusAndDetail(
+                        NOT_FOUND,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(ProblemDetail.forStatusAndDetail(
+                        NOT_FOUND,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ProblemDetail> handleConflictException(ConflictException e) {
+        return ResponseEntity
+                .status(CONFLICT)
+                .body(ProblemDetail.forStatusAndDetail(
+                        CONFLICT,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleOtherException(Exception e) {
+        log.error("Internal error", e);
+
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(ProblemDetail.forStatusAndDetail(
+                        INTERNAL_SERVER_ERROR,
+                        ErrorCauseMessages.INTERNAL_SERVER_ERROR));
     }
 
     private void getValidationErrors(Map<String, List<String>> errorMap, Exception e) {
