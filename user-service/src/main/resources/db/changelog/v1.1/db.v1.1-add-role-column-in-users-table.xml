@@ -1,0 +1,17 @@
+<databaseChangeLog
+xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+<changeSet id="v1.1-add-role-column-in-users-table" author="danilalisichkin">
+    <addColumn tableName="users">
+        <column name="role"
+                type="VARCHAR(30)">
+            <constraints nullable="false"/>
+        </column>
+    </addColumn>
+</changeSet>
+
+</databaseChangeLog>

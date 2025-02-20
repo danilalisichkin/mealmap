@@ -1,5 +1,6 @@
 package com.mealmap.userservice.entity;
 
+import com.mealmap.userservice.entity.enums.UserRole;
 import com.mealmap.userservice.entity.value.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -48,6 +49,9 @@ public class User {
 
     @Embedded
     private UserStatus status;
+
+    @Column(nullable = false)
+    private UserRole role;
 
     @CreatedDate
     private LocalDate createdAt;

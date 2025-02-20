@@ -4,7 +4,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="db/changelog/v1.0/db.v1.0-init-users-table.xml"/>
-    <include file="db/changelog/v1.0/db.v1.0-init-user-status-history-table.xml"/>
+    <include file="db/changelog/v1.1/db.v1.1-add-role-column-in-users-table.xml"/>
 
 </databaseChangeLog>
