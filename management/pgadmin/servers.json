@@ -10,6 +10,17 @@
       "Password": "root",
       "Database": "product_database",
       "SSLMode": "prefer"
+    },
+    "2": {
+      "Name": "User Database Server",
+      "Group": "Internal Group 1",
+      "Host": "user-pg-database",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "Password": "root",
+      "Database": "user_database",
+      "SSLMode": "prefer"
     }
   }
 }

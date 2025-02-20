@@ -23,6 +23,27 @@ services:
     networks:
       - mealmap-network
 
+  user-pg-database:
+    image: postgres:17
+    container_name: mealmap-user-pg-database
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: user_database
+    ports:
+      - "5434:5432"
+    volumes:
+      - user-pg-database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: mealmap-pgadmin
@@ -35,7 +56,7 @@ services:
     depends_on:
       - product-pg-database
     volumes:
-      - ./pgadmin/servers.json:/pgadmin4/servers.json
+      - ./management/pgadmin/servers.json:/pgadmin4/servers.json
     networks:
       - mealmap-network
 
@@ -80,6 +101,7 @@ services:
 
 volumes:
   product-pg-database_data:
+  user-pg-database_data:
   product-redis_data:
 
 networks:

@@ -1,0 +1,58 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.0-init-user-status-history-table" author="danilalisichkin">
+        <createTable tableName="user_status_history">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_user_status_history"/>
+            </column>
+            <column name="user_id"
+                    type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_status"
+                    type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason"
+                    type="VARCHAR(255)"/>
+            <column name="changed_by"
+                    type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_at"
+                    type="DATETIME"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="changed_by"
+                                 baseTableName="user_status_history"
+                                 constraintName="FK_USER_STATUS_HISTORY_ON_CHANGED_BY"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+
+        <createIndex indexName="idx_user_status_history_changed_by"
+                     tableName="user_status_history">
+            <column name="changed_by"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_status_history"
+                                 constraintName="FK_USER_STATUS_HISTORY_ON_USER"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+
+        <createIndex indexName="idx_user_status_history_user_id"
+                     tableName="user_status_history">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
