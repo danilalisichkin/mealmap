@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: auth-service
+business:
+  keycloak:
+    server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+    realm: ${KEYCLOAK_REALM:mealmap-realm}
+    grant-type: ${KEYCLOAK_GRANT_TYPE:client_credentials}
+    admin:
+      client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+      client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:5OpVHHUSEP3O8tSk3MbjTxx6Efn5ASUl}
+    client:
+      client-id: ${KEYCLOAK_CLIENT_CLIENT_SECRET:mealmap-client}
+      client-secret: ${KEYCLOAK_CLIENT_CLIENT_SECRET:CikyzVJQFlmJaa3TsM7SJi8Y76edNtgS}
+server:
+  port: ${SERVER_PORT:8083}

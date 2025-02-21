@@ -44,6 +44,27 @@ services:
     networks:
       - mealmap-network
 
+  keycloak-pg-database:
+    image: postgres:17
+    container_name: mealmap-keycloak-pg-database
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: keycloak_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - keycloak-pg-database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: mealmap-pgadmin
@@ -77,6 +98,34 @@ services:
     networks:
       - mealmap-network
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.7
+    container_name: mealmap-keycloak
+    restart: on-failure
+    command: start-dev --import-realm --health-enabled=true --metrics-enabled=true
+    ports:
+      - "8080:8080"
+      - "9000:9000"
+    volumes:
+      - ./keycloak/export:/opt/keycloak/data/import
+    environment:
+      KC_HTTP_PORT: 8080
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL_HOST: keycloak-pg-database
+      KC_DB_URL_PORT: 5432
+      KC_DB_URL_DATABASE: keycloak_db
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: root
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_FEATURES: token-exchange,admin-fine-grained-authz
+    networks:
+      - mealmap-network
+    depends_on:
+      - keycloak-pg-database
+
   elasticsearch:
     image: elasticsearch:7.14.2
     container_name: mealmap-product-elasticsearch
@@ -101,6 +150,7 @@ volumes:
   product-pg-database_data:
   user-pg-database_data:
   product-redis_data:
+  keycloak-pg-database_data:
 
 networks:
   mealmap-network:

@@ -21,6 +21,17 @@
       "Password": "root",
       "Database": "user_database",
       "SSLMode": "prefer"
+    },
+    "3": {
+      "Name": "Keycloak Internal Database Server",
+      "Group": "External Group 1",
+      "Host": "keycloak-pg-database",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "Password": "root",
+      "Database": "keycloak_db",
+      "SSLMode": "prefer"
     }
   }
 }
