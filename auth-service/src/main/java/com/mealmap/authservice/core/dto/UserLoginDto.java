@@ -1,12 +1,18 @@
 package com.mealmap.authservice.core.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 
 @Value
 @Builder
 public class UserLoginDto {
+    @NotEmpty
+    @Size(min = 3, max = 50)
     String identifier;
 
+    @NotEmpty
+    @Size(min = 4, max = 50)
     String password;
 }
