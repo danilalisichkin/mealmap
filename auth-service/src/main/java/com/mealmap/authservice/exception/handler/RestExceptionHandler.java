@@ -1,6 +1,10 @@
 package com.mealmap.authservice.exception.handler;
 
 import com.mealmap.authservice.core.message.ErrorCauseMessages;
+import com.mealmap.authservice.exception.BadRequestException;
+import com.mealmap.authservice.exception.ConflictException;
+import com.mealmap.authservice.exception.ResourceNotFoundException;
+import com.mealmap.authservice.exception.UnauthorizedException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
@@ -20,8 +24,10 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @RestControllerAdvice
@@ -64,12 +70,48 @@ public class RestExceptionHandler {
                         errorMap.toString()));
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ProblemDetail> handleBadRequestException(BadRequestException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ProblemDetail> handleUnauthorizedException(UnauthorizedException e) {
+        return ResponseEntity
+                .status(UNAUTHORIZED)
+                .body(ProblemDetail.forStatusAndDetail(
+                        UNAUTHORIZED,
+                        e.getMessage()));
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ProblemDetail> handleNotFoundException(Exception e) {
         return ResponseEntity
                 .status(NOT_FOUND)
                 .body(ProblemDetail.forStatusAndDetail(
                         NOT_FOUND,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(ProblemDetail.forStatusAndDetail(
+                        NOT_FOUND,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ProblemDetail> handleConflictException(ConflictException e) {
+        return ResponseEntity
+                .status(CONFLICT)
+                .body(ProblemDetail.forStatusAndDetail(
+                        CONFLICT,
                         e.getMessage()));
     }
 

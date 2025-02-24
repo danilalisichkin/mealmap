@@ -2,33 +2,33 @@ package com.mealmap.authservice.core.dto;
 
 import com.mealmap.authservice.core.enums.UserRole;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Value
+@Data
 @Builder
 public class UserDto {
-    UUID id;
+    private UUID id;
 
-    String phoneNumber;
+    private String phoneNumber;
 
-    String email;
+    private String email;
 
-    String firstName;
+    private String firstName;
 
-    String lastName;
+    private String lastName;
 
-    Integer organizationId;
+    private Integer organizationId;
 
-    Boolean isActive;
+    private Boolean isActive;
 
-    Boolean isBlocked;
+    private Boolean isBlocked;
 
-    Boolean isTemporaryBlocked;
+    private Boolean isTemporaryBlocked;
 
-    UserRole role;
+    private UserRole role;
 
-    LocalDate createdAt;
+    private LocalDate createdAt;
 }
