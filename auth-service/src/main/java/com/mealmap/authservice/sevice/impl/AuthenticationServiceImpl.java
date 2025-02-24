@@ -7,6 +7,7 @@ import com.mealmap.authservice.core.dto.UserRegisterDto;
 import com.mealmap.authservice.core.mapper.KeycloakAccessTokenMapper;
 import com.mealmap.authservice.sevice.AuthenticationService;
 import com.mealmap.authservice.sevice.KeycloakResourceService;
+import com.mealmap.authservice.sevice.UserKafkaService;
 import com.mealmap.authservice.strategy.manager.UserRegistrationManager;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.representations.AccessTokenResponse;
@@ -21,9 +22,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRegistrationManager registrationManager;
 
+    private final UserKafkaService userKafkaService;
+
     @Override
     public UserDto registerUser(UserRegisterDto userRegisterDto) {
-        return registrationManager.processUserRegistration(userRegisterDto);
+        UserDto registeredUser = registrationManager.processUserRegistration(userRegisterDto);
+
+        userKafkaService.createUser(registeredUser);
+
+        return registeredUser;
     }
 
     @Override

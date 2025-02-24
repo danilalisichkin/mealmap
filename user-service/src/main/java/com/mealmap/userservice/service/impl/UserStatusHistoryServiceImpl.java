@@ -7,7 +7,9 @@ import com.mealmap.userservice.core.mapper.UserStatusHistoryMapper;
 import com.mealmap.userservice.entity.User;
 import com.mealmap.userservice.entity.UserStatusHistory;
 import com.mealmap.userservice.entity.enums.StatusEvent;
+import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.repository.UserStatusHistoryRepository;
+import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.service.UserStatusHistoryService;
 import com.mealmap.userservice.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,10 @@ public class UserStatusHistoryServiceImpl implements UserStatusHistoryService {
 
     private final UserStatusHistoryRepository statusHistoryRepository;
 
+    private final UserKafkaMapper userKafkaMapper;
+
+    private final UserKafkaService userKafkaService;
+
     @Override
     @Transactional
     public StatusHistoryDto processStatusChanging(User user, String reason, StatusEvent status) {
@@ -39,8 +45,11 @@ public class UserStatusHistoryServiceImpl implements UserStatusHistoryService {
                         .user(user)
                         .newStatus(status)
                         .reason(reason)
-                        .changedBy(null)
+                        .changedBy(user)
                         .build();
+
+        userKafkaService.updateUserStatus(
+                userKafkaMapper.entityToStatusUpdateDto(user));
 
         return statusHistoryMapper.entityToDto(
                 statusHistoryRepository.save(newHistoryElement));

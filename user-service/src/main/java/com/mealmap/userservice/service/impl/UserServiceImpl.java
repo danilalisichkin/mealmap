@@ -14,8 +14,12 @@ import com.mealmap.userservice.core.mapper.UserMapper;
 import com.mealmap.userservice.entity.User;
 import com.mealmap.userservice.entity.enums.StatusEvent;
 import com.mealmap.userservice.entity.enums.UserRole;
+import com.mealmap.userservice.exception.BadRequestException;
 import com.mealmap.userservice.exception.ResourceNotFoundException;
+import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
+import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.repository.UserRepository;
+import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.service.UserService;
 import com.mealmap.userservice.service.UserStatusHistoryService;
 import com.mealmap.userservice.util.PageBuilder;
@@ -29,6 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_ACTIVE;
+import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_BLOCKED;
+import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_DEACTIVATED;
+import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_TEMPORARY_BLOCKED;
+import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_UNBLOCKED;
 import static com.mealmap.userservice.core.message.ApplicationMessages.USER_NOT_FOUND;
 import static com.mealmap.userservice.entity.specification.UserSpecification.hasFirstNameLike;
 import static com.mealmap.userservice.entity.specification.UserSpecification.hasLastNameLike;
@@ -39,6 +48,10 @@ import static com.mealmap.userservice.entity.specification.UserSpecification.isT
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final UserKafkaService userKafkaService;
+
+    private final UserKafkaMapper userKafkaMapper;
+
     private final UserStatusHistoryService statusHistoryService;
 
     private final UserValidator userValidator;
@@ -79,28 +92,36 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UUID id, UserUpdatingDto userDto) {
         User userToUpdate = getUserEntity(id);
 
-        if (!userToUpdate.getPhoneNumber().equals(userDto.getPhoneNumber())) {
-            userValidator.validatePhoneNumberUniqueness(userDto.getPhoneNumber());
-        }
         if (!userToUpdate.getEmail().equals(userDto.getEmail())) {
             userValidator.validateEmailUniqueness(userDto.getEmail());
         }
 
         userMapper.updateEntityFromDto(userToUpdate, userDto);
 
-        return userMapper.entityToDto(
-                userRepository.save(userToUpdate));
+        userRepository.save(userToUpdate);
+
+        userKafkaService.updateUser(
+                userKafkaMapper.entityToUpdateDto(userToUpdate));
+
+        return userMapper.entityToDto(userToUpdate);
     }
 
     @Override
     @Transactional
     public UserDto updateUserRole(UUID id, UserRole role) {
         User userToUpdate = getUserEntity(id);
+        UserRole oldRole = userToUpdate.getRole();
 
-        userToUpdate.setRole(role);
+        if (!oldRole.equals(role)) {
+            userToUpdate.setRole(role);
 
-        return userMapper.entityToDto(
-                userRepository.save(userToUpdate));
+            userRepository.save(userToUpdate);
+
+            userKafkaService.updateUserRole(
+                    new KafkaUserRoleUpdateDto(id, oldRole.name(), role.name()));
+        }
+
+        return userMapper.entityToDto(userToUpdate);
     }
 
     @Override
@@ -108,17 +129,22 @@ public class UserServiceImpl implements UserService {
             UUID id, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,
             UserStatusHistoryFilterDto filter) {
 
-        User userToUpdate = getUserEntity(id);
+        User requestedUser = getUserEntity(id);
 
         return pageMapper.pageToPageDto(
                 statusHistoryService.getUserStatusHistory(
-                        userToUpdate, offset, limit, sortBy, sortOrder, filter));
+                        requestedUser, offset, limit, sortBy, sortOrder, filter));
     }
 
     @Override
     @Transactional
     public StatusHistoryDto activateUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
+        boolean isAlreadyActive = userToUpdate.getStatus().getIsActive();
+
+        if (isAlreadyActive) {
+            throw new BadRequestException(USER_IS_ALREADY_ACTIVE);
+        }
 
         userToUpdate.getStatus().setIsActive(true);
         userRepository.save(userToUpdate);
@@ -131,6 +157,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public StatusHistoryDto deactivateUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
+        boolean isAlreadyDeactivated = !userToUpdate.getStatus().getIsActive();
+
+        if (isAlreadyDeactivated) {
+            throw new BadRequestException(USER_IS_ALREADY_DEACTIVATED);
+        }
 
         userToUpdate.getStatus().setIsActive(false);
         userRepository.save(userToUpdate);
@@ -143,6 +174,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public StatusHistoryDto blockUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
+        boolean isAlreadyBlocked = userToUpdate.getStatus().getIsBlocked();
+
+        if (isAlreadyBlocked) {
+            throw new BadRequestException(USER_IS_ALREADY_BLOCKED);
+        }
 
         userToUpdate.getStatus().setIsBlocked(true);
         userRepository.save(userToUpdate);
@@ -155,6 +191,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public StatusHistoryDto temporaryBlockUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
+        boolean isAlreadyTemporaryBlocked = userToUpdate.getStatus().getIsTemporaryBlocked();
+
+        if (isAlreadyTemporaryBlocked) {
+            throw new BadRequestException(USER_IS_ALREADY_TEMPORARY_BLOCKED);
+        }
 
         userToUpdate.getStatus().setIsTemporaryBlocked(true);
         userRepository.save(userToUpdate);
@@ -167,6 +208,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public StatusHistoryDto unblockUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
+        boolean isAlreadyUnblocked = !userToUpdate.getStatus().getIsBlocked();
+
+        if (isAlreadyUnblocked) {
+            throw new BadRequestException(USER_IS_ALREADY_UNBLOCKED);
+        }
 
         userToUpdate.getStatus().setIsBlocked(false);
         userToUpdate.getStatus().setIsTemporaryBlocked(false);

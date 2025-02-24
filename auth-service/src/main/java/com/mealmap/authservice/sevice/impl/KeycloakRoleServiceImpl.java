@@ -1,6 +1,5 @@
 package com.mealmap.authservice.sevice.impl;
 
-import com.mealmap.authservice.core.enums.UserRole;
 import com.mealmap.authservice.exception.BadRequestException;
 import com.mealmap.authservice.exception.ResourceNotFoundException;
 import com.mealmap.authservice.sevice.KeycloakRoleService;
@@ -23,7 +22,7 @@ public class KeycloakRoleServiceImpl implements KeycloakRoleService {
     private final RolesResource rolesResource;
 
     @Override
-    public void assignRoleToUser(UserRole role, UserResource userResource) {
+    public void assignRoleToUser(UserResource userResource, String role) {
         RoleRepresentation keycloakRole = getRoleRepresentation(role);
 
         try {
@@ -34,7 +33,7 @@ public class KeycloakRoleServiceImpl implements KeycloakRoleService {
     }
 
     @Override
-    public void unassignRoleFromUser(UserRole role, UserResource userResource) {
+    public void unassignRoleFromUser(UserResource userResource, String role) {
         RoleRepresentation keycloakRole = getRoleRepresentation(role);
 
         try {
@@ -53,9 +52,9 @@ public class KeycloakRoleServiceImpl implements KeycloakRoleService {
         }
     }
 
-    private RoleRepresentation getRoleRepresentation(UserRole role) {
+    private RoleRepresentation getRoleRepresentation(String role) {
         try {
-            return rolesResource.get(role.name()).toRepresentation();
+            return rolesResource.get(role).toRepresentation();
         } catch (NotFoundException e) {
             throw new ResourceNotFoundException(USER_ROLE_NOT_FOUND);
         }

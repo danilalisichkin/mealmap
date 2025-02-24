@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import java.util.UUID;
 
 public interface UserService {
-
     PageDto<UserDto> getPageOfUsers(
             Integer offset, Integer limit, UserSortField sortBy, Sort.Direction sortOrder,
             UserFilterDto filter, String name);

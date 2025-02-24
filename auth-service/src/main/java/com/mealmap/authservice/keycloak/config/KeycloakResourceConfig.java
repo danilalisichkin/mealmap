@@ -7,7 +7,6 @@ import org.keycloak.admin.client.resource.GroupsResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -16,6 +15,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 @RequiredArgsConstructor
 public class KeycloakResourceConfig {
     private final KeycloakServerConfig kcServerConfig;
+
     private final KeycloakAdminConfig kcAdminConfig;
 
     @Bean
@@ -27,11 +27,6 @@ public class KeycloakResourceConfig {
                 .clientSecret(kcAdminConfig.getClientSecret())
                 .grantType(kcServerConfig.getGrantType())
                 .build();
-    }
-
-    @Bean
-    public UserRepresentation userRepresentation() {
-        return new UserRepresentation();
     }
 
     @Bean

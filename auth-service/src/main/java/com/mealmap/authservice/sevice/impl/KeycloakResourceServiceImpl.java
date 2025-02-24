@@ -12,8 +12,10 @@ import com.mealmap.authservice.sevice.KeycloakResourceService;
 import feign.FeignException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -33,6 +35,7 @@ import static com.mealmap.authservice.core.message.ApplicationMessages.EMAIL_NOT
 import static com.mealmap.authservice.core.message.ApplicationMessages.USER_WITH_ID_NOT_FOUND;
 import static com.mealmap.authservice.core.message.ApplicationMessages.WRONG_LOGIN_OR_PASSWORD;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KeycloakResourceServiceImpl implements KeycloakResourceService {
@@ -45,8 +48,6 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
 
     private final UsersResource usersResource;
 
-    private final UserRepresentation userRepresentation;
-
     private final CredentialRepresentation credentialRepresentation;
 
     private final KeycloakFeignClient keycloakFeignClient;
@@ -56,9 +57,9 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
             String username, String email, String firstName, String lastName, String password,
             Map<String, List<String>> attributes) {
 
-        buildUserRepresentation(username, email, firstName, lastName, password, attributes);
+        UserRepresentation newUser = buildUserRepresentationForCreation(username, email, firstName, lastName, password, attributes);
 
-        Response response = usersResource.create(userRepresentation);
+        Response response = usersResource.create(newUser);
         KeycloakResponseValidator.validate(response);
 
         List<UserRepresentation> users = usersResource.search(username);
@@ -69,6 +70,20 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
         }
 
         return createdUser;
+    }
+
+    @Override
+    public void updateUser(
+            String userId, String email, String firstName, String lastName,
+            Map<String, List<String>> attributes) {
+
+        UserRepresentation updatedUser = buildUserRepresentationForUpdate(email, firstName, lastName, attributes);
+
+        try {
+            usersResource.get(userId).update(updatedUser);
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e);
+        }
     }
 
     @Override
@@ -102,14 +117,9 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
 
     @Override
     public UserResource findUserResourceByUserId(String userId) {
-        return usersResource.get(userId);
-    }
-
-    @Override
-    public UserRepresentation findUserRepresentationByUserId(String userId) {
         try {
-            return findUserResourceByUserId(userId).toRepresentation();
-        } catch (Exception e) {
+            return usersResource.get(userId);
+        } catch (NotFoundException e) {
             throw new ResourceNotFoundException(USER_WITH_ID_NOT_FOUND.formatted(userId));
         }
     }
@@ -142,9 +152,11 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
                 .build();
     }
 
-    private void buildUserRepresentation(
+    private UserRepresentation buildUserRepresentationForCreation(
             String username, String email, String firstName, String lastName, String password,
             Map<String, List<String>> attributes) {
+
+        UserRepresentation userRepresentation = new UserRepresentation();
 
         userRepresentation.setEnabled(true);
         userRepresentation.setUsername(username);
@@ -159,5 +171,29 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
         credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
         credentialRepresentation.setTemporary(false);
         userRepresentation.setCredentials(List.of(credentialRepresentation));
+
+        return userRepresentation;
+    }
+
+    private UserRepresentation buildUserRepresentationForUpdate(
+            String email, String firstName, String lastName,
+            Map<String, List<String>> attributes) {
+
+        UserRepresentation userRepresentation = new UserRepresentation();
+
+        userRepresentation.setEmail(email);
+        userRepresentation.setFirstName(firstName);
+        userRepresentation.setLastName(lastName);
+        userRepresentation.setAttributes(attributes);
+
+        return userRepresentation;
+    }
+
+    private UserRepresentation buildUserRepresentationForUpdate(Map<String, List<String>> attributes) {
+        UserRepresentation userRepresentation = new UserRepresentation();
+
+        userRepresentation.setAttributes(attributes);
+
+        return userRepresentation;
     }
 }

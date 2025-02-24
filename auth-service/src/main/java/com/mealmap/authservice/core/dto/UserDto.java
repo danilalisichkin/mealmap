@@ -22,11 +22,7 @@ public class UserDto {
 
     private Integer organizationId;
 
-    private Boolean isActive;
-
-    private Boolean isBlocked;
-
-    private Boolean isTemporaryBlocked;
+    private UserStatus status;
 
     private UserRole role;
 

@@ -1,9 +1,5 @@
 package com.mealmap.userservice.entity.enums;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.mealmap.userservice.core.serialization.UserRoleDeserializer;
-import com.mealmap.userservice.core.serialization.UserRoleSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,8 +7,6 @@ import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
-@JsonSerialize(using = UserRoleSerializer.class)
-@JsonDeserialize(using = UserRoleDeserializer.class)
 public enum UserRole {
     CLIENT_HEAD(1),
     CLIENT_EMPLOYEE(2),

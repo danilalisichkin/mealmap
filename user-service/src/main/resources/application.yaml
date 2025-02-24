@@ -10,5 +10,41 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      properties:
+        spring.json:
+          value.default.type: java.util.Map
+          trusted.packages: '*'
+          use.type.headers: false
+        spring.deserializer:
+          key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+          value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+business:
+  kafka:
+    topics:
+      user-creation:
+        name: user.creation.v1
+        consumer:
+          group-id: user.creation.consumer.group
+      user-update:
+        name: user.update.v1
+        partitions: 1
+        replicas: 1
+      user-role-update:
+        name: user.role-update.v1
+        partitions: 1
+        replicas: 1
+      user-status-update:
+        name: user.status-update.v1
+        partitions: 1
+        replicas: 1
 server:
   port: ${SERVER_PORT:8082}

@@ -22,6 +22,7 @@ public interface UserStatusHistoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "changedBy", ignore = true)
+    @Mapping(target = "newStatus", ignore = true)
     @Mapping(target = "eventAt", ignore = true)
     UserStatusHistory dtoToEntity(StatusHistoryCreatingDto dto);
 

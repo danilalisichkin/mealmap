@@ -20,9 +20,9 @@ import static com.mealmap.authservice.keycloak.constant.UserAttributes.ORGANIZAT
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper {
     @Mapping(target = "organizationId", source = "attributes." + ORGANIZATION_ID, qualifiedByName = "integer")
-    @Mapping(target = "isActive", source = "attributes." + IS_ACTIVE, qualifiedByName = "boolean")
-    @Mapping(target = "isTemporaryBlocked", source = "attributes." + IS_TEMPORARY_BLOCKED, qualifiedByName = "boolean")
-    @Mapping(target = "isBlocked", source = "attributes." + IS_BLOCKED, qualifiedByName = "boolean")
+    @Mapping(target = "status.isActive", source = "attributes." + IS_ACTIVE, qualifiedByName = "boolean")
+    @Mapping(target = "status.isTemporaryBlocked", source = "attributes." + IS_TEMPORARY_BLOCKED, qualifiedByName = "boolean")
+    @Mapping(target = "status.isBlocked", source = "attributes." + IS_BLOCKED, qualifiedByName = "boolean")
     @Mapping(target = "createdAt", source = "createdTimestamp", qualifiedByName = "localDate")
     @Mapping(target = "phoneNumber", source = "username")
     @Mapping(target = "role", source = "realmRoles.first")

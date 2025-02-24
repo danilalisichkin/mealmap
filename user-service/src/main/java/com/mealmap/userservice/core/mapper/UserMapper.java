@@ -17,6 +17,7 @@ public interface UserMapper {
     UserDto entityToDto(User entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "phoneNumber", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

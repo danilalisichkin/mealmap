@@ -4,8 +4,7 @@ import com.mealmap.authservice.core.dto.UserDto;
 import com.mealmap.authservice.core.dto.UserRegisterDto;
 import com.mealmap.authservice.core.enums.UserRole;
 import com.mealmap.authservice.core.mapper.UserMapper;
-import com.mealmap.authservice.sevice.KeycloakResourceService;
-import com.mealmap.authservice.sevice.KeycloakRoleService;
+import com.mealmap.authservice.sevice.UserService;
 import com.mealmap.authservice.strategy.UserRegistrationBaseHandler;
 import com.mealmap.authservice.util.UserDefaults;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -15,17 +14,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SupplierEmployeeRegistrationHandler extends UserRegistrationBaseHandler {
     @Autowired
-    public SupplierEmployeeRegistrationHandler(
-            KeycloakResourceService kcResourceService, KeycloakRoleService kcRoleService, UserMapper userMapper) {
-
-        super(kcResourceService, kcRoleService, userMapper);
+    public SupplierEmployeeRegistrationHandler(UserService userService, UserMapper userMapper) {
+        super(userService, userMapper);
     }
 
     @Override
     public UserDto handle(UserRegisterDto registerDto) {
         // TODO: check if organization exists, connect with notification service
         UserRepresentation registeredUser =
-                createUser(registerDto, getSupportedUserRole(), UserDefaults.status());
+                userService.createUser(registerDto, getSupportedUserRole(), UserDefaults.status());
 
         UserDto userDto = userMapper.keycloakRepresentationToDto(registeredUser);
         userDto.setRole(getSupportedUserRole());

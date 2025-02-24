@@ -12,13 +12,15 @@ public interface KeycloakResourceService {
             String username, String email, String firstName, String lastName, String password,
             Map<String, List<String>> attributes);
 
+    void updateUser(
+            String userId, String email, String firstName, String lastName,
+            Map<String, List<String>> attributes);
+
     AccessTokenResponse getUserAccessToken(String username, String password);
 
     AccessTokenResponse refreshUserAccessToken(String refreshToken);
 
     UserResource findUserResourceByUserId(String userId);
-
-    UserRepresentation findUserRepresentationByUserId(String userId);
 
     void deleteUser(String userId);
 

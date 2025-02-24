@@ -1,6 +1,23 @@
 spring:
   application:
     name: auth-service
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      properties:
+        spring.json:
+          value.default.type: java.util.Map
+          trusted.packages: '*'
+          use.type.headers: false
+        spring.deserializer:
+          key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+          value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
   security:
     oauth2:
       resourceserver:
@@ -19,5 +36,23 @@ business:
     client:
       client-id: ${KEYCLOAK_CLIENT_CLIENT_SECRET:mealmap-client}
       client-secret: ${KEYCLOAK_CLIENT_CLIENT_SECRET:CikyzVJQFlmJaa3TsM7SJi8Y76edNtgS}
+  kafka:
+    topics:
+      user-creation:
+        name: user.creation.v1
+        partitions: 1
+        replicas: 1
+      user-update:
+        name: user.update.v1
+        consumer:
+          group-id: user.update.consumer.group
+      user-role-update:
+        name: user.role-update.v1
+        consumer:
+          group-id: user.role-update.consumer.group
+      user-status-update:
+        name: user.status-update.v1
+        consumer:
+          group-id: user.status-update.group
 server:
   port: ${SERVER_PORT:8083}
