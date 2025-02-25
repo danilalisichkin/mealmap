@@ -25,6 +25,10 @@ import com.mealmap.userservice.service.UserStatusHistoryService;
 import com.mealmap.userservice.util.PageBuilder;
 import com.mealmap.userservice.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -47,6 +51,7 @@ import static com.mealmap.userservice.entity.specification.UserSpecification.isT
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheResolver = "userProfileCacheResolver")
 public class UserServiceImpl implements UserService {
     private final UserKafkaService userKafkaService;
 
@@ -82,6 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(key = "#id")
     public UserDto getUser(UUID id) {
         return userMapper.entityToDto(
                 getUserEntity(id));
@@ -89,6 +95,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CachePut(key = "#id")
     public UserDto updateUser(UUID id, UserUpdatingDto userDto) {
         User userToUpdate = getUserEntity(id);
 
@@ -108,6 +115,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CachePut(key = "#id")
     public UserDto updateUserRole(UUID id, UserRole role) {
         User userToUpdate = getUserEntity(id);
         UserRole oldRole = userToUpdate.getRole();
@@ -138,6 +146,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public StatusHistoryDto activateUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
         boolean isAlreadyActive = userToUpdate.getStatus().getIsActive();
@@ -155,6 +164,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public StatusHistoryDto deactivateUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
         boolean isAlreadyDeactivated = !userToUpdate.getStatus().getIsActive();
@@ -172,6 +182,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public StatusHistoryDto blockUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
         boolean isAlreadyBlocked = userToUpdate.getStatus().getIsBlocked();
@@ -189,6 +200,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public StatusHistoryDto temporaryBlockUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
         boolean isAlreadyTemporaryBlocked = userToUpdate.getStatus().getIsTemporaryBlocked();
@@ -206,6 +218,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(key = "#id")
     public StatusHistoryDto unblockUser(UUID id, StatusHistoryCreatingDto statusDto) {
         User userToUpdate = getUserEntity(id);
         boolean isAlreadyUnblocked = !userToUpdate.getStatus().getIsBlocked();
