@@ -19,6 +19,7 @@
 
     <modules>
         <module>auth-service</module>
+        <module>order-service</module>
         <module>product-service</module>
         <module>user-service</module>
     </modules>
@@ -30,6 +31,7 @@
 
         <keycloak.version>26.0.2</keycloak.version>
         <springcloud.version>2023.0.4</springcloud.version>
+        <mongock.version>5.5.0</mongock.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
 
@@ -47,6 +49,15 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${springcloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Mongock BOM -->
+            <dependency>
+                <groupId>io.mongock</groupId>
+                <artifactId>mongock-bom</artifactId>
+                <version>${mongock.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: order-service
+  data:
+    mongodb:
+      uri: mongodb://${DB_URL:localhost:27020}
+      username: ${DB_USERNAME:mongo}
+      password: ${DB_PASSWORD:root}
+      replica-set-name: ${DB_REPLICA_SET_NAME:rs0}
+      database: ${DB_NAME:order_database}
+mongock:
+  migration-scan-package: com.cabaggregator.rideservice.migration
+  transactional: true
+  enabled: true
+server:
+  port: ${SERVER_PORT:8084}
