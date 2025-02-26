@@ -4,6 +4,7 @@ import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryShortInfo;
 import com.mealmap.productservice.core.dto.category.CategorySimpleDto;
+import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
 import com.mealmap.productservice.document.CategoryDoc;
 import com.mealmap.productservice.entity.Category;
@@ -29,6 +30,8 @@ public interface CategoryMapper {
     CategoryDto entityToDto(Category entity);
 
     CategoryShortInfo entityToShortInfo(Category entity);
+
+    CategoryTreeDto entityToTreeDto(Category entity);
 
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "children", ignore = true)

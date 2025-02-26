@@ -6,6 +6,7 @@ import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
+import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
 import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
@@ -72,8 +73,16 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Cacheable(key = "#id")
     public CategoryDto getCategory(Long id) {
-        return categoryMapper.entityToDto(
-                getCategoryEntity(id));
+        Category category = getCategoryEntity(id);
+
+        return categoryMapper.entityToDto(category);
+    }
+
+    @Override
+    public CategoryTreeDto getCategoryTree(Long id) {
+        Category category = getCategoryEntity(id);
+
+        return categoryMapper.entityToTreeDto(category);
     }
 
     @Override

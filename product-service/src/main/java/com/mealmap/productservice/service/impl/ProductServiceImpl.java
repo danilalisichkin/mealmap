@@ -82,8 +82,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Cacheable(key = "#id")
     public ProductDto getProduct(Long id) {
-        return productMapper.entityToDto(
-                getProductEntity(id));
+        Product product = getProductEntity(id);
+
+        return productMapper.entityToDto(product);
     }
 
     @Override
