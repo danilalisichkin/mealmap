@@ -3,8 +3,13 @@ package com.mealmap.cartservice.controller.api;
 import com.mealmap.cartservice.core.dto.cart.CartDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemAddingDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemDto;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/carts")
 public class CartController {
@@ -29,7 +35,7 @@ public class CartController {
     @PostMapping("/{id}/items")
     public ResponseEntity<List<CartItemDto>> addItemToCart(
             @PathVariable UUID id,
-            @RequestBody CartItemAddingDto itemDto) {
+            @RequestBody @Valid CartItemAddingDto itemDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -38,7 +44,7 @@ public class CartController {
     public ResponseEntity<CartItemDto> changeCartItemQuantity(
             @PathVariable UUID id,
             @PathVariable Long itemId,
-            @RequestBody Integer quantity) {
+            @RequestBody @NotNull @Positive @Max(20) Integer quantity) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
