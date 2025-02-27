@@ -5,7 +5,7 @@ import com.mealmap.cartservice.entity.Cart;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CartItemMapper.class})
 public interface CartMapper {
     CartDto entityToDto(Cart entity);
 }

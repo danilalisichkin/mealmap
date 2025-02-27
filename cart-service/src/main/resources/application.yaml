@@ -10,5 +10,9 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+business:
+  cart:
+    max-item-quantity-in-cart: ${CART_MAX_ITEM_QUANTITY_IN_CART:20}
+    max-product-quantity-in-cart: ${CART_MAX_PRODUCT_QUANTITY_IN_ITEM:20}
 server:
   port: ${SERVER_PORT:8085}
