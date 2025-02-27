@@ -37,5 +37,5 @@ public class ProductCreatingDto {
     Integer supplierId;
 
     @NotEmpty
-    Set<Long> categories;
+    Set<@NotNull Long> categories;
 }

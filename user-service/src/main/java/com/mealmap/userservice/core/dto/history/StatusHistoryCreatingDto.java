@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StatusHistoryCreatingDto {
     @Size(min = 1, max = 50)
-    String reason;
+    private String reason;
 }

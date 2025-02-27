@@ -1,6 +1,7 @@
 package com.mealmap.productservice.core.dto.product;
 
 import com.mealmap.productservice.core.dto.nutrient.NutrientDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -26,6 +27,7 @@ public class ProductUpdatingDto {
     Integer weight;
 
     @NotNull
+    @Valid
     NutrientDto nutrients;
 
     @Size(max = 255)
@@ -35,5 +37,5 @@ public class ProductUpdatingDto {
     Integer supplierId;
 
     @NotEmpty
-    Set<Long> categories;
+    Set<@NotNull Long> categories;
 }
