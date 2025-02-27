@@ -4,45 +4,54 @@ import com.mealmap.orderservice.core.dto.order.OrderDto;
 import com.mealmap.orderservice.core.dto.page.PageDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.sort.OrderSortField;
+import com.mealmap.orderservice.service.UserOrderService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserOrderController {
+    private final UserOrderService userOrderService;
+
     @GetMapping("/{userId}/orders")
     public ResponseEntity<PageDto<OrderDto>> getPageOfUserOrders(
-            @PathVariable UUID userId,
+            @PathVariable @UUID String userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") OrderSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<OrderDto> page = userOrderService.getPageOfUserOrders(userId, offset, limit, sortBy, sortOrder);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
-    @PutMapping("/{userId}/orders/{id}/status")
+    @PatchMapping("/{userId}/orders/{id}/status")
     public ResponseEntity<OrderDto> updateOrderStatus(
-            @PathVariable UUID userId,
-            @PathVariable Long id,
+            @PathVariable @UUID String userId,
+            @PathVariable ObjectId id,
             @RequestBody @NotNull OrderStatus status) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        OrderDto order = userOrderService.updateOrderStatus(userId, id, status);
+
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 }

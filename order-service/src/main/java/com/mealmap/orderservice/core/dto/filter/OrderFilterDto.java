@@ -7,9 +7,9 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static com.mealmap.orderservice.validator.RangeValidator.isValidRange;
 
@@ -17,7 +17,8 @@ import static com.mealmap.orderservice.validator.RangeValidator.isValidRange;
 @Builder
 @AllArgsConstructor
 public class OrderFilterDto {
-    private UUID userId;
+    @UUID
+    private String userId;
 
     private OrderStatus status;
 

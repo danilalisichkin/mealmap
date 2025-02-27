@@ -2,7 +2,6 @@ package com.mealmap.orderservice.core.dto.order;
 
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.document.value.Address;
-import com.mealmap.orderservice.document.value.OrderItem;
 import com.mealmap.orderservice.document.value.PaymentInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,6 @@ import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -19,7 +17,7 @@ import java.util.UUID;
 public class OrderDto {
     private ObjectId id;
 
-    private UUID userId;
+    private String userId;
 
     private Address deliveryAddress;
 

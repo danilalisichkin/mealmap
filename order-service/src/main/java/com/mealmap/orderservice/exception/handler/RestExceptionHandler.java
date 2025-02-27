@@ -3,6 +3,7 @@ package com.mealmap.orderservice.exception.handler;
 import com.mealmap.orderservice.core.message.ErrorCauseMessages;
 import com.mealmap.orderservice.exception.BadRequestException;
 import com.mealmap.orderservice.exception.ConflictException;
+import com.mealmap.orderservice.exception.ForbiddenException;
 import com.mealmap.orderservice.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.util.function.BiConsumer;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -74,6 +76,15 @@ public class RestExceptionHandler {
                 .status(BAD_REQUEST)
                 .body(ProblemDetail.forStatusAndDetail(
                         BAD_REQUEST,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ProblemDetail> handleForbiddenException(ForbiddenException e) {
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(ProblemDetail.forStatusAndDetail(
+                        FORBIDDEN,
                         e.getMessage()));
     }
 
