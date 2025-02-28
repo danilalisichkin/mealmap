@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.mealmap.cartservice.core.message.ApplicationMessages.CART_ITEM_NOT_FOUND;
@@ -56,6 +57,7 @@ public class CartServiceImpl implements CartService {
         } else {
             addNewItemToCart(cart, itemDto);
         }
+        setCartUpdateTime(cart);
 
         return cartMapper.entityToDto(
                 cartRepository.save(cart));
@@ -67,6 +69,7 @@ public class CartServiceImpl implements CartService {
         CartItem cartItemToUpdate = getCartItemEntity(itemId, id);
 
         changeCartItemQuantity(cartItemToUpdate, quantity);
+        setCartUpdateTime(cartItemToUpdate.getCart());
 
         return cartItemMapper.entityToDto(
                 cartItemRepository.save(cartItemToUpdate));
@@ -76,6 +79,9 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public void deleteItemFromCart(UUID id, Long itemId) {
         CartItem cartItemToDelete = getCartItemEntity(itemId, id);
+
+        cartItemToDelete.getCart().getItems().remove(cartItemToDelete);
+        setCartUpdateTime(cartItemToDelete.getCart());
 
         cartItemRepository.delete(cartItemToDelete);
     }
@@ -122,6 +128,10 @@ public class CartServiceImpl implements CartService {
         CartItem newItem = cartItemMapper.dtoToEntity(itemDto);
         newItem.setCart(cart);
         cart.getItems().add(newItem);
+    }
+
+    private void setCartUpdateTime(Cart cart) {
+        cart.setUpdatedAt(LocalDateTime.now());
     }
 
     private Cart createNewEmptyCart(Cart cart) {

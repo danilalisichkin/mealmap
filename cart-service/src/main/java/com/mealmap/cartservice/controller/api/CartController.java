@@ -3,10 +3,12 @@ package com.mealmap.cartservice.controller.api;
 import com.mealmap.cartservice.core.dto.cart.CartDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemAddingDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemDto;
+import com.mealmap.cartservice.service.CartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,12 +25,16 @@ import java.util.UUID;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/carts")
 public class CartController {
+    private final CartService cartService;
+
     @GetMapping("/{id}")
     public ResponseEntity<CartDto> getCart(@PathVariable UUID id) {
+        CartDto cart = cartService.getCart(id);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(cart);
     }
 
     @PostMapping("/{id}/items")
@@ -36,7 +42,9 @@ public class CartController {
             @PathVariable UUID id,
             @RequestBody @Valid CartItemAddingDto itemDto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        CartDto cart = cartService.addItemToCart(id, itemDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
     @PatchMapping("/{id}/items/{itemId}/quantity")
@@ -45,7 +53,9 @@ public class CartController {
             @PathVariable Long itemId,
             @RequestBody @NotNull @Positive @Max(20) Integer quantity) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        CartItemDto cartItem = cartService.changeCartItemQuantity(id, itemId, quantity);
+
+        return ResponseEntity.status(HttpStatus.OK).body(cartItem);
     }
 
     @DeleteMapping("/{id}/items/{itemId}")
@@ -53,11 +63,14 @@ public class CartController {
             @PathVariable UUID id,
             @PathVariable Long itemId) {
 
+        cartService.deleteItemFromCart(id, itemId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> clearCart(@PathVariable UUID id) {
+        cartService.clearCart(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
