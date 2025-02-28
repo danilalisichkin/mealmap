@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class PromoCodeDto {
     private String value;
 
-    private Long limit;
+    private Long limits;
 
     private Integer discountPercentage;
 

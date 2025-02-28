@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PromoStatDto {
     private ObjectId id;
+
     private String promoCode;
+
     private String userId;
+
     private LocalDateTime createdAt;
 }
