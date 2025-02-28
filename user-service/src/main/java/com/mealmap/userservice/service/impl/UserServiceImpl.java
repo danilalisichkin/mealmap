@@ -2,7 +2,7 @@ package com.mealmap.userservice.service.impl;
 
 import com.mealmap.userservice.core.dto.filter.UserFilterDto;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
-import com.mealmap.userservice.core.dto.history.StatusHistoryCreatingDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.dto.page.PageDto;
 import com.mealmap.userservice.core.dto.user.UserDto;
@@ -14,7 +14,6 @@ import com.mealmap.userservice.core.mapper.UserMapper;
 import com.mealmap.userservice.entity.User;
 import com.mealmap.userservice.entity.enums.StatusEvent;
 import com.mealmap.userservice.entity.enums.UserRole;
-import com.mealmap.userservice.exception.BadRequestException;
 import com.mealmap.userservice.exception.ResourceNotFoundException;
 import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
 import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
@@ -22,6 +21,7 @@ import com.mealmap.userservice.repository.UserRepository;
 import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.service.UserService;
 import com.mealmap.userservice.service.UserStatusHistoryService;
+import com.mealmap.userservice.strategy.manager.UserStatusChangingManager;
 import com.mealmap.userservice.util.PageBuilder;
 import com.mealmap.userservice.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_ACTIVE;
-import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_BLOCKED;
-import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_DEACTIVATED;
-import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_TEMPORARY_BLOCKED;
-import static com.mealmap.userservice.core.message.ApplicationMessages.USER_IS_ALREADY_UNBLOCKED;
 import static com.mealmap.userservice.core.message.ApplicationMessages.USER_NOT_FOUND;
 import static com.mealmap.userservice.entity.specification.UserSpecification.hasFirstNameLike;
 import static com.mealmap.userservice.entity.specification.UserSpecification.hasLastNameLike;
@@ -56,6 +51,8 @@ public class UserServiceImpl implements UserService {
     private final UserKafkaService userKafkaService;
 
     private final UserKafkaMapper userKafkaMapper;
+
+    private final UserStatusChangingManager statusChangingManager;
 
     private final UserStatusHistoryService statusHistoryService;
 
@@ -147,92 +144,46 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @CacheEvict(key = "#id")
-    public StatusHistoryDto activateUser(UUID id, StatusHistoryCreatingDto statusDto) {
+    public StatusHistoryDto activateUser(UUID id, StatusHistoryCreationDto statusDto) {
         User userToUpdate = getUserEntity(id);
-        boolean isAlreadyActive = userToUpdate.getStatus().getIsActive();
 
-        if (isAlreadyActive) {
-            throw new BadRequestException(USER_IS_ALREADY_ACTIVE);
-        }
-
-        userToUpdate.getStatus().setIsActive(true);
-        userRepository.save(userToUpdate);
-
-        return statusHistoryService.processStatusChanging(
-                userToUpdate, statusDto.getReason(), StatusEvent.ACTIVATE);
+        return statusChangingManager.processStatusChange(StatusEvent.ACTIVATE, userToUpdate, statusDto);
     }
 
     @Override
     @Transactional
     @CacheEvict(key = "#id")
-    public StatusHistoryDto deactivateUser(UUID id, StatusHistoryCreatingDto statusDto) {
+    public StatusHistoryDto deactivateUser(UUID id, StatusHistoryCreationDto statusDto) {
         User userToUpdate = getUserEntity(id);
-        boolean isAlreadyDeactivated = !userToUpdate.getStatus().getIsActive();
 
-        if (isAlreadyDeactivated) {
-            throw new BadRequestException(USER_IS_ALREADY_DEACTIVATED);
-        }
-
-        userToUpdate.getStatus().setIsActive(false);
-        userRepository.save(userToUpdate);
-
-        return statusHistoryService.processStatusChanging(
-                userToUpdate, statusDto.getReason(), StatusEvent.DEACTIVATE);
+        return statusChangingManager.processStatusChange(StatusEvent.DEACTIVATE, userToUpdate, statusDto);
     }
 
     @Override
     @Transactional
     @CacheEvict(key = "#id")
-    public StatusHistoryDto blockUser(UUID id, StatusHistoryCreatingDto statusDto) {
+    public StatusHistoryDto blockUser(UUID id, StatusHistoryCreationDto statusDto) {
         User userToUpdate = getUserEntity(id);
-        boolean isAlreadyBlocked = userToUpdate.getStatus().getIsBlocked();
 
-        if (isAlreadyBlocked) {
-            throw new BadRequestException(USER_IS_ALREADY_BLOCKED);
-        }
-
-        userToUpdate.getStatus().setIsBlocked(true);
-        userRepository.save(userToUpdate);
-
-        return statusHistoryService.processStatusChanging(
-                userToUpdate, statusDto.getReason(), StatusEvent.BLOCK);
+        return statusChangingManager.processStatusChange(StatusEvent.BLOCK, userToUpdate, statusDto);
     }
 
     @Override
     @Transactional
     @CacheEvict(key = "#id")
-    public StatusHistoryDto temporaryBlockUser(UUID id, StatusHistoryCreatingDto statusDto) {
+    public StatusHistoryDto temporaryBlockUser(UUID id, StatusHistoryCreationDto statusDto) {
         User userToUpdate = getUserEntity(id);
-        boolean isAlreadyTemporaryBlocked = userToUpdate.getStatus().getIsTemporaryBlocked();
 
-        if (isAlreadyTemporaryBlocked) {
-            throw new BadRequestException(USER_IS_ALREADY_TEMPORARY_BLOCKED);
-        }
-
-        userToUpdate.getStatus().setIsTemporaryBlocked(true);
-        userRepository.save(userToUpdate);
-
-        return statusHistoryService.processStatusChanging(
-                userToUpdate, statusDto.getReason(), StatusEvent.TEMPORARY_BLOCK);
+        return statusChangingManager.processStatusChange(StatusEvent.TEMPORARY_BLOCK, userToUpdate, statusDto);
     }
 
     @Override
     @Transactional
     @CacheEvict(key = "#id")
-    public StatusHistoryDto unblockUser(UUID id, StatusHistoryCreatingDto statusDto) {
+    public StatusHistoryDto unblockUser(UUID id, StatusHistoryCreationDto statusDto) {
         User userToUpdate = getUserEntity(id);
-        boolean isAlreadyUnblocked = !userToUpdate.getStatus().getIsBlocked();
 
-        if (isAlreadyUnblocked) {
-            throw new BadRequestException(USER_IS_ALREADY_UNBLOCKED);
-        }
-
-        userToUpdate.getStatus().setIsBlocked(false);
-        userToUpdate.getStatus().setIsTemporaryBlocked(false);
-        userRepository.save(userToUpdate);
-
-        return statusHistoryService.processStatusChanging(
-                userToUpdate, statusDto.getReason(), StatusEvent.UNBLOCK);
+        return statusChangingManager.processStatusChange(StatusEvent.UNBLOCK, userToUpdate, statusDto);
     }
 
     private User getUserEntity(UUID id) {

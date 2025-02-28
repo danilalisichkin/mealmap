@@ -1,6 +1,7 @@
 package com.mealmap.userservice.service.impl;
 
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
 import com.mealmap.userservice.core.mapper.UserStatusHistoryMapper;
@@ -38,15 +39,14 @@ public class UserStatusHistoryServiceImpl implements UserStatusHistoryService {
 
     @Override
     @Transactional
-    public StatusHistoryDto processStatusChanging(User user, String reason, StatusEvent status) {
+    public StatusHistoryDto createUserStatusHistoryElement(
+            StatusEvent status, User user, StatusHistoryCreationDto historyDto) {
+
+        UserStatusHistory newHistoryElement = statusHistoryMapper.dtoToEntity(historyDto);
+        newHistoryElement.setUser(user);
+        newHistoryElement.setNewStatus(status);
         // TODO: fetch changedBy from Principal
-        UserStatusHistory newHistoryElement =
-                UserStatusHistory.builder()
-                        .user(user)
-                        .newStatus(status)
-                        .reason(reason)
-                        .changedBy(user)
-                        .build();
+        newHistoryElement.setChangedBy(user);
 
         userKafkaService.updateUserStatus(
                 userKafkaMapper.entityToStatusUpdateDto(user));

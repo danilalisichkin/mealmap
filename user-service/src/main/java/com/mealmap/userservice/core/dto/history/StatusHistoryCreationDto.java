@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatusHistoryCreatingDto {
+public class StatusHistoryCreationDto {
     @Size(min = 1, max = 50)
     private String reason;
 }

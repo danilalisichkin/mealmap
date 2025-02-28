@@ -2,7 +2,7 @@ package com.mealmap.userservice.service;
 
 import com.mealmap.userservice.core.dto.filter.UserFilterDto;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
-import com.mealmap.userservice.core.dto.history.StatusHistoryCreatingDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.dto.page.PageDto;
 import com.mealmap.userservice.core.dto.user.UserDto;
@@ -29,13 +29,13 @@ public interface UserService {
             UUID id, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,
             UserStatusHistoryFilterDto filter);
 
-    StatusHistoryDto activateUser(UUID id, StatusHistoryCreatingDto statusDto);
+    StatusHistoryDto activateUser(UUID id, StatusHistoryCreationDto statusDto);
 
-    StatusHistoryDto deactivateUser(UUID id, StatusHistoryCreatingDto statusDto);
+    StatusHistoryDto deactivateUser(UUID id, StatusHistoryCreationDto statusDto);
 
-    StatusHistoryDto blockUser(UUID id, StatusHistoryCreatingDto statusDto);
+    StatusHistoryDto blockUser(UUID id, StatusHistoryCreationDto statusDto);
 
-    StatusHistoryDto temporaryBlockUser(UUID id, StatusHistoryCreatingDto statusDto);
+    StatusHistoryDto temporaryBlockUser(UUID id, StatusHistoryCreationDto statusDto);
 
-    StatusHistoryDto unblockUser(UUID id, StatusHistoryCreatingDto statusDto);
+    StatusHistoryDto unblockUser(UUID id, StatusHistoryCreationDto statusDto);
 }

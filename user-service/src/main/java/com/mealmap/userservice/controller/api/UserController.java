@@ -2,7 +2,7 @@ package com.mealmap.userservice.controller.api;
 
 import com.mealmap.userservice.core.dto.filter.UserFilterDto;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
-import com.mealmap.userservice.core.dto.history.StatusHistoryCreatingDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.dto.page.PageDto;
 import com.mealmap.userservice.core.dto.user.UserDto;
@@ -97,7 +97,7 @@ public class UserController {
 
     @PostMapping("/{id}/activate")
     public ResponseEntity<StatusHistoryDto> activateUser(
-            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
+            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
         StatusHistoryDto history = userService.activateUser(id, statusDto);
 
@@ -106,7 +106,7 @@ public class UserController {
 
     @PostMapping("/{id}/deactivate")
     public ResponseEntity<StatusHistoryDto> deactivateUser(
-            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
+            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
         StatusHistoryDto history = userService.deactivateUser(id, statusDto);
 
@@ -115,7 +115,7 @@ public class UserController {
 
     @PostMapping("/{id}/block")
     public ResponseEntity<StatusHistoryDto> blockUser(
-            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
+            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
         StatusHistoryDto history = userService.blockUser(id, statusDto);
 
@@ -124,7 +124,7 @@ public class UserController {
 
     @PostMapping("/{id}/temporary-block")
     public ResponseEntity<StatusHistoryDto> temporaryBlockUser(
-            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
+            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
         StatusHistoryDto history = userService.temporaryBlockUser(id, statusDto);
 
@@ -133,7 +133,7 @@ public class UserController {
 
     @PostMapping("/{id}/unblock")
     public ResponseEntity<StatusHistoryDto> unblockUser(
-            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreatingDto statusDto) {
+            @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
         StatusHistoryDto history = userService.unblockUser(id, statusDto);
 

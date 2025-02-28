@@ -1,6 +1,6 @@
 package com.mealmap.userservice.core.mapper;
 
-import com.mealmap.userservice.core.dto.history.StatusHistoryCreatingDto;
+import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.entity.UserStatusHistory;
 import org.mapstruct.Mapper;
@@ -24,7 +24,7 @@ public interface UserStatusHistoryMapper {
     @Mapping(target = "changedBy", ignore = true)
     @Mapping(target = "newStatus", ignore = true)
     @Mapping(target = "eventAt", ignore = true)
-    UserStatusHistory dtoToEntity(StatusHistoryCreatingDto dto);
+    UserStatusHistory dtoToEntity(StatusHistoryCreationDto dto);
 
     List<StatusHistoryDto> entityListToDtoList(List<UserStatusHistory> entityList);
 

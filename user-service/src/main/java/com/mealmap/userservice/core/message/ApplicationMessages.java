@@ -13,5 +13,5 @@ public final class ApplicationMessages {
     public static final String USER_IS_ALREADY_DEACTIVATED = "пользователь уже деактивирован";
     public static final String USER_IS_ALREADY_TEMPORARY_BLOCKED = "пользователь уже временно заблокирован";
     public static final String USER_IS_ALREADY_BLOCKED = "пользователь уже заблокирован";
-    public static final String USER_IS_ALREADY_UNBLOCKED = "пользователь уже разблокирован";
+    public static final String USER_IS_NOT_BLOCKED = "пользователь на данный момент не заблокирован";
 }
