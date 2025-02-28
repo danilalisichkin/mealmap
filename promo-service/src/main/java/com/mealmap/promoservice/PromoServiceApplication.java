@@ -1,0 +1,15 @@
+package com.mealmap.promoservice;
+
+import io.mongock.runner.springboot.EnableMongock;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@EnableMongock
+@SpringBootApplication
+public class PromoServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PromoServiceApplication.class, args);
+    }
+
+}

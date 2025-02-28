@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: promo-service
+  data:
+    mongodb:
+      uri: mongodb://${DB_URL:localhost:27022}
+      username: ${DB_USERNAME:mongo}
+      password: ${DB_PASSWORD:root}
+      replica-set-name: ${DB_REPLICA_SET_NAME:rs0}
+      database: ${DB_NAME:promo_database}
+mongock:
+  migration-scan-package: com.mealmap.promoservice.migration
+  transactional: true
+  enabled: true
+server:
+  port: ${SERVER_PORT:8086}
