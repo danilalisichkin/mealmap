@@ -41,4 +41,15 @@ public class KafkaConfig {
                 userStatusUpdateTopic.getPartitions(),
                 userStatusUpdateTopic.getReplicas());
     }
+
+
+    @Bean
+    public NewTopic cartCreationTopic() {
+        var cartCreationTopic = kafkaTopicConfig.getCartCreation();
+
+        return new NewTopic(
+                cartCreationTopic.getName(),
+                cartCreationTopic.getPartitions(),
+                cartCreationTopic.getReplicas());
+    }
 }

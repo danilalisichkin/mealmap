@@ -5,11 +5,13 @@ import com.mealmap.userservice.kafka.dto.KafkaUserCreationDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserStatusUpdateDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserUpdateDto;
+import com.mealmap.userservice.kafka.mapper.CartKafkaMapper;
 import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.kafka.producer.UserRoleUpdateProducer;
 import com.mealmap.userservice.kafka.producer.UserStatusUpdateProducer;
 import com.mealmap.userservice.kafka.producer.UserUpdateProducer;
 import com.mealmap.userservice.repository.UserRepository;
+import com.mealmap.userservice.service.CartKafkaService;
 import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserKafkaServiceImpl implements UserKafkaService {
+    private final CartKafkaService cartKafkaService;
+
+    private final CartKafkaMapper cartKafkaMapper;
+
     private final UserUpdateProducer userUpdateProducer;
 
     private final UserRoleUpdateProducer userRoleUpdateProducer;
@@ -41,6 +47,9 @@ public class UserKafkaServiceImpl implements UserKafkaService {
         User userToCreate = userKafkaMapper.creationDtoToEntity(userDto);
 
         userRepository.save(userToCreate);
+
+        cartKafkaService.createCart(
+                cartKafkaMapper.userToCartCreationDto(userToCreate));
     }
 
     @Override

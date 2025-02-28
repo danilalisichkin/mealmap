@@ -10,5 +10,25 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+  kafka:
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      properties:
+        spring.json:
+          value.default.type: java.util.Map
+          trusted.packages: '*'
+          use.type.headers: false
+        spring.deserializer:
+          key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+          value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+business:
+  kafka:
+    topics:
+      cart-creation:
+        name: cart.creation.v1
+        consumer:
+          group-id: cart.creation.consumer.group
 server:
   port: ${SERVER_PORT:8085}

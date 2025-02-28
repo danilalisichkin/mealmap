@@ -11,6 +11,7 @@ public class KafkaTopicConfig {
     private final Topic userUpdate;
     private final Topic userRoleUpdate;
     private final Topic userStatusUpdate;
+    private final Topic cartCreation;
 
     @Getter
     @AllArgsConstructor
