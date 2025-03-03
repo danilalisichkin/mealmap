@@ -12,4 +12,5 @@ public final class ApplicationMessages {
     public static final String TOO_MANY_ITEMS_IN_ORDER = "заказ содержит слишком много позиций";
     public static final String TOO_MANY_PRODUCTS_IN_ITEM = "заказ содержит слишком много товаров";
     public static final String PRODUCTS_IN_ITEMS_REPEAT = "товары в заказе повторяются";
+    public static final String PRODUCT_NOT_FOUND = "товар %s не найден в каталоге";
 }

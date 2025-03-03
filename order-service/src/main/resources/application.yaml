@@ -12,5 +12,13 @@ mongock:
   migration-scan-package: com.cabaggregator.rideservice.migration
   transactional: true
   enabled: true
+business:
+  services:
+    promo-code:
+      url: ${PROMO_CODE_API_URL:http://localhost:8086/api/v1/promo-codes/}
+    promo-stat:
+      url: ${PROMO_STAT_API_URL:http://localhost:8086/api/v1/promo-stats/}
+    product:
+      url: ${PRODUCT_API_URL:http://localhost:8081/api/v1/products/}
 server:
   port: ${SERVER_PORT:8084}

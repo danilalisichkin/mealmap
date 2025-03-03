@@ -9,7 +9,9 @@ import java.io.IOException;
 
 public class ObjectIdSerializer extends JsonSerializer<ObjectId> {
     @Override
-    public void serialize(ObjectId objectId, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(ObjectId objectId, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+            throws IOException {
+
         jsonGenerator.writeString(objectId.toHexString());
     }
 }

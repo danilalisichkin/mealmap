@@ -22,6 +22,9 @@ public class OrderCreationDto {
     @Valid
     private Address deliveryAddress;
 
+    @Size(min = 2, max = 20)
+    private String promoCode;
+
     @NotEmpty
     @Size(min = 1, max = MAX_ITEMS_PER_ORDER, message = TOO_MANY_ITEMS_IN_ORDER)
     private List<@Valid OrderItemCreationDto> items;

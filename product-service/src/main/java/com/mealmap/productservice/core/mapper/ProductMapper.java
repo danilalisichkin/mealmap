@@ -41,6 +41,8 @@ public interface ProductMapper {
 
     List<ProductDto> docListToDtoList(List<ProductDoc> docList);
 
+    List<ProductDto> entityListToDtoList(List<Product> entityList);
+
     default Page<ProductDto> docPageToDtoPage(Page<ProductDoc> docPage) {
         return new PageImpl<>(
                 docListToDtoList(docPage.getContent()),

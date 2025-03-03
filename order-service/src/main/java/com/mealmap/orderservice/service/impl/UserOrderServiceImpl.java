@@ -1,20 +1,21 @@
 package com.mealmap.orderservice.service.impl;
 
+import com.mealmap.orderservice.client.dto.product.ProductDto;
 import com.mealmap.orderservice.core.dto.order.OrderCreationDto;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
 import com.mealmap.orderservice.core.dto.page.PageDto;
-import com.mealmap.orderservice.core.dto.price.PriceCalculationRequest;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.sort.OrderSortField;
-import com.mealmap.orderservice.core.mapper.OrderItemMapper;
 import com.mealmap.orderservice.core.mapper.OrderMapper;
 import com.mealmap.orderservice.core.mapper.PageMapper;
+import com.mealmap.orderservice.core.mapper.PriceMapper;
 import com.mealmap.orderservice.document.Order;
 import com.mealmap.orderservice.document.value.OrderItem;
 import com.mealmap.orderservice.document.value.PaymentInfo;
 import com.mealmap.orderservice.exception.ResourceNotFoundException;
 import com.mealmap.orderservice.repository.OrderRepository;
 import com.mealmap.orderservice.service.OrderPriceCalculationService;
+import com.mealmap.orderservice.service.ProductService;
 import com.mealmap.orderservice.service.UserOrderService;
 import com.mealmap.orderservice.strategy.manager.OrderStatusChangingManager;
 import com.mealmap.orderservice.util.PageBuilder;
@@ -29,13 +30,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.mealmap.orderservice.core.message.ApplicationMessages.PRODUCT_NOT_FOUND;
 import static com.mealmap.orderservice.core.message.ApplicationMessages.USER_ORDER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class UserOrderServiceImpl implements UserOrderService {
     private final OrderPriceCalculationService priceCalculationService;
+
+    private final ProductService productService;
 
     private final OrderItemValidator orderItemValidator;
 
@@ -45,7 +51,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     private final OrderMapper orderMapper;
 
-    private final OrderItemMapper orderItemMapper;
+    private final PriceMapper priceMapper;
 
     private final PageMapper pageMapper;
 
@@ -68,7 +74,7 @@ public class UserOrderServiceImpl implements UserOrderService {
         Order orderToCreate = initDefaultOrder(userId, orderDto);
         setItemPrices(orderToCreate.getItems());
         calculateBasePrice(orderToCreate);
-        // TODO: recalculate price using promo code
+        recalculatePriceWithDiscount(orderToCreate);
         // TODO: initiate payment operation
         // TODO: send notification
         // TODO: maybe move all logic to separated handler
@@ -100,24 +106,47 @@ public class UserOrderServiceImpl implements UserOrderService {
         newOrder.setUserId(userId);
         newOrder.setStatus(OrderStatus.NEW);
         newOrder.setOrderedAt(LocalDateTime.now());
+        newOrder.setPaymentInfo(new PaymentInfo());
 
         return newOrder;
     }
 
     private void setItemPrices(List<OrderItem> items) {
-        // TODO: fetch actual price from ProductService (maybe using Bulk)
-        items.forEach(item -> item.setPriceWhenOrdered(100L));
+        List<Long> productIds = items.stream().map(OrderItem::getProductId).toList();
+        List<ProductDto> actualProducts = productService.getProducts(productIds);
+
+        Map<Long, Integer> productPrices = actualProducts.stream()
+                .collect(Collectors.toMap(ProductDto::getId, ProductDto::getPrice));
+
+        items.forEach(item -> {
+            Integer price = productPrices.get(item.getProductId());
+            if (price == null) {
+                throw new ResourceNotFoundException(PRODUCT_NOT_FOUND.formatted(item.getProductId()));
+            }
+            item.setPriceWhenOrdered(price);
+        });
     }
 
     private void calculateBasePrice(Order order) {
-        var priceCalculationRequest = new PriceCalculationRequest(
-                orderItemMapper.docListToDtoList(order.getItems()));
+        var priceCalculationRequest = priceMapper.orderToPriceCalculationRequest(order);
 
-        long totalPrice = priceCalculationService.calculateBaseOrderPrice(priceCalculationRequest);
+        long priceWithoutDiscount = priceCalculationService.calculateBaseOrderPrice(priceCalculationRequest);
 
-        order.setPaymentInfo(
-                PaymentInfo.builder()
-                        .totalAmount(totalPrice)
-                        .build());
+        order.getPaymentInfo().setTotalAmount(priceWithoutDiscount);
+    }
+
+    private void recalculatePriceWithDiscount(Order order) {
+        if (order.getPromoCode() != null) {
+            var priceRecalculationRequest = priceMapper.orderToPriceRecalculationRequest(order);
+
+            long priceWithoutDiscount = order.getPaymentInfo().getTotalAmount();
+            long priceWithDiscount = priceCalculationService.recalculatePriceWithDiscount(priceRecalculationRequest);
+            long discountAmount = priceWithoutDiscount - priceWithDiscount;
+
+            order.getPaymentInfo().setDiscountAmount(discountAmount);
+            order.getPaymentInfo().setTotalAmount(priceWithDiscount);
+        } else {
+            order.getPaymentInfo().setDiscountAmount(0L);
+        }
     }
 }

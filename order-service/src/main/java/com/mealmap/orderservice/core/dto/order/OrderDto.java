@@ -23,6 +23,8 @@ public class OrderDto {
 
     private OrderStatus status;
 
+    private String promoCode;
+
     private PaymentInfo paymentInfo;
 
     private LocalDateTime orderedAt;

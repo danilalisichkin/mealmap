@@ -9,8 +9,10 @@ import com.mealmap.productservice.core.enums.sort.ProductSortField;
 import com.mealmap.productservice.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -46,6 +50,15 @@ public class ProductController {
         var page = productService.getPageOfProducts(offset, limit, sortBy, sortOrder, filter, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
+    }
+
+    @GetMapping("/bulk")
+    public ResponseEntity<List<ProductDto>> bulkGetProducts(
+            @RequestParam @Size(min = 2, max = 20) List<@NotNull Long> ids) {
+
+        List<ProductDto> products = productService.getProducts(ids);
+
+        return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
     @GetMapping("/{id}")
