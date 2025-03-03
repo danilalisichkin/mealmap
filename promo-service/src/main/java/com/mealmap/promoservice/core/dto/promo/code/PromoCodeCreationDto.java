@@ -25,7 +25,7 @@ public class PromoCodeCreationDto {
 
     @NotNull
     @Positive
-    Long limits;
+    Long limit;
 
     @NotNull
     @Min(1)

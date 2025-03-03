@@ -24,5 +24,5 @@ public class PromoCodeUpdatingDto {
 
     @NotNull
     @PositiveOrZero
-    Long limits;
+    Long limit;
 }
