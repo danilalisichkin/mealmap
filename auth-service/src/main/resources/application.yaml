@@ -54,5 +54,8 @@ business:
         name: user.status-update.v1
         consumer:
           group-id: user.status-update.group
+  services:
+    organization:
+      url: ${ORGANIZATION_API_URL:http://localhost:8087/api/v1/organizations/}
 server:
   port: ${SERVER_PORT:8083}

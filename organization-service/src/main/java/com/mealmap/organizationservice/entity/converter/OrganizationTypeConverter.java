@@ -1,5 +1,6 @@
-package com.mealmap.organizationservice.entity.enums;
+package com.mealmap.organizationservice.entity.converter;
 
+import com.mealmap.organizationservice.entity.enums.OrganizationType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

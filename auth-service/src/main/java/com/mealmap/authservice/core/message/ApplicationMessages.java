@@ -15,4 +15,6 @@ public final class ApplicationMessages {
     public static final String USER_ROLE_NOT_FOUND = "роль не найдена";
     public static final String WRONG_LOGIN_OR_PASSWORD = "неправильный логин или пароль";
     public static final String EMAIL_NOT_EXIST = "email не существует или не доступен";
+    public static final String USER_WITH_ROLE_CANT_BE_REGISTERED_IN_ORGANIZATION_WITH_TYPE
+            = "пользователь с ролью %s не может быть зарегистрирован в организации типа %s";
 }
