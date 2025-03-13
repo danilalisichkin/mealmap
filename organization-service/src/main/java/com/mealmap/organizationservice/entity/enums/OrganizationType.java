@@ -1,4 +1,4 @@
-package com.example.organizationservice.entity.enums;
+package com.mealmap.organizationservice.entity.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

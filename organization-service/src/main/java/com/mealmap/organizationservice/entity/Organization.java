@@ -1,6 +1,6 @@
-package com.example.organizationservice.entity;
+package com.mealmap.organizationservice.entity;
 
-import com.example.organizationservice.entity.enums.OrganizationType;
+import com.mealmap.organizationservice.entity.enums.OrganizationType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

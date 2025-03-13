@@ -1,6 +1,6 @@
-package com.example.organizationservice.repository;
+package com.mealmap.organizationservice.repository;
 
-import com.example.organizationservice.entity.Organization;
+import com.mealmap.organizationservice.entity.Organization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
