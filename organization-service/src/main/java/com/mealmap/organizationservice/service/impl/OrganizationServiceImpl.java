@@ -15,6 +15,9 @@ import com.mealmap.organizationservice.service.OrganizationService;
 import com.mealmap.organizationservice.util.PageBuilder;
 import com.mealmap.organizationservice.validator.OrganizationValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,10 +25,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.mealmap.organizationservice.core.message.ApplicationMessages.ORGANIZATION_NOT_FOUND;
-import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.*;
+import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasEmail;
+import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasLegalAddressLike;
+import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasNameLike;
+import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasPhoneNumber;
+import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasType;
+import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasUpn;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheResolver = "organizationCacheResolver")
 public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationValidator organizationValidator;
 
@@ -36,7 +45,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     private final OrganizationRepository organizationRepository;
 
     @Override
-    public PageDto<OrganizationDto> getPageOfOrganizations(Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder, OrganizationFilterDto filter) {
+    @Cacheable
+    public PageDto<OrganizationDto> getPageOfOrganizations(
+            Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder,
+            OrganizationFilterDto filter) {
+
         PageRequest request = PageBuilder.buildPageRequest(offset, limit, sortBy.getValue(), sortOrder);
 
         Specification<Organization> spec = Specification
@@ -53,6 +66,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @Cacheable(key = "#id")
     public OrganizationDto getOrganization(Integer id) {
         Organization organization = getOrganizationEntity(id);
 
@@ -61,6 +75,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     @Transactional
+    @CachePut(key = "#result.id")
     public OrganizationDto createOrganization(OrganizationCreationDto organizationDto) {
         organizationValidator.validateUpnUniqueness(organizationDto.getUpn());
 
@@ -72,6 +87,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     @Transactional
+    @CachePut(key = "#id")
     public OrganizationDto updateOrganization(Integer id, OrganizationUpdatingDto organizationDto) {
         Organization organizationToUpdate = getOrganizationEntity(id);
 

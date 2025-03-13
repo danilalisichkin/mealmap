@@ -231,6 +231,25 @@ services:
     networks:
       - mealmap-network
 
+  organization-redis:
+    image: redis:7.4-alpine
+    container_name: mealmap-organization-redis-server
+    restart: on-failure
+    ports:
+      - "6382:6379"
+    environment:
+      REDIS_PASSWORD: password
+    volumes:
+      - organization-redis_data:/data
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.7
     container_name: mealmap-keycloak
@@ -333,6 +352,7 @@ volumes:
   promo-mongo-database2_data:
   product-redis_data:
   user-redis_data:
+  organization-redis_data:
 
 networks:
   mealmap-network:
