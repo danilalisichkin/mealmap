@@ -6,22 +6,28 @@ import com.mealmap.organizationservice.core.dto.organization.OrganizationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationUpdatingDto;
 import com.mealmap.organizationservice.core.dto.page.PageDto;
 import com.mealmap.organizationservice.core.enums.sort.OrganizationSortField;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/organizations")
 public class OrganizationController {
 
     @GetMapping
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfOrganizations(
-            @RequestParam(defaultValue = "0") Integer offset,
-            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
+            @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") OrganizationSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @ModelAttribute OrganizationFilterDto filter) {
+            @ModelAttribute @Valid OrganizationFilterDto filter) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -33,14 +39,15 @@ public class OrganizationController {
     }
 
     @PostMapping
-    public ResponseEntity<OrganizationDto> createOrganization(@RequestBody OrganizationCreationDto organizationDto) {
+    public ResponseEntity<OrganizationDto> createOrganization(
+            @RequestBody @Valid OrganizationCreationDto organizationDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<OrganizationDto> updateOrganization(
-            @PathVariable Integer id, @RequestBody OrganizationUpdatingDto organizationDto) {
+            @PathVariable Integer id, @RequestBody @Valid OrganizationUpdatingDto organizationDto) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
