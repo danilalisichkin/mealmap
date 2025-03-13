@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -53,6 +53,6 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    @CreatedDate
+    @CreationTimestamp
     private LocalDate createdAt;
 }

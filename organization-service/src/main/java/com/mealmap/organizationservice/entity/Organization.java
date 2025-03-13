@@ -1,9 +1,19 @@
 package com.mealmap.organizationservice.entity;
 
 import com.mealmap.organizationservice.entity.enums.OrganizationType;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 
@@ -19,6 +29,7 @@ import java.time.LocalDate;
         @Index(name = "idx_organizations_type", columnList = "type")})
 public class Organization {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, unique = true)
@@ -36,10 +47,10 @@ public class Organization {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private OrganizationType type;
 
-    @CreatedDate
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(updatable = false)
     private LocalDate createdAt;
 }
