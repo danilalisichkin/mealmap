@@ -7,7 +7,7 @@ import jakarta.persistence.Converter;
 import java.util.Optional;
 
 @Converter(autoApply = true)
-public class UserRoleConverterConverter implements AttributeConverter<UserRole, Integer> {
+public class UserRoleConverter implements AttributeConverter<UserRole, Integer> {
 
     @Override
     public Integer convertToDatabaseColumn(UserRole userRole) {
