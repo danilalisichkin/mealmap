@@ -22,10 +22,10 @@ public class GeneralCacheConfig {
         RedisCacheConfiguration defaultCacheConfig = cacheConfigHelper.defaultCacheConfiguration();
 
         CacheConfig.Cache userProfileCache = cacheConfig.getUserProfile();
-        RedisCacheConfiguration productCacheConfig = cacheConfigHelper.cacheConfiguration(userProfileCache);
+        RedisCacheConfiguration userProfileCacheConfig = cacheConfigHelper.cacheConfiguration(userProfileCache);
 
         return RedisCacheManager.builder(redisConnectionFactory)
-                .withCacheConfiguration(userProfileCache.getName(), productCacheConfig)
+                .withCacheConfiguration(userProfileCache.getName(), userProfileCacheConfig)
                 .cacheDefaults(defaultCacheConfig)
                 .transactionAware()
                 .build();

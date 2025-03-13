@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Cacheable
     public PageDto<UserDto> getPageOfUsers(
             Integer offset, Integer limit, UserSortField sortBy, Sort.Direction sortOrder,
             UserFilterDto filter, String name) {
