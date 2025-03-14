@@ -1,0 +1,43 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.0-init-product-preferences-table" author="danilalisichkin">
+        <createTable tableName="product_preferences">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_product_preferences"/>
+            </column>
+            <column name="product_id"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_preference_id"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preference_type"
+                    type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_product_preferences_preference_type"
+                     tableName="product_preferences">
+            <column name="preference_type"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="user_preference_id"
+                                 baseTableName="product_preferences"
+                                 constraintName="FK_PRODUCT_PREFERENCES_ON_USER_PREFERENCE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_preferences"/>
+    </changeSet>
+
+</databaseChangeLog>

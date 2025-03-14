@@ -24,6 +24,7 @@
         <module>organization-service</module>
         <module>product-service</module>
         <module>promo-service</module>
+        <module>preference-service</module>
         <module>user-service</module>
     </modules>
 
