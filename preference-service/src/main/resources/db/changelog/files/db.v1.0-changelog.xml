@@ -6,5 +6,6 @@
 
     <include file="/db/changelog/v1.0/db.v1.0-init-user-preferences-table.xml"/>
     <include file="/db/changelog/v1.0/db.v1.0-init-product-preferences.xml"/>
+    <include file="/db/changelog/v1.0/db.v1.0-init-category-preferences.xml"/>
 
 </databaseChangeLog>
