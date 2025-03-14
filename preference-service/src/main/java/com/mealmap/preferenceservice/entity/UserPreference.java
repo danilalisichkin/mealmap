@@ -35,9 +35,9 @@ public class UserPreference {
     @Column(nullable = false, unique = true)
     private UUID userId;
 
-    @OneToMany(mappedBy = "userPreference", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userPreference", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductPreference> productPreferences;
 
-    @OneToMany(mappedBy = "userPreference", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userPreference", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryPreference> categoryPreferences;
 }
