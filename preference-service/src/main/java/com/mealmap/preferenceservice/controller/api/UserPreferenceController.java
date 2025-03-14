@@ -6,7 +6,9 @@ import com.mealmap.preferenceservice.core.dto.ProductPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceDto;
 import com.mealmap.preferenceservice.core.dto.UserPreferenceDto;
 import com.mealmap.preferenceservice.entity.enums.PreferenceType;
+import com.mealmap.preferenceservice.service.UserPreferenceService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,12 +26,16 @@ import java.util.UUID;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserPreferenceController {
+    private final UserPreferenceService userPreferenceService;
+
     @GetMapping("/{userId}/preferences")
     public ResponseEntity<UserPreferenceDto> getUserPreferences(@PathVariable UUID userId) {
+        UserPreferenceDto userPreference = userPreferenceService.getUserPreferences(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(userPreference);
     }
 
     @GetMapping("/{userId}/preferences/products")
@@ -37,7 +43,10 @@ public class UserPreferenceController {
             @PathVariable UUID userId,
             @RequestParam(required = false) PreferenceType preferenceType) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        List<ProductPreferenceDto> productPreferences
+                = userPreferenceService.getProductPreferences(userId, preferenceType);
+
+        return ResponseEntity.status(HttpStatus.OK).body(productPreferences);
     }
 
     @GetMapping("/{userId}/preferences/categories")
@@ -45,33 +54,44 @@ public class UserPreferenceController {
             @PathVariable UUID userId,
             @RequestParam(required = false) PreferenceType preferenceType) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        List<CategoryPreferenceDto> categoryPreferences
+                = userPreferenceService.getCategoryPreferences(userId, preferenceType);
+
+        return ResponseEntity.status(HttpStatus.OK).body(categoryPreferences);
     }
 
     @PostMapping("/{userId}/preferences/products")
-    public ResponseEntity<List<ProductPreferenceDto>> addProductPreference(
+    public ResponseEntity<ProductPreferenceDto> addProductPreference(
             @PathVariable UUID userId,
             @RequestBody @Valid ProductPreferenceCreationDto productPreferenceDto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        ProductPreferenceDto productPreference
+                = userPreferenceService.addProductPreference(userId, productPreferenceDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(productPreference);
     }
 
     @PostMapping("/{userId}/preferences/categories")
-    public ResponseEntity<List<CategoryPreferenceDto>> addCategoryPreference(
+    public ResponseEntity<CategoryPreferenceDto> addCategoryPreference(
             @PathVariable UUID userId,
             @RequestBody @Valid CategoryPreferenceCreationDto categoryPreferenceDto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        CategoryPreferenceDto categoryPreference
+                = userPreferenceService.addCategoryPreference(userId, categoryPreferenceDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryPreference);
     }
 
     @DeleteMapping("/{userId}/preferences/products/{id}")
     public ResponseEntity<Void> removeUserProductPreference(@PathVariable UUID userId, @PathVariable Long id) {
+        userPreferenceService.removeUserProductPreference(userId, id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{userId}/preferences/categories/{id}")
     public ResponseEntity<Void> removeUserCategoryPreference(@PathVariable UUID userId, @PathVariable Long id) {
+        userPreferenceService.removeUserCategoryPreference(userId, id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
