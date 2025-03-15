@@ -43,7 +43,7 @@ public class UserPhysicHealth {
     @Column(nullable = false)
     private Integer height;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDate birthDate;
 
     @Column(nullable = false, updatable = false)
