@@ -7,7 +7,9 @@ import com.mealmap.healthservice.core.dto.health.UserPhysicHealthCreationDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthHistoryDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
+import com.mealmap.healthservice.service.UserHealthService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,24 +27,30 @@ import java.util.UUID;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserHealthController {
+    private final UserHealthService userHealthService;
+
     @GetMapping("/{userId}/physic-health")
     public ResponseEntity<UserPhysicHealthDto> getUserPhysicHealth(@PathVariable UUID userId) {
+        UserPhysicHealthDto physicHealth = userHealthService.getUserPhysicHealth(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(physicHealth);
     }
 
     @GetMapping("/{userId}/physic-health/history")
     public ResponseEntity<List<UserPhysicHealthHistoryDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
+        List<UserPhysicHealthHistoryDto> healthHistory = userHealthService.getUserPhysicHealthHistory(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(healthHistory);
     }
 
     @GetMapping("/{userId}/diet")
     public ResponseEntity<UserDietDto> getUserDiet(@PathVariable UUID userId) {
+        UserDietDto userDiet = userHealthService.getUserDiet(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }
 
     @PostMapping("/{userId}/physic-health")
@@ -50,7 +58,9 @@ public class UserHealthController {
             @PathVariable UUID userId,
             @RequestBody @Valid UserPhysicHealthCreationDto userPhysicHealthDto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        UserPhysicHealthDto physicHealth = userHealthService.createUserPhysicHealth(userId, userPhysicHealthDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(physicHealth);
     }
 
     @PostMapping("/{userId}/diet")
@@ -58,7 +68,9 @@ public class UserHealthController {
             @PathVariable UUID userId,
             @RequestBody @Valid UserDietCreationDto userDietDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        UserDietDto userDiet = userHealthService.createUserDiet(userId, userDietDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDiet);
     }
 
     @PutMapping("/{userId}/physic-health")
@@ -66,7 +78,9 @@ public class UserHealthController {
             @PathVariable UUID userId,
             @RequestBody @Valid UserPhysicHealthUpdatingDto userPhysicHealthDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        UserPhysicHealthDto physicHealth = userHealthService.updateUserPhysicHealth(userId, userPhysicHealthDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(physicHealth);
     }
 
     @PutMapping("/{userId}/diet")
@@ -74,11 +88,15 @@ public class UserHealthController {
             @PathVariable UUID userId,
             @RequestBody @Valid UserDietUpdatingDto userDietDto) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        UserDietDto userDiet = userHealthService.updateUserDiet(userId, userDietDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }
 
     @DeleteMapping("/{userId}/diet")
     public ResponseEntity<Void> deleteUserDiet(@PathVariable UUID userId) {
+        userHealthService.deleteUserDiet(userId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -91,9 +91,13 @@ public class UserHealthServiceImpl implements UserHealthService {
 
         UserDiet dietToCreate = userDietMapper.dtoToEntity(userDietDto);
         dietToCreate.setPhysicHealth(userPhysicHealth);
+        userPhysicHealth.setDiet(dietToCreate);
+
+        createNewHealthHistory(userPhysicHealth);
+        userPhysicHealthRepository.save(userPhysicHealth);
 
         return userDietMapper.entityToDto(
-                userDietRepository.save(dietToCreate));
+                userPhysicHealth.getDiet());
     }
 
     @Override
@@ -103,12 +107,7 @@ public class UserHealthServiceImpl implements UserHealthService {
 
         userPhysicHealthMapper.updateEntityFromDto(userPhysicHealthToUpdate, userPhysicHealthDto);
 
-        UserPhysicHealthHistory newHistory = UserPhysicHealthHistory.builder()
-                .physicHealth(userPhysicHealthToUpdate)
-                .weight(userPhysicHealthDto.getWeight())
-                .build();
-
-        userPhysicHealthToUpdate.getHistory().add(newHistory);
+        createNewHealthHistory(userPhysicHealthToUpdate);
 
         return userPhysicHealthMapper.entityToDto(
                 userPhysicHealthRepository.save(userPhysicHealthToUpdate));
@@ -118,9 +117,9 @@ public class UserHealthServiceImpl implements UserHealthService {
     @Transactional
     public UserDietDto updateUserDiet(UUID userId, UserDietUpdatingDto userDietDto) {
         UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
-        UserDiet diet = getUserDietEntity(userPhysicHealth);
+        userDietValidator.validateDietExistence(userPhysicHealth);
 
-        userDietMapper.updateEntityFromDto(diet, userDietDto);
+        userDietMapper.updateEntityFromDto(userPhysicHealth.getDiet(), userDietDto);
         userPhysicHealthRepository.save(userPhysicHealth);
 
         return userDietMapper.entityToDto(userPhysicHealth.getDiet());
@@ -130,9 +129,12 @@ public class UserHealthServiceImpl implements UserHealthService {
     @Transactional
     public void deleteUserDiet(UUID userId) {
         UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
-        UserDiet diet = getUserDietEntity(userPhysicHealth);
+        userDietValidator.validateDietExistence(userPhysicHealth);
 
-        userDietRepository.delete(diet);
+        userDietRepository.delete(userPhysicHealth.getDiet());
+        userPhysicHealth.setDiet(null);
+
+        userPhysicHealthRepository.save(userPhysicHealth);
     }
 
     private UserPhysicHealth getUserPhysicHealthEntity(UUID userId) {
@@ -141,13 +143,12 @@ public class UserHealthServiceImpl implements UserHealthService {
                 .orElseThrow(() -> new ResourceNotFoundException(USER_PHYSICAL_HEALTH_NOT_FOUND.formatted(userId)));
     }
 
-    private UserDiet getUserDietEntity(UserPhysicHealth userPhysicHealth) {
-        UserDiet diet = userPhysicHealth.getDiet();
+    private void createNewHealthHistory(UserPhysicHealth userPhysicHealth) {
+        UserPhysicHealthHistory newHistory = UserPhysicHealthHistory.builder()
+                .physicHealth(userPhysicHealth)
+                .weight(userPhysicHealth.getWeight())
+                .build();
 
-        if (diet == null) {
-            throw new ResourceNotFoundException(USER_DIET_NOT_FOUND.formatted(userPhysicHealth.getUserId()));
-        } else {
-            return diet;
-        }
+        userPhysicHealth.getHistory().add(newHistory);
     }
 }
