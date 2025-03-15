@@ -20,7 +20,4 @@ public class UserDietCreationDto {
     @NotNull
     @Positive
     private Integer goalWeight;
-
-    @Future
-    private LocalDate estimatedEndDate;
 }

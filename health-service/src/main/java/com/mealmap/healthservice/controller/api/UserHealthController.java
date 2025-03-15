@@ -2,12 +2,16 @@ package com.mealmap.healthservice.controller.api;
 
 import com.mealmap.healthservice.core.dto.diet.UserDietCreationDto;
 import com.mealmap.healthservice.core.dto.diet.UserDietDto;
+import com.mealmap.healthservice.core.dto.diet.UserDietUpdatingDto;
+import com.mealmap.healthservice.core.dto.health.UserPhysicHealthCreationDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
+import com.mealmap.healthservice.core.dto.health.UserPhysicHealthHistoryDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +34,7 @@ public class UserHealthController {
     }
 
     @GetMapping("/{userId}/physic-health/history")
-    public ResponseEntity<List<UserPhysicHealthDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
+    public ResponseEntity<List<UserPhysicHealthHistoryDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -44,7 +48,7 @@ public class UserHealthController {
     @PostMapping("/{userId}/physic-health")
     public ResponseEntity<UserPhysicHealthDto> createUserPhysicHealth(
             @PathVariable UUID userId,
-            @RequestBody @Valid UserPhysicHealthDto userPhysicHealthDto) {
+            @RequestBody @Valid UserPhysicHealthCreationDto userPhysicHealthDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -66,10 +70,15 @@ public class UserHealthController {
     }
 
     @PutMapping("/{userId}/diet")
-    public ResponseEntity<UserPhysicHealthDto> updateUserDiet(
+    public ResponseEntity<UserDietDto> updateUserDiet(
             @PathVariable UUID userId,
-            @RequestBody @Valid UserDietDto userPhysicHealthDto) {
+            @RequestBody @Valid UserDietUpdatingDto userDietDto) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @DeleteMapping("/{userId}/diet")
+    public ResponseEntity<Void> deleteUserDiet(@PathVariable UUID userId) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

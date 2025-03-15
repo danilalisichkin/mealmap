@@ -43,10 +43,6 @@ public class UserDiet {
     private Integer goalWeight;
 
     @CreationTimestamp
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDate startDate;
-
-    private LocalDate estimatedEndDate;
-
-    private LocalDate endDate;
 }

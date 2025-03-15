@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,6 +54,7 @@ public class UserPhysicHealth {
     @OneToOne(mappedBy = "physicHealth", cascade = CascadeType.ALL)
     private UserDiet diet;
 
+    @Fetch(value = FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "physicHealth", cascade = CascadeType.ALL)
     private List<UserPhysicHealthHistory> history;
 }

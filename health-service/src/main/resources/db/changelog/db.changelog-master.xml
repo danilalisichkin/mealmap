@@ -18,4 +18,10 @@
         <tagDatabase tag="v1.0"/>
     </changeSet>
 
+    <include file="db/changelog/files/db.v1.1-changelog.xml"/>
+
+    <changeSet id="2" author="danilalisichkin">
+        <tagDatabase tag="v1.1"/>
+    </changeSet>
+
 </databaseChangeLog>

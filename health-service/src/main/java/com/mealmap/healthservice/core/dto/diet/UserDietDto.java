@@ -18,8 +18,4 @@ public class UserDietDto {
     private Integer goalWeight;
 
     private LocalDate startDate;
-
-    private LocalDate estimatedEndDate;
-
-    private LocalDate endDate;
 }

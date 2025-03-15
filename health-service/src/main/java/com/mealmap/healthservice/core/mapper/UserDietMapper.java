@@ -16,12 +16,10 @@ public interface UserDietMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "physicHealth", ignore = true)
     @Mapping(target = "startDate", ignore = true)
-    @Mapping(target = "endDate", ignore = true)
     UserDiet dtoToEntity(UserDietCreationDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "physicHealth", ignore = true)
     @Mapping(target = "startDate", ignore = true)
-    @Mapping(target = "endDate", ignore = true)
     void updateEntityFromDto(@MappingTarget UserDiet entity, UserDietUpdatingDto dto);
 }

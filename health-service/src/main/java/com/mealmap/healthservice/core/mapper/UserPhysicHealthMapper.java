@@ -20,6 +20,7 @@ public interface UserPhysicHealthMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "height", ignore = true)
     @Mapping(target = "birthDate", ignore = true)
     @Mapping(target = "gender", ignore = true)
     @Mapping(target = "diet", ignore = true)

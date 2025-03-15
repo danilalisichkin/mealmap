@@ -13,8 +13,4 @@ public class UserPhysicHealthUpdatingDto {
     @NotNull
     @Positive
     private Integer weight;
-
-    @NotNull
-    @Positive
-    private Integer height;
 }
