@@ -14,9 +14,12 @@ import com.mealmap.preferenceservice.entity.UserPreference;
 import com.mealmap.preferenceservice.entity.enums.PreferenceType;
 import com.mealmap.preferenceservice.exception.ResourceNotFoundException;
 import com.mealmap.preferenceservice.repository.UserPreferenceRepository;
+import com.mealmap.preferenceservice.service.UserPreferenceRedisCacheService;
 import com.mealmap.preferenceservice.service.UserPreferenceService;
 import com.mealmap.preferenceservice.validator.UserPreferenceValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,10 @@ import static com.mealmap.preferenceservice.core.message.ApplicationMessages.PRE
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheResolver = "userPreferenceCacheResolver")
 public class UserPreferenceServiceImpl implements UserPreferenceService {
+    private final UserPreferenceRedisCacheService userPreferenceRedisService;
+
     private final UserPreferenceValidator userPreferenceValidator;
 
     private final UserPreferenceMapper userPreferenceMapper;
@@ -39,6 +45,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
     private final UserPreferenceRepository userPreferenceRepository;
 
     @Override
+    @Cacheable(key = "#userId")
     public UserPreferenceDto getUserPreferences(UUID userId) {
         UserPreference userPreference = getUserPreferenceEntity(userId);
 
@@ -46,6 +53,8 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
     }
 
     @Override
+    @Cacheable(key = "#userId + '_' + T(com.mealmap.preferenceservice.cache.constant.CachePrefixes).PRODUCTS"
+            + "+ '_' + #preferenceType")
     public List<ProductPreferenceDto> getProductPreferences(UUID userId, PreferenceType preferenceType) {
         UserPreference userPreference = preferenceType == null
                 ? getUserPreferenceEntity(userId)
@@ -57,6 +66,8 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
     }
 
     @Override
+    @Cacheable(key = "#userId + '_' + T(com.mealmap.preferenceservice.cache.constant.CachePrefixes).CATEGORIES"
+            + "+ '_' + #preferenceType")
     public List<CategoryPreferenceDto> getCategoryPreferences(UUID userId, PreferenceType preferenceType) {
         UserPreference userPreference = preferenceType == null
                 ? getUserPreferenceEntity(userId)
@@ -82,6 +93,8 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
         userPreferenceRepository.save(userPreferenceToUpdate);
 
+        userPreferenceRedisService.updateUserPreferenceWithProductPreferences(userId, userPreferenceToUpdate);
+
         return productPreferenceMapper.entityToDto(
                 productPreferences.getLast());
     }
@@ -101,6 +114,8 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
         userPreferenceRepository.save(userPreferenceToUpdate);
 
+        userPreferenceRedisService.updateUserPreferenceWithCategoryPreferences(userId, userPreferenceToUpdate);
+
         return categoryPreferenceMapper.entityToDto(
                 categoryPreferences.getLast());
     }
@@ -116,6 +131,8 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
         productPreferences.removeIf(pp -> pp.getId().equals(id));
 
         userPreferenceRepository.save(userPreferenceToUpdate);
+
+        userPreferenceRedisService.updateUserPreferenceWithProductPreferences(userId, userPreferenceToUpdate);
     }
 
     @Override
@@ -128,7 +145,7 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
         categoryPreferences.removeIf(cp -> cp.getId().equals(id));
 
-        userPreferenceRepository.save(userPreferenceToUpdate);
+        userPreferenceRedisService.updateUserPreferenceWithCategoryPreferences(userId, userPreferenceToUpdate);
     }
 
     private UserPreference getUserPreferenceEntity(UUID userId) {
