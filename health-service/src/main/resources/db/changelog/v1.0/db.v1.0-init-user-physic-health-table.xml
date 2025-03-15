@@ -1,0 +1,50 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.0-init-user-physic-health-table" author="danilalisichkin">
+        <createTable tableName="user_physic_health">
+            <column autoIncrement="true"
+                    name="id"
+                    type="BIGINT">
+                <constraints nullable="false"
+                             primaryKey="true"
+                             primaryKeyName="pk_user_physic_health"/>
+            </column>
+            <column name="user_id"
+                    type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="weight"
+                    type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="height"
+                    type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_date"
+                    type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender"
+                    type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint columnNames="user_id"
+                             constraintName="uc_user_physic_health_userid"
+                             tableName="user_physic_health"/>
+
+        <createIndex indexName="idx_user_physic_health_user_id"
+                     tableName="user_physic_health"
+                     unique="true">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

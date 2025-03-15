@@ -20,6 +20,7 @@
     <modules>
         <module>auth-service</module>
         <module>cart-service</module>
+        <module>health-service</module>
         <module>order-service</module>
         <module>organization-service</module>
         <module>product-service</module>

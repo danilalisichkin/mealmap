@@ -107,6 +107,27 @@ services:
     networks:
       - mealmap-network
 
+  health-pg-database:
+    image: postgres:17
+    container_name: mealmap-health-pg-database
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: health_database
+    ports:
+      - "5439:5432"
+    volumes:
+      - health-pg-database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
   keycloak-pg-database:
     image: postgres:17
     container_name: mealmap-keycloak-pg-database
@@ -386,6 +407,7 @@ volumes:
   organization-pg-database_data:
   cart-pg-database_data:
   preference-pg-database_data:
+  health-pg-database_data:
   keycloak-pg-database_data:
   order-mongo-database1_data:
   order-mongo-database2_data:
