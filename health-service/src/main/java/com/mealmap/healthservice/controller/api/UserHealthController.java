@@ -4,8 +4,10 @@ import com.mealmap.healthservice.core.dto.diet.UserDietCreationDto;
 import com.mealmap.healthservice.core.dto.diet.UserDietDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
 import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserHealthController {
@@ -41,7 +44,7 @@ public class UserHealthController {
     @PostMapping("/{userId}/physic-health")
     public ResponseEntity<UserPhysicHealthDto> createUserPhysicHealth(
             @PathVariable UUID userId,
-            @RequestBody UserPhysicHealthDto userPhysicHealthDto) {
+            @RequestBody @Valid UserPhysicHealthDto userPhysicHealthDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -49,7 +52,7 @@ public class UserHealthController {
     @PostMapping("/{userId}/diet")
     public ResponseEntity<UserDietDto> createUserDiet(
             @PathVariable UUID userId,
-            @RequestBody UserDietCreationDto userDietDto) {
+            @RequestBody @Valid UserDietCreationDto userDietDto) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -57,7 +60,7 @@ public class UserHealthController {
     @PutMapping("/{userId}/physic-health")
     public ResponseEntity<UserPhysicHealthDto> updateUserPhysicHealth(
             @PathVariable UUID userId,
-            @RequestBody UserPhysicHealthUpdatingDto userPhysicHealthDto) {
+            @RequestBody @Valid UserPhysicHealthUpdatingDto userPhysicHealthDto) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -65,7 +68,7 @@ public class UserHealthController {
     @PutMapping("/{userId}/diet")
     public ResponseEntity<UserPhysicHealthDto> updateUserDiet(
             @PathVariable UUID userId,
-            @RequestBody UserDietDto userPhysicHealthDto) {
+            @RequestBody @Valid UserDietDto userPhysicHealthDto) {
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
