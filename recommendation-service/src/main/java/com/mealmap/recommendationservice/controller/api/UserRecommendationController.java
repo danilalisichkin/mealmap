@@ -3,6 +3,9 @@ package com.mealmap.recommendationservice.controller.api;
 import com.mealmap.recommendationservice.core.dto.UserRecommendationDto;
 import com.mealmap.recommendationservice.core.dto.page.PageDto;
 import com.mealmap.recommendationservice.core.enums.sort.UserRecommendationSortField;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -24,8 +27,8 @@ public class UserRecommendationController {
     @GetMapping("/{userId}/recommendations")
     public ResponseEntity<PageDto<UserRecommendationDto>> getUserRecommendations(
             @PathVariable UUID userId,
-            @RequestParam(defaultValue = "0") Integer offset,
-            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
+            @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") UserRecommendationSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder) {
 
