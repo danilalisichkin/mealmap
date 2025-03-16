@@ -1,6 +1,8 @@
 package com.mealmap.productservice.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -24,6 +26,7 @@ import com.mealmap.productservice.util.PageBuilder;
 import com.mealmap.productservice.validator.ProductValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -39,6 +42,7 @@ import java.util.List;
 import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGORIES_NOT_FOUND;
 import static com.mealmap.productservice.core.message.ApplicationMessages.PRODUCT_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheResolver = "productCacheResolver")
@@ -68,9 +72,21 @@ public class ProductServiceImpl implements ProductService {
                 offset, limit, sortBy.getValue(), sortOrder);
 
         Query searchQuery = esQueryService.buildQueryForProducts(pageRequest, filter, search);
+
+        SortOptions sortOptions = SortOptions.of(s -> s
+                .field(f -> f
+                        .field(sortBy.getValue())
+                        .order(sortOrder == Sort.Direction.ASC ? SortOrder.Asc : SortOrder.Desc)));
+
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .query(searchQuery)
-                .index("products"));
+                .index("products")
+                .from(offset * limit)
+                .size(limit)
+                .sort(sortOptions));
+
+        log.info(pageRequest.toString());
+        log.info(searchQuery.toString());
 
         SearchResponse<ProductDoc> response = esClient.search(searchRequest, ProductDoc.class);
 

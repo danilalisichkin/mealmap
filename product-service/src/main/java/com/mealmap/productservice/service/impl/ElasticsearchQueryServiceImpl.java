@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.stereotype.Service;
 
-import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addMultiMatchQuery;
+import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addWildcardQuery;
 import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addRangeFilter;
 import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addTermsFilter;
 
@@ -50,11 +50,11 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
     }
 
     private void applyQueryByProductSearch(BoolQuery.Builder query, String search) {
-        addMultiMatchQuery(query, search, "name", "description", "categories.name", "categories.parent.name");
+        addWildcardQuery(query, search, "name", "description", "categories.name", "categories.parent.name");
     }
 
     private void applyQueryByCategorySearch(BoolQuery.Builder query, String search) {
-        addMultiMatchQuery(query, search, "name", "children.name", "parent.name");
+        addWildcardQuery(query, search, "name", "children.name", "parent.name");
     }
 
     private void applyQueryByPrice(BoolQuery.Builder query, ProductFilterDto filter) {
