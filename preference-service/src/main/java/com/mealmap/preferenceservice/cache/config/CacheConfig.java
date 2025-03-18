@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @AllArgsConstructor
 @ConfigurationProperties(prefix = "business.cache")
 public class CacheConfig {
-    private final Cache userPreference;
+    private final Cache userPreferences;
 
     @Getter
     @AllArgsConstructor

@@ -15,7 +15,7 @@ import static com.mealmap.preferenceservice.core.message.ApplicationMessages.PRO
 import static com.mealmap.preferenceservice.core.message.ApplicationMessages.PRODUCT_PREFERENCE_NOT_FOUND;
 
 @Component
-public class UserPreferenceValidator {
+public class UserPreferencesValidator {
 
     public void validateProductPreferenceUniqueness(List<ProductPreference> productPreferences, Long productId) {
         validateUniqueness(productPreferences, pp -> pp.getProductId().equals(productId),

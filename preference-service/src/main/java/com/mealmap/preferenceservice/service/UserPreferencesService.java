@@ -4,14 +4,14 @@ import com.mealmap.preferenceservice.core.dto.CategoryPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.CategoryPreferenceDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceDto;
-import com.mealmap.preferenceservice.core.dto.UserPreferenceDto;
+import com.mealmap.preferenceservice.core.dto.UserPreferencesDto;
 import com.mealmap.preferenceservice.entity.enums.PreferenceType;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface UserPreferenceService {
-    UserPreferenceDto getUserPreferences(UUID userId);
+public interface UserPreferencesService {
+    UserPreferencesDto getAllPreferences(UUID userId);
 
     List<ProductPreferenceDto> getProductPreferences(UUID userId, PreferenceType preferenceType);
 
@@ -21,7 +21,7 @@ public interface UserPreferenceService {
 
     CategoryPreferenceDto addCategoryPreference(UUID userId, CategoryPreferenceCreationDto categoryPreferenceDto);
 
-    void removeUserProductPreference(UUID userId, Long id);
+    void removeProductPreference(UUID userId, Long id);
 
-    void removeUserCategoryPreference(UUID userId, Long id);
+    void removeCategoryPreference(UUID userId, Long id);
 }

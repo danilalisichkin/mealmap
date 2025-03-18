@@ -4,19 +4,19 @@ import com.mealmap.preferenceservice.core.dto.CategoryPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.CategoryPreferenceDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceDto;
-import com.mealmap.preferenceservice.core.dto.UserPreferenceDto;
+import com.mealmap.preferenceservice.core.dto.UserPreferencesDto;
 import com.mealmap.preferenceservice.core.mapper.CategoryPreferenceMapper;
 import com.mealmap.preferenceservice.core.mapper.ProductPreferenceMapper;
-import com.mealmap.preferenceservice.core.mapper.UserPreferenceMapper;
+import com.mealmap.preferenceservice.core.mapper.UserPreferencesMapper;
 import com.mealmap.preferenceservice.entity.CategoryPreference;
 import com.mealmap.preferenceservice.entity.ProductPreference;
-import com.mealmap.preferenceservice.entity.UserPreference;
+import com.mealmap.preferenceservice.entity.UserPreferences;
 import com.mealmap.preferenceservice.entity.enums.PreferenceType;
 import com.mealmap.preferenceservice.exception.ResourceNotFoundException;
-import com.mealmap.preferenceservice.repository.UserPreferenceRepository;
-import com.mealmap.preferenceservice.service.UserPreferenceRedisCacheService;
-import com.mealmap.preferenceservice.service.UserPreferenceService;
-import com.mealmap.preferenceservice.validator.UserPreferenceValidator;
+import com.mealmap.preferenceservice.repository.UserPreferencesRepository;
+import com.mealmap.preferenceservice.service.UserPreferencesRedisCacheService;
+import com.mealmap.preferenceservice.service.UserPreferencesService;
+import com.mealmap.preferenceservice.validator.UserPreferencesValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,36 +31,36 @@ import static com.mealmap.preferenceservice.core.message.ApplicationMessages.PRE
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheResolver = "userPreferenceCacheResolver")
-public class UserPreferenceServiceImpl implements UserPreferenceService {
-    private final UserPreferenceRedisCacheService userPreferenceRedisService;
+public class UserPreferencesServiceImpl implements UserPreferencesService {
+    private final UserPreferencesRedisCacheService userPreferencesRedisService;
 
-    private final UserPreferenceValidator userPreferenceValidator;
+    private final UserPreferencesValidator userPreferencesValidator;
 
-    private final UserPreferenceMapper userPreferenceMapper;
+    private final UserPreferencesMapper userPreferencesMapper;
 
     private final ProductPreferenceMapper productPreferenceMapper;
 
     private final CategoryPreferenceMapper categoryPreferenceMapper;
 
-    private final UserPreferenceRepository userPreferenceRepository;
+    private final UserPreferencesRepository userPreferencesRepository;
 
     @Override
     @Cacheable(key = "#userId")
-    public UserPreferenceDto getUserPreferences(UUID userId) {
-        UserPreference userPreference = getUserPreferenceEntity(userId);
+    public UserPreferencesDto getAllPreferences(UUID userId) {
+        UserPreferences userPreferences = getUserPreferenceEntity(userId);
 
-        return userPreferenceMapper.entityToDto(userPreference);
+        return userPreferencesMapper.entityToDto(userPreferences);
     }
 
     @Override
     @Cacheable(key = "#userId + '_' + T(com.mealmap.preferenceservice.cache.constant.CachePrefixes).PRODUCTS"
             + "+ '_' + #preferenceType")
     public List<ProductPreferenceDto> getProductPreferences(UUID userId, PreferenceType preferenceType) {
-        UserPreference userPreference = preferenceType == null
+        UserPreferences userPreferences = preferenceType == null
                 ? getUserPreferenceEntity(userId)
                 : getUserPreferenceByProductPreferenceType(userId, preferenceType);
 
-        List<ProductPreference> productPreferences = userPreference.getProductPreferences();
+        List<ProductPreference> productPreferences = userPreferences.getProductPreferences();
 
         return productPreferenceMapper.entityListToDtoList(productPreferences);
     }
@@ -69,11 +69,11 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
     @Cacheable(key = "#userId + '_' + T(com.mealmap.preferenceservice.cache.constant.CachePrefixes).CATEGORIES"
             + "+ '_' + #preferenceType")
     public List<CategoryPreferenceDto> getCategoryPreferences(UUID userId, PreferenceType preferenceType) {
-        UserPreference userPreference = preferenceType == null
+        UserPreferences userPreferences = preferenceType == null
                 ? getUserPreferenceEntity(userId)
                 : getUserPreferenceByCategoryPreferenceType(userId, preferenceType);
 
-        List<CategoryPreference> categoryPreferences = userPreference.getCategoryPreferences();
+        List<CategoryPreference> categoryPreferences = userPreferences.getCategoryPreferences();
 
         return categoryPreferenceMapper.entityListToDtoList(categoryPreferences);
     }
@@ -81,19 +81,19 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
     @Override
     @Transactional
     public ProductPreferenceDto addProductPreference(UUID userId, ProductPreferenceCreationDto productPreferenceDto) {
-        UserPreference userPreferenceToUpdate = getUserPreferenceEntity(userId);
-        List<ProductPreference> productPreferences = userPreferenceToUpdate.getProductPreferences();
+        UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
+        List<ProductPreference> productPreferences = userPreferencesToUpdate.getProductPreferences();
 
-        userPreferenceValidator.validateProductPreferenceUniqueness(
+        userPreferencesValidator.validateProductPreferenceUniqueness(
                 productPreferences, productPreferenceDto.getProductId());
 
         ProductPreference productPreference = productPreferenceMapper.dtoToEntity(productPreferenceDto);
-        productPreference.setUserPreference(userPreferenceToUpdate);
+        productPreference.setUserPreferences(userPreferencesToUpdate);
         productPreferences.add(productPreference);
 
-        userPreferenceRepository.save(userPreferenceToUpdate);
+        userPreferencesRepository.save(userPreferencesToUpdate);
 
-        userPreferenceRedisService.updateUserPreferenceWithProductPreferences(userId, userPreferenceToUpdate);
+        userPreferencesRedisService.updatePreferenceWithProductPreferences(userId, userPreferencesToUpdate);
 
         return productPreferenceMapper.entityToDto(
                 productPreferences.getLast());
@@ -102,19 +102,19 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
     @Override
     @Transactional
     public CategoryPreferenceDto addCategoryPreference(UUID userId, CategoryPreferenceCreationDto categoryPreferenceDto) {
-        UserPreference userPreferenceToUpdate = getUserPreferenceEntity(userId);
-        List<CategoryPreference> categoryPreferences = userPreferenceToUpdate.getCategoryPreferences();
+        UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
+        List<CategoryPreference> categoryPreferences = userPreferencesToUpdate.getCategoryPreferences();
 
-        userPreferenceValidator.validateCategoryPreferenceUniqueness(
+        userPreferencesValidator.validateCategoryPreferenceUniqueness(
                 categoryPreferences, categoryPreferenceDto.getCategoryId());
 
         CategoryPreference categoryPreference = categoryPreferenceMapper.dtoToEntity(categoryPreferenceDto);
-        categoryPreference.setUserPreference(userPreferenceToUpdate);
+        categoryPreference.setUserPreferences(userPreferencesToUpdate);
         categoryPreferences.add(categoryPreference);
 
-        userPreferenceRepository.save(userPreferenceToUpdate);
+        userPreferencesRepository.save(userPreferencesToUpdate);
 
-        userPreferenceRedisService.updateUserPreferenceWithCategoryPreferences(userId, userPreferenceToUpdate);
+        userPreferencesRedisService.updatePreferenceWithCategoryPreferences(userId, userPreferencesToUpdate);
 
         return categoryPreferenceMapper.entityToDto(
                 categoryPreferences.getLast());
@@ -122,46 +122,46 @@ public class UserPreferenceServiceImpl implements UserPreferenceService {
 
     @Override
     @Transactional
-    public void removeUserProductPreference(UUID userId, Long id) {
-        UserPreference userPreferenceToUpdate = getUserPreferenceEntity(userId);
-        List<ProductPreference> productPreferences = userPreferenceToUpdate.getProductPreferences();
+    public void removeProductPreference(UUID userId, Long id) {
+        UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
+        List<ProductPreference> productPreferences = userPreferencesToUpdate.getProductPreferences();
 
-        userPreferenceValidator.validateProductPreferenceExistence(productPreferences, id);
+        userPreferencesValidator.validateProductPreferenceExistence(productPreferences, id);
 
         productPreferences.removeIf(pp -> pp.getId().equals(id));
 
-        userPreferenceRepository.save(userPreferenceToUpdate);
+        userPreferencesRepository.save(userPreferencesToUpdate);
 
-        userPreferenceRedisService.updateUserPreferenceWithProductPreferences(userId, userPreferenceToUpdate);
+        userPreferencesRedisService.updatePreferenceWithProductPreferences(userId, userPreferencesToUpdate);
     }
 
     @Override
     @Transactional
-    public void removeUserCategoryPreference(UUID userId, Long id) {
-        UserPreference userPreferenceToUpdate = getUserPreferenceEntity(userId);
-        List<CategoryPreference> categoryPreferences = userPreferenceToUpdate.getCategoryPreferences();
+    public void removeCategoryPreference(UUID userId, Long id) {
+        UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
+        List<CategoryPreference> categoryPreferences = userPreferencesToUpdate.getCategoryPreferences();
 
-        userPreferenceValidator.validateCategoryPreferenceExistence(categoryPreferences, id);
+        userPreferencesValidator.validateCategoryPreferenceExistence(categoryPreferences, id);
 
         categoryPreferences.removeIf(cp -> cp.getId().equals(id));
 
-        userPreferenceRedisService.updateUserPreferenceWithCategoryPreferences(userId, userPreferenceToUpdate);
+        userPreferencesRedisService.updatePreferenceWithCategoryPreferences(userId, userPreferencesToUpdate);
     }
 
-    private UserPreference getUserPreferenceEntity(UUID userId) {
-        return userPreferenceRepository
+    private UserPreferences getUserPreferenceEntity(UUID userId) {
+        return userPreferencesRepository
                 .findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(PREFERENCES_FOR_USER_NOT_FOUND.formatted(userId)));
     }
 
-    private UserPreference getUserPreferenceByProductPreferenceType(UUID userId, PreferenceType preferenceType) {
-        return userPreferenceRepository
+    private UserPreferences getUserPreferenceByProductPreferenceType(UUID userId, PreferenceType preferenceType) {
+        return userPreferencesRepository
                 .findByUserIdAndProductPreferenceType(userId, preferenceType)
                 .orElseThrow(() -> new ResourceNotFoundException(PREFERENCES_FOR_USER_NOT_FOUND.formatted(userId)));
     }
 
-    private UserPreference getUserPreferenceByCategoryPreferenceType(UUID userId, PreferenceType preferenceType) {
-        return userPreferenceRepository
+    private UserPreferences getUserPreferenceByCategoryPreferenceType(UUID userId, PreferenceType preferenceType) {
+        return userPreferencesRepository
                 .findByUserIdAndCategoryPreferenceType(userId, preferenceType)
                 .orElseThrow(() -> new ResourceNotFoundException(PREFERENCES_FOR_USER_NOT_FOUND.formatted(userId)));
     }

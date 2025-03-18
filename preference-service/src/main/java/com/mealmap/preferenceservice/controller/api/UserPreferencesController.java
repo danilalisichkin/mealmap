@@ -4,9 +4,9 @@ import com.mealmap.preferenceservice.core.dto.CategoryPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.CategoryPreferenceDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceDto;
-import com.mealmap.preferenceservice.core.dto.UserPreferenceDto;
+import com.mealmap.preferenceservice.core.dto.UserPreferencesDto;
 import com.mealmap.preferenceservice.entity.enums.PreferenceType;
-import com.mealmap.preferenceservice.service.UserPreferenceService;
+import com.mealmap.preferenceservice.service.UserPreferencesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,12 +28,12 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserPreferenceController {
-    private final UserPreferenceService userPreferenceService;
+public class UserPreferencesController {
+    private final UserPreferencesService userPreferencesService;
 
     @GetMapping("/{userId}/preferences")
-    public ResponseEntity<UserPreferenceDto> getUserPreferences(@PathVariable UUID userId) {
-        UserPreferenceDto userPreference = userPreferenceService.getUserPreferences(userId);
+    public ResponseEntity<UserPreferencesDto> getAllPreferences(@PathVariable UUID userId) {
+        UserPreferencesDto userPreference = userPreferencesService.getAllPreferences(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(userPreference);
     }
@@ -44,7 +44,7 @@ public class UserPreferenceController {
             @RequestParam(required = false) PreferenceType preferenceType) {
 
         List<ProductPreferenceDto> productPreferences
-                = userPreferenceService.getProductPreferences(userId, preferenceType);
+                = userPreferencesService.getProductPreferences(userId, preferenceType);
 
         return ResponseEntity.status(HttpStatus.OK).body(productPreferences);
     }
@@ -55,7 +55,7 @@ public class UserPreferenceController {
             @RequestParam(required = false) PreferenceType preferenceType) {
 
         List<CategoryPreferenceDto> categoryPreferences
-                = userPreferenceService.getCategoryPreferences(userId, preferenceType);
+                = userPreferencesService.getCategoryPreferences(userId, preferenceType);
 
         return ResponseEntity.status(HttpStatus.OK).body(categoryPreferences);
     }
@@ -66,7 +66,7 @@ public class UserPreferenceController {
             @RequestBody @Valid ProductPreferenceCreationDto productPreferenceDto) {
 
         ProductPreferenceDto productPreference
-                = userPreferenceService.addProductPreference(userId, productPreferenceDto);
+                = userPreferencesService.addProductPreference(userId, productPreferenceDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(productPreference);
     }
@@ -77,21 +77,21 @@ public class UserPreferenceController {
             @RequestBody @Valid CategoryPreferenceCreationDto categoryPreferenceDto) {
 
         CategoryPreferenceDto categoryPreference
-                = userPreferenceService.addCategoryPreference(userId, categoryPreferenceDto);
+                = userPreferencesService.addCategoryPreference(userId, categoryPreferenceDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryPreference);
     }
 
     @DeleteMapping("/{userId}/preferences/products/{id}")
-    public ResponseEntity<Void> removeUserProductPreference(@PathVariable UUID userId, @PathVariable Long id) {
-        userPreferenceService.removeUserProductPreference(userId, id);
+    public ResponseEntity<Void> removeProductPreference(@PathVariable UUID userId, @PathVariable Long id) {
+        userPreferencesService.removeProductPreference(userId, id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{userId}/preferences/categories/{id}")
-    public ResponseEntity<Void> removeUserCategoryPreference(@PathVariable UUID userId, @PathVariable Long id) {
-        userPreferenceService.removeUserCategoryPreference(userId, id);
+    public ResponseEntity<Void> removeCategoryPreference(@PathVariable UUID userId, @PathVariable Long id) {
+        userPreferencesService.removeCategoryPreference(userId, id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

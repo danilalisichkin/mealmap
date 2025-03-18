@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPreferenceDto {
+public class UserPreferencesDto {
     private Long id;
 
     private UUID userId;

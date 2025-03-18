@@ -14,7 +14,7 @@ public interface ProductPreferenceMapper {
     ProductPreferenceDto entityToDto(ProductPreference entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "userPreference", ignore = true)
+    @Mapping(target = "userPreferences", ignore = true)
     ProductPreference dtoToEntity(ProductPreferenceCreationDto dto);
 
     List<ProductPreferenceDto> entityListToDtoList(List<ProductPreference> entityList);

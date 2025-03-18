@@ -1,9 +1,9 @@
 package com.mealmap.preferenceservice.service.impl;
 
 import com.mealmap.preferenceservice.cache.config.CacheConfig;
-import com.mealmap.preferenceservice.core.mapper.UserPreferenceMapper;
-import com.mealmap.preferenceservice.entity.UserPreference;
-import com.mealmap.preferenceservice.service.UserPreferenceRedisCacheService;
+import com.mealmap.preferenceservice.core.mapper.UserPreferencesMapper;
+import com.mealmap.preferenceservice.entity.UserPreferences;
+import com.mealmap.preferenceservice.service.UserPreferencesRedisCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -17,20 +17,20 @@ import static com.mealmap.preferenceservice.cache.constant.CachePrefixes.PRODUCT
 
 @Service
 @RequiredArgsConstructor
-public class UserPreferenceRedisCacheServiceImpl implements UserPreferenceRedisCacheService {
+public class UserPreferencesRedisCacheServiceImpl implements UserPreferencesRedisCacheService {
     private final CacheConfig cacheConfig;
 
     private final ValueOperations<String, Object> valueOperations;
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private final UserPreferenceMapper userPreferenceMapper;
+    private final UserPreferencesMapper userPreferencesMapper;
 
     @Override
     @Transactional
-    public void updateUserPreferenceWithProductPreferences(UUID userId, UserPreference userPreference) {
-        var userPreferenceDto = userPreferenceMapper.entityToDto(userPreference);
-        String key = generateKeyForUserPreference(userId);
+    public void updatePreferenceWithProductPreferences(UUID userId, UserPreferences userPreferences) {
+        var userPreferenceDto = userPreferencesMapper.entityToDto(userPreferences);
+        String key = generateKeyForUserPreferences(userId);
         valueOperations.set(key, userPreferenceDto);
 
         String wildcardKey = generateWildcardKeyForProductPreferences(userId);
@@ -39,9 +39,9 @@ public class UserPreferenceRedisCacheServiceImpl implements UserPreferenceRedisC
 
     @Override
     @Transactional
-    public void updateUserPreferenceWithCategoryPreferences(UUID userId, UserPreference userPreference) {
-        var userPreferenceDto = userPreferenceMapper.entityToDto(userPreference);
-        String key = generateKeyForUserPreference(userId);
+    public void updatePreferenceWithCategoryPreferences(UUID userId, UserPreferences userPreferences) {
+        var userPreferenceDto = userPreferencesMapper.entityToDto(userPreferences);
+        String key = generateKeyForUserPreferences(userId);
         valueOperations.set(key, userPreferenceDto);
 
         String wildcardKey = generateWildcardKeyForCategoryPreferences(userId);
@@ -55,15 +55,15 @@ public class UserPreferenceRedisCacheServiceImpl implements UserPreferenceRedisC
         }
     }
 
-    private String generateKeyForUserPreference(UUID userId) {
-        return "%s::%s".formatted(cacheConfig.getUserPreference().getName(), userId);
+    private String generateKeyForUserPreferences(UUID userId) {
+        return "%s::%s".formatted(cacheConfig.getUserPreferences().getName(), userId);
     }
 
     private String generateWildcardKeyForProductPreferences(UUID userId) {
-        return "%s::%s_%s_*".formatted(cacheConfig.getUserPreference().getName(), userId, PRODUCTS);
+        return "%s::%s_%s_*".formatted(cacheConfig.getUserPreferences().getName(), userId, PRODUCTS);
     }
 
     private String generateWildcardKeyForCategoryPreferences(UUID userId) {
-        return "%s::%s_%s_*".formatted(cacheConfig.getUserPreference().getName(), userId, CATEGORIES);
+        return "%s::%s_%s_*".formatted(cacheConfig.getUserPreferences().getName(), userId, CATEGORIES);
     }
 }

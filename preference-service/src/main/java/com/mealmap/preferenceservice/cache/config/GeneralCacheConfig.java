@@ -21,11 +21,14 @@ public class GeneralCacheConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration defaultCacheConfig = cacheConfigHelper.defaultCacheConfiguration();
 
-        CacheConfig.Cache userPreferenceCache = cacheConfig.getUserPreference();
-        RedisCacheConfiguration userPreferenceCacheCacheConfig = cacheConfigHelper.cacheConfiguration(userPreferenceCache);
+        CacheConfig.Cache userPreferenceCache = cacheConfig.getUserPreferences();
+        RedisCacheConfiguration userPreferenceCacheCacheConfig
+                = cacheConfigHelper.cacheConfiguration(userPreferenceCache);
 
         return RedisCacheManager.builder(redisConnectionFactory)
-                .withCacheConfiguration(userPreferenceCache.getName(), userPreferenceCacheCacheConfig)
+                .withCacheConfiguration(
+                        userPreferenceCache.getName(),
+                        userPreferenceCacheCacheConfig)
                 .cacheDefaults(defaultCacheConfig)
                 .transactionAware()
                 .build();

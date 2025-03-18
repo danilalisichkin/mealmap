@@ -28,7 +28,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "user_preferences", indexes = {
         @Index(name = "idx_user_preferences_user_id", columnList = "user_id", unique = true)})
-public class UserPreference {
+public class UserPreferences {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -18,8 +18,8 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
 business:
   cache:
-    user-preference:
-      name: ${CACHE_USER_PREFERENCE_NAME:userPreferenceCache}
-      ttl: ${CACHE_USER_PREFERENCE_TTL:3600}
+    user-preferences:
+      name: ${CACHE_USER_PREFERENCES_NAME:userPreferencesCache}
+      ttl: ${CACHE_USER_PREFERENCES_TTL:3600}
 server:
   port: ${SERVER_PORT:8088}

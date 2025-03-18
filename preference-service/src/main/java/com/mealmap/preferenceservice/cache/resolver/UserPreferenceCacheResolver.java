@@ -21,7 +21,7 @@ public class UserPreferenceCacheResolver implements CacheResolver {
 
     @Override
     public Collection<? extends Cache> resolveCaches(CacheOperationInvocationContext<?> context) {
-        Cache cache = cacheManager.getCache(cacheConfig.getUserPreference().getName());
+        Cache cache = cacheManager.getCache(cacheConfig.getUserPreferences().getName());
 
         return cache != null ? List.of(cache) : Collections.emptyList();
     }

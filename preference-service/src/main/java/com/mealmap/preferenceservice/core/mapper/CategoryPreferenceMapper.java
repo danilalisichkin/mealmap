@@ -14,7 +14,7 @@ public interface CategoryPreferenceMapper {
     CategoryPreferenceDto entityToDto(CategoryPreference entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "userPreference", ignore = true)
+    @Mapping(target = "userPreferences", ignore = true)
     CategoryPreference dtoToEntity(CategoryPreferenceCreationDto dto);
 
     List<CategoryPreferenceDto> entityListToDtoList(List<CategoryPreference> entityList);

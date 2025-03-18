@@ -1,7 +1,7 @@
 package com.mealmap.preferenceservice.core.mapper;
 
-import com.mealmap.preferenceservice.core.dto.UserPreferenceDto;
-import com.mealmap.preferenceservice.entity.UserPreference;
+import com.mealmap.preferenceservice.core.dto.UserPreferencesDto;
+import com.mealmap.preferenceservice.entity.UserPreferences;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -9,6 +9,6 @@ import org.mapstruct.MappingConstants;
         uses = {
         ProductPreferenceMapper.class,
         CategoryPreferenceMapper.class})
-public interface UserPreferenceMapper {
-    UserPreferenceDto entityToDto(UserPreference entity);
+public interface UserPreferencesMapper {
+    UserPreferencesDto entityToDto(UserPreferences entity);
 }
