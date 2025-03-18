@@ -11,8 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserPreferencesRepository
-        extends JpaRepository<UserPreferences, Long>, JpaSpecificationExecutor<UserPreferences> {
+public interface UserPreferencesRepository extends JpaRepository<UserPreferences, Long> {
 
     Optional<UserPreferences> findByUserId(UUID userId);
 
