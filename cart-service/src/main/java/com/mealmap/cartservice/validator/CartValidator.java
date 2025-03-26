@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static com.mealmap.cartservice.core.constant.CartLimits.MAX_ITEMS_PER_CART;
 import static com.mealmap.cartservice.core.message.ApplicationMessages.CART_IS_FULL;
-import static com.mealmap.cartservice.core.message.ApplicationMessages.CART_WITH_ID_ALREADY_EXISTS;
+import static com.mealmap.cartservice.core.message.ApplicationMessages.USER_CART_ALREADY_EXISTS;
 
 @Component
 @RequiredArgsConstructor
@@ -24,9 +24,9 @@ public class CartValidator {
         }
     }
 
-    public void validateIdUniqueness(UUID id) {
-        if (cartRepository.existsById(id)) {
-            throw new ConflictException(CART_WITH_ID_ALREADY_EXISTS.formatted(id.toString()));
+    public void validateUserIdUniqueness(UUID id) {
+        if (cartRepository.existsByUserId(id)) {
+            throw new ConflictException(USER_CART_ALREADY_EXISTS.formatted(id.toString()));
         }
     }
 }

@@ -12,7 +12,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class CartDto {
-    private UUID id;
+    private Long id;
+
+    private UUID userId;
 
     private List<CartItemDto> items;
 

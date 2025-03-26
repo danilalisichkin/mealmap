@@ -10,5 +10,5 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KafkaCartCreationDto {
-    private UUID id;
+    private UUID userId;
 }

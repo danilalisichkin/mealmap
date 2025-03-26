@@ -3,7 +3,7 @@ package com.mealmap.cartservice.controller.api;
 import com.mealmap.cartservice.core.dto.cart.CartDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemAddingDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemDto;
-import com.mealmap.cartservice.service.CartService;
+import com.mealmap.cartservice.service.UserCartService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -26,51 +26,51 @@ import java.util.UUID;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/carts")
-public class CartController {
-    private final CartService cartService;
+@RequestMapping("/api/v1/users")
+public class UserCartController {
+    private final UserCartService userCartService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CartDto> getCart(@PathVariable UUID id) {
-        CartDto cart = cartService.getCart(id);
+    @GetMapping("/{userId}/cart")
+    public ResponseEntity<CartDto> getCart(@PathVariable UUID userId) {
+        CartDto cart = userCartService.getCart(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(cart);
     }
 
-    @PostMapping("/{id}/items")
+    @PostMapping("/{userId}/cart/items")
     public ResponseEntity<CartDto> addItemToCart(
-            @PathVariable UUID id,
+            @PathVariable UUID userId,
             @RequestBody @Valid CartItemAddingDto itemDto) {
 
-        CartDto cart = cartService.addItemToCart(id, itemDto);
+        CartDto cart = userCartService.addItemToCart(userId, itemDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
-    @PatchMapping("/{id}/items/{itemId}/quantity")
+    @PatchMapping("/{userId}/cart/items/{itemId}/quantity")
     public ResponseEntity<CartItemDto> changeCartItemQuantity(
-            @PathVariable UUID id,
+            @PathVariable UUID userId,
             @PathVariable Long itemId,
             @RequestBody @NotNull @Positive @Max(20) Integer quantity) {
 
-        CartItemDto cartItem = cartService.changeCartItemQuantity(id, itemId, quantity);
+        CartItemDto cartItem = userCartService.changeCartItemQuantity(userId, itemId, quantity);
 
         return ResponseEntity.status(HttpStatus.OK).body(cartItem);
     }
 
-    @DeleteMapping("/{id}/items/{itemId}")
+    @DeleteMapping("/{userId}/cart/items/{itemId}")
     public ResponseEntity<Void> deleteItemFromCart(
-            @PathVariable UUID id,
+            @PathVariable UUID userId,
             @PathVariable Long itemId) {
 
-        cartService.deleteItemFromCart(id, itemId);
+        userCartService.deleteItemFromCart(userId, itemId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> clearCart(@PathVariable UUID id) {
-        cartService.clearCart(id);
+    @DeleteMapping("/{userId}/cart")
+    public ResponseEntity<Void> clearCart(@PathVariable UUID userId) {
+        userCartService.clearCart(userId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

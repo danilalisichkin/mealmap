@@ -2,6 +2,6 @@ package com.mealmap.cartservice.service;
 
 import com.mealmap.cartservice.kafka.dto.KafkaCartCreationDto;
 
-public interface CartKafkaService {
+public interface UserCartKafkaService {
     void createCart(KafkaCartCreationDto cartDto);
 }

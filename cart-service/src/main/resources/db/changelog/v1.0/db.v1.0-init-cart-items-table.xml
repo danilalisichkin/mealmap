@@ -15,7 +15,7 @@
                              primaryKeyName="pk_cart_items"/>
             </column>
             <column name="cart_id"
-                    type="UUID"/>
+                    type="BIGINT"/>
             <column name="product_id"
                     type="BIGINT">
                 <constraints nullable="false"/>

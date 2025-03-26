@@ -4,7 +4,10 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -25,10 +28,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "carts")
+@Table(name = "carts", indexes = {
+        @Index(name = "idx_carts_user_id", columnList = "user_id")})
 public class Cart {
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private UUID userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<CartItem> items;

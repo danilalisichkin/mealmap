@@ -10,7 +10,7 @@ import com.mealmap.cartservice.entity.CartItem;
 import com.mealmap.cartservice.exception.ResourceNotFoundException;
 import com.mealmap.cartservice.repository.CartItemRepository;
 import com.mealmap.cartservice.repository.CartRepository;
-import com.mealmap.cartservice.service.CartService;
+import com.mealmap.cartservice.service.UserCartService;
 import com.mealmap.cartservice.validator.CartItemValidator;
 import com.mealmap.cartservice.validator.CartValidator;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.mealmap.cartservice.core.message.ApplicationMessages.CART_ITEM_NOT_FOUND;
-import static com.mealmap.cartservice.core.message.ApplicationMessages.CART_NOT_FOUND;
+import static com.mealmap.cartservice.core.message.ApplicationMessages.USER_CART_ITEM_NOT_FOUND;
+import static com.mealmap.cartservice.core.message.ApplicationMessages.USER_CART_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
-public class CartServiceImpl implements CartService {
+public class UserCartServiceImpl implements UserCartService {
     private final CartValidator cartValidator;
 
     private final CartItemValidator cartItemValidator;
@@ -39,16 +39,16 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public CartDto getCart(UUID id) {
-        Cart cart = getCartEntity(id);
+    public CartDto getCart(UUID userId) {
+        Cart cart = getCartEntity(userId);
 
         return cartMapper.entityToDto(cart);
     }
 
     @Override
     @Transactional
-    public CartDto addItemToCart(UUID id, CartItemAddingDto itemDto) {
-        Cart cart = getCartEntity(id);
+    public CartDto addItemToCart(UUID userId, CartItemAddingDto itemDto) {
+        Cart cart = getCartEntity(userId);
 
         CartItem existingItem = findExistingCartItem(cart, itemDto.getProductId());
         if (existingItem != null) {
@@ -65,8 +65,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartItemDto changeCartItemQuantity(UUID id, Long itemId, Integer quantity) {
-        CartItem cartItemToUpdate = getCartItemEntity(itemId, id);
+    public CartItemDto changeCartItemQuantity(UUID userId, Long itemId, Integer quantity) {
+        CartItem cartItemToUpdate = getCartItemEntity(itemId, userId);
 
         changeCartItemQuantity(cartItemToUpdate, quantity);
         setCartUpdateTime(cartItemToUpdate.getCart());
@@ -77,8 +77,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void deleteItemFromCart(UUID id, Long itemId) {
-        CartItem cartItemToDelete = getCartItemEntity(itemId, id);
+    public void deleteItemFromCart(UUID userId, Long itemId) {
+        CartItem cartItemToDelete = getCartItemEntity(itemId, userId);
 
         cartItemToDelete.getCart().getItems().remove(cartItemToDelete);
         setCartUpdateTime(cartItemToDelete.getCart());
@@ -88,8 +88,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void clearCart(UUID id) {
-        Cart cartToClear = getCartEntity(id);
+    public void clearCart(UUID userId) {
+        Cart cartToClear = getCartEntity(userId);
 
         cartRepository.delete(cartToClear);
 
@@ -97,18 +97,20 @@ public class CartServiceImpl implements CartService {
                 createNewEmptyCart(cartToClear));
     }
 
-    private Cart getCartEntity(UUID id) {
+    private Cart getCartEntity(UUID userId) {
         return cartRepository
-                .findById(id)
+                .findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        CART_NOT_FOUND.formatted(id.toString())));
+                        USER_CART_NOT_FOUND.formatted(userId.toString())));
     }
 
-    private CartItem getCartItemEntity(Long cartItemId, UUID cartId) {
+    private CartItem getCartItemEntity(Long cartItemId, UUID userId) {
+        var cartId = cartRepository.findIdByUserId(userId);
+
         return cartItemRepository
                 .findByIdAndCartId(cartItemId, cartId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        CART_ITEM_NOT_FOUND.formatted(cartItemId, cartId.toString())));
+                        USER_CART_ITEM_NOT_FOUND.formatted(cartItemId, cartId.toString())));
     }
 
     private CartItem findExistingCartItem(Cart cart, Long productId) {
