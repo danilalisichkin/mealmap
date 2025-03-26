@@ -8,9 +8,40 @@ spring:
       password: ${DB_PASSWORD:root}
       replica-set-name: ${DB_REPLICA_SET_NAME:rs0}
       database: ${DB_NAME:recommendation_database}
+  ai:
+    ollama:
+      base-url: ${AI_OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: ${AI_OLLAMA_CHAT_MODEL:llama3.2:latest}
+          temperature: ${AI_OLLAMA_CHAT_TEMPERATURE:1.0}
+      init:
+        pull-model-strategy: ${AI_OLLAMA_PULL_STRATEGY:always}
+logging:
+  level:
+    org:
+      springframework:
+        ai:
+          chat:
+            client:
+              advisor: DEBUG
 mongock:
   migration-scan-package: com.cabaggregator.rideservice.migration
   transactional: true
   enabled: true
+business:
+  services:
+    product:
+      url: ${PRODUCT_API_URL:http://localhost:8081/api/v1/products/}
+    order:
+      url: ${USER_ORDER_API_URL:http://localhost:8084/api/v1/users/}
+    preference:
+      url: ${USER_PREFERENCE_API_URL:http://localhost:8088/api/v1/users/}
+    health:
+      url: ${USER_HEALTH_API_URL:http://localhost:8089/api/v1/users/}
+  recommendation:
+    settings:
+      last-orders:
+        count: ${RECOMMENDATION_SETTINGS_LAST_ORDERS_COUNT:10}
 server:
   port: ${SERVER_PORT:8090}
