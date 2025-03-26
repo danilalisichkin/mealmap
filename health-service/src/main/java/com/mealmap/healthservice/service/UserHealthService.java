@@ -1,30 +1,30 @@
 package com.mealmap.healthservice.service;
 
-import com.mealmap.healthservice.core.dto.diet.UserDietCreationDto;
-import com.mealmap.healthservice.core.dto.diet.UserDietDto;
-import com.mealmap.healthservice.core.dto.diet.UserDietUpdatingDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthCreationDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthHistoryDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
+import com.mealmap.healthservice.core.dto.diet.DietCreationDto;
+import com.mealmap.healthservice.core.dto.diet.DietDto;
+import com.mealmap.healthservice.core.dto.diet.DietUpdatingDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthCreationDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthHistoryDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthUpdatingDto;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserHealthService {
-    UserPhysicHealthDto getUserPhysicHealth(UUID userId);
+    PhysicHealthDto getUserPhysicHealth(UUID userId);
 
-    List<UserPhysicHealthHistoryDto> getUserPhysicHealthHistory(UUID userId);
+    List<PhysicHealthHistoryDto> getUserPhysicHealthHistory(UUID userId);
 
-    UserDietDto getUserDiet(UUID userId);
+    DietDto getUserDiet(UUID userId);
 
-    UserPhysicHealthDto createUserPhysicHealth(UUID userId, UserPhysicHealthCreationDto userPhysicHealthDto);
+    PhysicHealthDto createUserPhysicHealth(UUID userId, PhysicHealthCreationDto userPhysicHealthDto);
 
-    UserDietDto createUserDiet(UUID userId, UserDietCreationDto userDietDto);
+    DietDto createUserDiet(UUID userId, DietCreationDto userDietDto);
 
-    UserPhysicHealthDto updateUserPhysicHealth(UUID userId, UserPhysicHealthUpdatingDto userPhysicHealthDto);
+    PhysicHealthDto updateUserPhysicHealth(UUID userId, PhysicHealthUpdatingDto userPhysicHealthDto);
 
-    UserDietDto updateUserDiet(UUID userId, UserDietUpdatingDto userDietDto);
+    DietDto updateUserDiet(UUID userId, DietUpdatingDto userDietDto);
 
     void deleteUserDiet(UUID userId);
 }

@@ -1,18 +1,16 @@
 package com.mealmap.healthservice.core.dto.health;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPhysicHealthHistoryDto {
-    private Long id;
-
+public class PhysicHealthUpdatingDto {
+    @NotNull
+    @Positive
     private Integer weight;
-
-    private LocalDate createdAt;
 }

@@ -26,9 +26,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Immutable
-@Table(name = "user_physic_health_history", indexes = {
-        @Index(name = "idx_user_physic_health_history_physic_health_id", columnList = "user_physic_health_id")})
-public class UserPhysicHealthHistory {
+@Table(name = "physic_health_history", indexes = {
+        @Index(name = "idx_physic_health_history_physic_health_id", columnList = "physic_health_id")})
+public class PhysicHealthHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,8 +37,8 @@ public class UserPhysicHealthHistory {
     private Integer weight;
 
     @ManyToOne
-    @JoinColumn(name = "user_physic_health_id")
-    private UserPhysicHealth physicHealth;
+    @JoinColumn(name = "physic_health_id")
+    private PhysicHealth physicHealth;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

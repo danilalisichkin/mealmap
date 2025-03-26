@@ -1,22 +1,22 @@
 package com.mealmap.healthservice.core.mapper;
 
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthCreationDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
-import com.mealmap.healthservice.entity.UserPhysicHealth;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthCreationDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthUpdatingDto;
+import com.mealmap.healthservice.entity.PhysicHealth;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface UserPhysicHealthMapper {
-    UserPhysicHealthDto entityToDto(UserPhysicHealth entity);
+public interface PhysicHealthMapper {
+    PhysicHealthDto entityToDto(PhysicHealth entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "diet", ignore = true)
     @Mapping(target = "history", ignore = true)
-    UserPhysicHealth dtoToEntity(UserPhysicHealthCreationDto dto);
+    PhysicHealth dtoToEntity(PhysicHealthCreationDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
@@ -25,5 +25,5 @@ public interface UserPhysicHealthMapper {
     @Mapping(target = "gender", ignore = true)
     @Mapping(target = "diet", ignore = true)
     @Mapping(target = "history", ignore = true)
-    void updateEntityFromDto(@MappingTarget UserPhysicHealth entity, UserPhysicHealthUpdatingDto dto);
+    void updateEntityFromDto(@MappingTarget PhysicHealth entity, PhysicHealthUpdatingDto dto);
 }

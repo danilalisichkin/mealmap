@@ -1,24 +1,24 @@
 package com.mealmap.healthservice.service.impl;
 
-import com.mealmap.healthservice.core.dto.diet.UserDietCreationDto;
-import com.mealmap.healthservice.core.dto.diet.UserDietDto;
-import com.mealmap.healthservice.core.dto.diet.UserDietUpdatingDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthCreationDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthHistoryDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
-import com.mealmap.healthservice.core.mapper.UserDietMapper;
-import com.mealmap.healthservice.core.mapper.UserPhysicHealthHistoryMapper;
-import com.mealmap.healthservice.core.mapper.UserPhysicHealthMapper;
-import com.mealmap.healthservice.entity.UserDiet;
-import com.mealmap.healthservice.entity.UserPhysicHealth;
-import com.mealmap.healthservice.entity.UserPhysicHealthHistory;
+import com.mealmap.healthservice.core.dto.diet.DietCreationDto;
+import com.mealmap.healthservice.core.dto.diet.DietDto;
+import com.mealmap.healthservice.core.dto.diet.DietUpdatingDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthCreationDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthHistoryDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthUpdatingDto;
+import com.mealmap.healthservice.core.mapper.DietMapper;
+import com.mealmap.healthservice.core.mapper.PhysicHealthHistoryMapper;
+import com.mealmap.healthservice.core.mapper.PhysicHealthMapper;
+import com.mealmap.healthservice.entity.Diet;
+import com.mealmap.healthservice.entity.PhysicHealth;
+import com.mealmap.healthservice.entity.PhysicHealthHistory;
 import com.mealmap.healthservice.exception.ResourceNotFoundException;
-import com.mealmap.healthservice.repository.UserDietRepository;
-import com.mealmap.healthservice.repository.UserPhysicHealthRepository;
+import com.mealmap.healthservice.repository.DietRepository;
+import com.mealmap.healthservice.repository.PhysicHealthRepository;
 import com.mealmap.healthservice.service.UserHealthService;
-import com.mealmap.healthservice.validator.UserDietValidator;
-import com.mealmap.healthservice.validator.UserPhysicHealthValidator;
+import com.mealmap.healthservice.validator.DietValidator;
+import com.mealmap.healthservice.validator.PhysicHealthValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,129 +26,128 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_DIET_NOT_FOUND;
 import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_PHYSICAL_HEALTH_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class UserHealthServiceImpl implements UserHealthService {
-    private final UserDietValidator userDietValidator;
+    private final DietValidator dietValidator;
 
-    private final UserPhysicHealthValidator userPhysicHealthValidator;
+    private final PhysicHealthValidator physicHealthValidator;
 
-    private final UserDietMapper userDietMapper;
+    private final DietMapper dietMapper;
 
-    private final UserPhysicHealthMapper userPhysicHealthMapper;
+    private final PhysicHealthMapper physicHealthMapper;
 
-    private final UserPhysicHealthHistoryMapper userPhysicHealthHistoryMapper;
+    private final PhysicHealthHistoryMapper physicHealthHistoryMapper;
 
-    private final UserDietRepository userDietRepository;
+    private final DietRepository dietRepository;
 
-    private final UserPhysicHealthRepository userPhysicHealthRepository;
+    private final PhysicHealthRepository physicHealthRepository;
 
     @Override
-    public UserPhysicHealthDto getUserPhysicHealth(UUID userId) {
-        UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
+    public PhysicHealthDto getUserPhysicHealth(UUID userId) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
 
-        return userPhysicHealthMapper.entityToDto(userPhysicHealth);
+        return physicHealthMapper.entityToDto(physicHealth);
     }
 
     @Override
-    public List<UserPhysicHealthHistoryDto> getUserPhysicHealthHistory(UUID userId) {
-        UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
+    public List<PhysicHealthHistoryDto> getUserPhysicHealthHistory(UUID userId) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
 
-        List<UserPhysicHealthHistory> healthHistory = userPhysicHealth.getHistory();
+        List<PhysicHealthHistory> healthHistory = physicHealth.getHistory();
 
-        return userPhysicHealthHistoryMapper.entityListToDtoList(healthHistory);
+        return physicHealthHistoryMapper.entityListToDtoList(healthHistory);
     }
 
     @Override
-    public UserDietDto getUserDiet(UUID userId) {
-        UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
+    public DietDto getUserDiet(UUID userId) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
 
-        UserDiet diet = userPhysicHealth.getDiet();
+        Diet diet = physicHealth.getDiet();
 
-        return userDietMapper.entityToDto(diet);
-    }
-
-    @Override
-    @Transactional
-    public UserPhysicHealthDto createUserPhysicHealth(UUID userId, UserPhysicHealthCreationDto userPhysicHealthDto) {
-        userPhysicHealthValidator.validateUserIdUniqueness(userId);
-
-        UserPhysicHealth userPhysicHealthToCreate = userPhysicHealthMapper.dtoToEntity(userPhysicHealthDto);
-        userPhysicHealthToCreate.setUserId(userId);
-
-        return userPhysicHealthMapper.entityToDto(
-                userPhysicHealthRepository.save(userPhysicHealthToCreate));
+        return dietMapper.entityToDto(diet);
     }
 
     @Override
     @Transactional
-    public UserDietDto createUserDiet(UUID userId, UserDietCreationDto userDietDto) {
-        UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
-        userDietValidator.validateDietUniqueness(userPhysicHealth);
+    public PhysicHealthDto createUserPhysicHealth(UUID userId, PhysicHealthCreationDto userPhysicHealthDto) {
+        physicHealthValidator.validateUserIdUniqueness(userId);
 
-        UserDiet dietToCreate = userDietMapper.dtoToEntity(userDietDto);
-        dietToCreate.setPhysicHealth(userPhysicHealth);
-        userPhysicHealth.setDiet(dietToCreate);
+        PhysicHealth physicHealthToCreate = physicHealthMapper.dtoToEntity(userPhysicHealthDto);
+        physicHealthToCreate.setUserId(userId);
 
-        createNewHealthHistory(userPhysicHealth);
-        userPhysicHealthRepository.save(userPhysicHealth);
-
-        return userDietMapper.entityToDto(
-                userPhysicHealth.getDiet());
+        return physicHealthMapper.entityToDto(
+                physicHealthRepository.save(physicHealthToCreate));
     }
 
     @Override
     @Transactional
-    public UserPhysicHealthDto updateUserPhysicHealth(UUID userId, UserPhysicHealthUpdatingDto userPhysicHealthDto) {
-        UserPhysicHealth userPhysicHealthToUpdate = getUserPhysicHealthEntity(userId);
+    public DietDto createUserDiet(UUID userId, DietCreationDto userDietDto) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
+        dietValidator.validateDietUniqueness(physicHealth);
 
-        userPhysicHealthMapper.updateEntityFromDto(userPhysicHealthToUpdate, userPhysicHealthDto);
+        Diet dietToCreate = dietMapper.dtoToEntity(userDietDto);
+        dietToCreate.setPhysicHealth(physicHealth);
+        physicHealth.setDiet(dietToCreate);
 
-        createNewHealthHistory(userPhysicHealthToUpdate);
+        createNewHealthHistory(physicHealth);
+        physicHealthRepository.save(physicHealth);
 
-        return userPhysicHealthMapper.entityToDto(
-                userPhysicHealthRepository.save(userPhysicHealthToUpdate));
+        return dietMapper.entityToDto(
+                physicHealth.getDiet());
     }
 
     @Override
     @Transactional
-    public UserDietDto updateUserDiet(UUID userId, UserDietUpdatingDto userDietDto) {
-        UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
-        userDietValidator.validateDietExistence(userPhysicHealth);
+    public PhysicHealthDto updateUserPhysicHealth(UUID userId, PhysicHealthUpdatingDto userPhysicHealthDto) {
+        PhysicHealth physicHealthToUpdate = getUserPhysicHealthEntity(userId);
 
-        userDietMapper.updateEntityFromDto(userPhysicHealth.getDiet(), userDietDto);
-        userPhysicHealthRepository.save(userPhysicHealth);
+        physicHealthMapper.updateEntityFromDto(physicHealthToUpdate, userPhysicHealthDto);
 
-        return userDietMapper.entityToDto(userPhysicHealth.getDiet());
+        createNewHealthHistory(physicHealthToUpdate);
+
+        return physicHealthMapper.entityToDto(
+                physicHealthRepository.save(physicHealthToUpdate));
+    }
+
+    @Override
+    @Transactional
+    public DietDto updateUserDiet(UUID userId, DietUpdatingDto userDietDto) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
+        dietValidator.validateDietExistence(physicHealth);
+
+        dietMapper.updateEntityFromDto(physicHealth.getDiet(), userDietDto);
+        physicHealthRepository.save(physicHealth);
+
+        return dietMapper.entityToDto(physicHealth.getDiet());
     }
 
     @Override
     @Transactional
     public void deleteUserDiet(UUID userId) {
-        UserPhysicHealth userPhysicHealth = getUserPhysicHealthEntity(userId);
-        userDietValidator.validateDietExistence(userPhysicHealth);
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
+        dietValidator.validateDietExistence(physicHealth);
 
-        userDietRepository.delete(userPhysicHealth.getDiet());
-        userPhysicHealth.setDiet(null);
+        dietRepository.delete(physicHealth.getDiet());
+        physicHealth.setDiet(null);
 
-        userPhysicHealthRepository.save(userPhysicHealth);
+        physicHealthRepository.save(physicHealth);
     }
 
-    private UserPhysicHealth getUserPhysicHealthEntity(UUID userId) {
-        return userPhysicHealthRepository
+    private PhysicHealth getUserPhysicHealthEntity(UUID userId) {
+        return physicHealthRepository
                 .findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(USER_PHYSICAL_HEALTH_NOT_FOUND.formatted(userId)));
     }
 
-    private void createNewHealthHistory(UserPhysicHealth userPhysicHealth) {
-        UserPhysicHealthHistory newHistory = UserPhysicHealthHistory.builder()
-                .physicHealth(userPhysicHealth)
-                .weight(userPhysicHealth.getWeight())
+    private void createNewHealthHistory(PhysicHealth physicHealth) {
+        PhysicHealthHistory newHistory = PhysicHealthHistory.builder()
+                .physicHealth(physicHealth)
+                .weight(physicHealth.getWeight())
                 .build();
 
-        userPhysicHealth.getHistory().add(newHistory);
+        physicHealth.getHistory().add(newHistory);
     }
 }

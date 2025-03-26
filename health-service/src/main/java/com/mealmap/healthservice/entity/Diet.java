@@ -25,19 +25,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_diets", indexes = {
-        @Index(name = "idx_user_diets_user_physic_health_id", columnList = "user_physic_health_id")})
-public class UserDiet {
+@Table(name = "diets", indexes = {
+        @Index(name = "idx_diets_user_physic_health_id", columnList = "physic_health_id")})
+public class Diet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_physic_health_id")
-    private UserPhysicHealth physicHealth;
+    @JoinColumn(name = "physic_health_id")
+    private PhysicHealth physicHealth;
 
     @Column(nullable = false)
-    private DietType dietType;
+    private DietType type;
 
     @Column(nullable = false)
     private Integer goalWeight;

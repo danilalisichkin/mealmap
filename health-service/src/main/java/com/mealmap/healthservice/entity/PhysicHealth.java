@@ -29,9 +29,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_physic_health", indexes = {
-        @Index(name = "idx_user_physic_health_user_id", columnList = "user_id", unique = true)})
-public class UserPhysicHealth {
+@Table(name = "physic_health", indexes = {
+        @Index(name = "idx_physic_health_user_id", columnList = "user_id", unique = true)})
+public class PhysicHealth {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,9 +52,9 @@ public class UserPhysicHealth {
     private Gender gender;
 
     @OneToOne(mappedBy = "physicHealth", cascade = CascadeType.ALL)
-    private UserDiet diet;
+    private Diet diet;
 
     @Fetch(value = FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "physicHealth", cascade = CascadeType.ALL)
-    private List<UserPhysicHealthHistory> history;
+    private List<PhysicHealthHistory> history;
 }

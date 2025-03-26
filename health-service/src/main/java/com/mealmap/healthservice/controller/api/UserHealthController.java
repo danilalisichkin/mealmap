@@ -1,12 +1,12 @@
 package com.mealmap.healthservice.controller.api;
 
-import com.mealmap.healthservice.core.dto.diet.UserDietCreationDto;
-import com.mealmap.healthservice.core.dto.diet.UserDietDto;
-import com.mealmap.healthservice.core.dto.diet.UserDietUpdatingDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthCreationDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthHistoryDto;
-import com.mealmap.healthservice.core.dto.health.UserPhysicHealthUpdatingDto;
+import com.mealmap.healthservice.core.dto.diet.DietCreationDto;
+import com.mealmap.healthservice.core.dto.diet.DietDto;
+import com.mealmap.healthservice.core.dto.diet.DietUpdatingDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthCreationDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthHistoryDto;
+import com.mealmap.healthservice.core.dto.health.PhysicHealthUpdatingDto;
 import com.mealmap.healthservice.service.UserHealthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,62 +33,62 @@ public class UserHealthController {
     private final UserHealthService userHealthService;
 
     @GetMapping("/{userId}/physic-health")
-    public ResponseEntity<UserPhysicHealthDto> getUserPhysicHealth(@PathVariable UUID userId) {
-        UserPhysicHealthDto physicHealth = userHealthService.getUserPhysicHealth(userId);
+    public ResponseEntity<PhysicHealthDto> getUserPhysicHealth(@PathVariable UUID userId) {
+        PhysicHealthDto physicHealth = userHealthService.getUserPhysicHealth(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(physicHealth);
     }
 
     @GetMapping("/{userId}/physic-health/history")
-    public ResponseEntity<List<UserPhysicHealthHistoryDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
-        List<UserPhysicHealthHistoryDto> healthHistory = userHealthService.getUserPhysicHealthHistory(userId);
+    public ResponseEntity<List<PhysicHealthHistoryDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
+        List<PhysicHealthHistoryDto> healthHistory = userHealthService.getUserPhysicHealthHistory(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(healthHistory);
     }
 
     @GetMapping("/{userId}/diet")
-    public ResponseEntity<UserDietDto> getUserDiet(@PathVariable UUID userId) {
-        UserDietDto userDiet = userHealthService.getUserDiet(userId);
+    public ResponseEntity<DietDto> getUserDiet(@PathVariable UUID userId) {
+        DietDto userDiet = userHealthService.getUserDiet(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }
 
     @PostMapping("/{userId}/physic-health")
-    public ResponseEntity<UserPhysicHealthDto> createUserPhysicHealth(
+    public ResponseEntity<PhysicHealthDto> createUserPhysicHealth(
             @PathVariable UUID userId,
-            @RequestBody @Valid UserPhysicHealthCreationDto userPhysicHealthDto) {
+            @RequestBody @Valid PhysicHealthCreationDto userPhysicHealthDto) {
 
-        UserPhysicHealthDto physicHealth = userHealthService.createUserPhysicHealth(userId, userPhysicHealthDto);
+        PhysicHealthDto physicHealth = userHealthService.createUserPhysicHealth(userId, userPhysicHealthDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(physicHealth);
     }
 
     @PostMapping("/{userId}/diet")
-    public ResponseEntity<UserDietDto> createUserDiet(
+    public ResponseEntity<DietDto> createUserDiet(
             @PathVariable UUID userId,
-            @RequestBody @Valid UserDietCreationDto userDietDto) {
+            @RequestBody @Valid DietCreationDto userDietDto) {
 
-        UserDietDto userDiet = userHealthService.createUserDiet(userId, userDietDto);
+        DietDto userDiet = userHealthService.createUserDiet(userId, userDietDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userDiet);
     }
 
     @PutMapping("/{userId}/physic-health")
-    public ResponseEntity<UserPhysicHealthDto> updateUserPhysicHealth(
+    public ResponseEntity<PhysicHealthDto> updateUserPhysicHealth(
             @PathVariable UUID userId,
-            @RequestBody @Valid UserPhysicHealthUpdatingDto userPhysicHealthDto) {
+            @RequestBody @Valid PhysicHealthUpdatingDto userPhysicHealthDto) {
 
-        UserPhysicHealthDto physicHealth = userHealthService.updateUserPhysicHealth(userId, userPhysicHealthDto);
+        PhysicHealthDto physicHealth = userHealthService.updateUserPhysicHealth(userId, userPhysicHealthDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(physicHealth);
     }
 
     @PutMapping("/{userId}/diet")
-    public ResponseEntity<UserDietDto> updateUserDiet(
+    public ResponseEntity<DietDto> updateUserDiet(
             @PathVariable UUID userId,
-            @RequestBody @Valid UserDietUpdatingDto userDietDto) {
+            @RequestBody @Valid DietUpdatingDto userDietDto) {
 
-        UserDietDto userDiet = userHealthService.updateUserDiet(userId, userDietDto);
+        DietDto userDiet = userHealthService.updateUserDiet(userId, userDietDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }

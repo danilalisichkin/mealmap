@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.2-alter-user-diet-table" author="danilalisichkin">
+        <renameTable oldTableName="user_diets" newTableName="diets"/>
+
+        <renameColumn tableName="diets" oldColumnName="user_physic_health_id" newColumnName="physic_health_id"/>
+
+        <dropIndex tableName="diets" indexName="idx_user_diets_user_physic_health_id"/>
+
+        <createIndex indexName="idx_diets_user_physic_health_id"
+                     tableName="diets">
+            <column name="physic_health_id"/>
+        </createIndex>
+
+        <renameColumn tableName="diets" oldColumnName="diet_type" newColumnName="type"/>
+    </changeSet>
+
+</databaseChangeLog>

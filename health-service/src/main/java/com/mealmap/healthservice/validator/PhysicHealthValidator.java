@@ -1,7 +1,7 @@
 package com.mealmap.healthservice.validator;
 
 import com.mealmap.healthservice.exception.ConflictException;
-import com.mealmap.healthservice.repository.UserPhysicHealthRepository;
+import com.mealmap.healthservice.repository.PhysicHealthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +11,11 @@ import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_PH
 
 @Component
 @RequiredArgsConstructor
-public class UserPhysicHealthValidator {
-    private final UserPhysicHealthRepository userPhysicHealthRepository;
+public class PhysicHealthValidator {
+    private final PhysicHealthRepository physicHealthRepository;
 
     public void validateUserIdUniqueness(UUID userId) {
-        if (userPhysicHealthRepository.existsByUserId(userId)) {
+        if (physicHealthRepository.existsByUserId(userId)) {
             throw new ConflictException(USER_PHYSICAL_HEALTH_ALREADY_EXISTS.formatted(userId));
         }
     }

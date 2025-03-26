@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.2-alter-user-physic-health-table" author="danilalisichkin">
+        <renameTable oldTableName="user_physic_health" newTableName="physic_health"/>
+
+        <dropIndex tableName="physic_health" indexName="idx_user_physic_health_user_id"/>
+
+        <createIndex indexName="idx_physic_health_user_id"
+                     tableName="physic_health">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
