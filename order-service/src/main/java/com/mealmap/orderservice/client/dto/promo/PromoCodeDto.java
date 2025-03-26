@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,11 +12,5 @@ import java.time.LocalDate;
 public class PromoCodeDto {
     private String value;
 
-    private Long limit;
-
     private Integer discountPercentage;
-
-    private LocalDate startDate;
-
-    private LocalDate endDate;
 }

@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,19 +12,7 @@ import java.util.List;
 public class ProductDto {
     private Long id;
 
-    private String name;
-
     private Integer price;
 
-    private Integer weight;
-
-    private NutrientDto nutrients;
-
-    private String description;
-
-    private Boolean isNew;
-
     private Integer supplierId;
-
-    private List<CategorySimpleDto> categories;
 }
