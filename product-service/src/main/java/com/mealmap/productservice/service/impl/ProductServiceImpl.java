@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGORIES_NOT_FOUND;
 import static com.mealmap.productservice.core.message.ApplicationMessages.PRODUCT_NOT_FOUND;
@@ -96,8 +97,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable
-    public List<ProductDto> getProducts(List<Long> ids) {
+    @Cacheable(key = "#ids.stream().sorted().toList().toString()")
+    public List<ProductDto> getProducts(Set<Long> ids) {
         return productMapper.entityListToDtoList(
                 productRepository.findAllById(ids));
     }

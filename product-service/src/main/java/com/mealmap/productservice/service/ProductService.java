@@ -9,13 +9,14 @@ import com.mealmap.productservice.core.enums.sort.ProductSortField;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductService {
     PageDto<ProductDto> getPageOfProducts(
             Integer offset, Integer limit, ProductSortField sortBy, Sort.Direction sortOrder,
             ProductFilterDto filter, String search);
 
-    List<ProductDto> getProducts(List<Long> ids);
+    List<ProductDto> getProducts(Set<Long> ids);
 
     List<ProductDto> getAllProducts();
 

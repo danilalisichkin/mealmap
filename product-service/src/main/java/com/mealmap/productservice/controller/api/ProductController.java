@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @Validated
 @RestController
@@ -61,7 +62,7 @@ public class ProductController {
 
     @GetMapping("/bulk")
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
-            @RequestParam @Size(min = 2, max = 20) List<@NotNull Long> ids) {
+            @RequestParam @Size(min = 2, max = 20) Set<@NotNull Long> ids) {
 
         List<ProductDto> products = productService.getProducts(ids);
 
