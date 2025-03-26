@@ -52,6 +52,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> allProducts = productService.getAllProducts();
+
+        return ResponseEntity.status(HttpStatus.OK).body(allProducts);
+    }
+
     @GetMapping("/bulk")
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
             @RequestParam @Size(min = 2, max = 20) List<@NotNull Long> ids) {
