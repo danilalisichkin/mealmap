@@ -3,6 +3,7 @@ package com.mealmap.recommendationservice.controller.api;
 import com.mealmap.recommendationservice.core.dto.UserRecommendationDto;
 import com.mealmap.recommendationservice.core.dto.page.PageDto;
 import com.mealmap.recommendationservice.core.enums.sort.UserRecommendationSortField;
+import com.mealmap.recommendationservice.service.RecommendationService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -24,6 +25,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserRecommendationController {
+    private final RecommendationService recommendationService;
+
     @GetMapping("/{userId}/recommendations")
     public ResponseEntity<PageDto<UserRecommendationDto>> getUserRecommendations(
             @PathVariable UUID userId,
@@ -32,12 +35,16 @@ public class UserRecommendationController {
             @RequestParam(defaultValue = "ID") UserRecommendationSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<UserRecommendationDto> page =
+                recommendationService.getUserRecommendations(userId, offset, limit, sortBy, sortOrder);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
-    @GetMapping("/{userId}/recommendation/new")
+    @GetMapping("/{userId}/recommendations/new")
     public ResponseEntity<UserRecommendationDto> getNewUserRecommendation(@PathVariable UUID userId) {
+        UserRecommendationDto recommendation = recommendationService.getNewUserRecommendation(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(recommendation);
     }
 }
