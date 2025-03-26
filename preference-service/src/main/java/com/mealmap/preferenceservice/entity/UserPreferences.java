@@ -37,10 +37,10 @@ public class UserPreferences {
     private UUID userId;
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "userPreference", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userPreferences", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductPreference> productPreferences;
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "userPreference", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userPreferences", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryPreference> categoryPreferences;
 }

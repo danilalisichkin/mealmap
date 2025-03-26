@@ -36,7 +36,7 @@ public class ProductPreference {
     private Long productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_preference_id", nullable = false)
+    @JoinColumn(name = "user_preferences_id", nullable = false)
     private UserPreferences userPreferences;
 
     @Column(nullable = false)
