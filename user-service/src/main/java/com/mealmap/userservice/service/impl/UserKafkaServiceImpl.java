@@ -6,12 +6,14 @@ import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserStatusUpdateDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserUpdateDto;
 import com.mealmap.userservice.kafka.mapper.CartKafkaMapper;
+import com.mealmap.userservice.kafka.mapper.UserPreferencesKafkaMapper;
 import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.kafka.producer.UserRoleUpdateProducer;
 import com.mealmap.userservice.kafka.producer.UserStatusUpdateProducer;
 import com.mealmap.userservice.kafka.producer.UserUpdateProducer;
 import com.mealmap.userservice.repository.UserRepository;
 import com.mealmap.userservice.service.CartKafkaService;
+import com.mealmap.userservice.service.UserPreferencesKafkaService;
 import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserKafkaServiceImpl implements UserKafkaService {
+    private final UserPreferencesKafkaService userPreferencesKafkaService;
+
     private final CartKafkaService cartKafkaService;
+
+    private final UserPreferencesKafkaMapper userPreferencesKafkaMapper;
 
     private final CartKafkaMapper cartKafkaMapper;
 
@@ -50,6 +56,9 @@ public class UserKafkaServiceImpl implements UserKafkaService {
 
         cartKafkaService.createCart(
                 cartKafkaMapper.userToCartCreationDto(userToCreate));
+
+        userPreferencesKafkaService.createUserPreferences(
+                userPreferencesKafkaMapper.userToPreferencesCreationDto(userToCreate));
     }
 
     @Override

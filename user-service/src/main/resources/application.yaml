@@ -48,6 +48,10 @@ business:
         name: user.status-update.v1
         partitions: 1
         replicas: 1
+      user-preferences-creation:
+        name: user.preferences-creation.v1
+        partitions: 1
+        replicas: 1
       cart-creation:
         name: cart.creation.v1
         partitions: 1

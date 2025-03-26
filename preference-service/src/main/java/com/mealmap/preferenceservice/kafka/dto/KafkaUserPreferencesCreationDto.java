@@ -1,4 +1,4 @@
-package com.mealmap.userservice.kafka.dto;
+package com.mealmap.preferenceservice.kafka.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +9,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class KafkaCartCreationDto {
+public class KafkaUserPreferencesCreationDto {
     private UUID id;
 }

@@ -3,11 +3,13 @@ package com.mealmap.userservice.kafka.dto;
 import com.mealmap.userservice.entity.value.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class KafkaUserCreationDto {
     private UUID id;
