@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Immutable;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Immutable
 @Table(name = "user_status_history", indexes = {
         @Index(name = "idx_user_status_history_user_id", columnList = "user_id"),
         @Index(name = "idx_user_status_history_changed_by", columnList = "changed_by")})
