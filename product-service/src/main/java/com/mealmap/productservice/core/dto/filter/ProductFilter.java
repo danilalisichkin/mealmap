@@ -14,7 +14,7 @@ import static com.mealmap.productservice.validator.RangeValidator.isValidRange;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductFilterDto {
+public class ProductFilter {
     @PositiveOrZero
     private Integer minPrice;
 

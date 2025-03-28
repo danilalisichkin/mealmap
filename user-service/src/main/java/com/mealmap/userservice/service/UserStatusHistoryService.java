@@ -1,6 +1,6 @@
 package com.mealmap.userservice.service;
 
-import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
+import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
@@ -14,5 +14,5 @@ public interface UserStatusHistoryService {
 
     Page<StatusHistoryDto> getUserStatusHistory(
             User user, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,
-            UserStatusHistoryFilterDto filter);
+            UserStatusHistoryFilter filter);
 }

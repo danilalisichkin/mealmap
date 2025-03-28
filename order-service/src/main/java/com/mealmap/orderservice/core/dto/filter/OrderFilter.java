@@ -16,7 +16,7 @@ import static com.mealmap.orderservice.validator.RangeValidator.isValidRange;
 @Data
 @Builder
 @AllArgsConstructor
-public class OrderFilterDto {
+public class OrderFilter {
     @UUID
     private String userId;
 

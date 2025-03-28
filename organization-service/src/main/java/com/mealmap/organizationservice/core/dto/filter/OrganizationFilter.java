@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrganizationFilterDto {
+public class OrganizationFilter {
     @Positive
     private Integer upn;
 

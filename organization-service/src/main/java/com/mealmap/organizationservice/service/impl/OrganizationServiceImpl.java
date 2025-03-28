@@ -1,6 +1,6 @@
 package com.mealmap.organizationservice.service.impl;
 
-import com.mealmap.organizationservice.core.dto.filter.OrganizationFilterDto;
+import com.mealmap.organizationservice.core.dto.filter.OrganizationFilter;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationCreationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationUpdatingDto;
@@ -48,7 +48,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Cacheable
     public PageDto<OrganizationDto> getPageOfOrganizations(
             Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder,
-            OrganizationFilterDto filter) {
+            OrganizationFilter filter) {
 
         PageRequest request = PageBuilder.buildPageRequest(offset, limit, sortBy.getValue(), sortOrder);
 

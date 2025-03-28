@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.service.impl;
 
-import com.mealmap.orderservice.core.dto.filter.OrderFilterDto;
+import com.mealmap.orderservice.core.dto.filter.OrderFilter;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
 import com.mealmap.orderservice.core.dto.page.PageDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageDto<OrderDto> getPageOfOrders(
             Integer offset, Integer limit, OrderSortField sortBy, Sort.Direction sortOrder,
-            OrderFilterDto filter, String address) {
+            OrderFilter filter, String address) {
 
         PageRequest request = PageBuilder.buildPageRequest(offset, limit, sortBy.getValue(), sortOrder);
 

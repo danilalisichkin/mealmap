@@ -1,6 +1,6 @@
 package com.mealmap.organizationservice.service;
 
-import com.mealmap.organizationservice.core.dto.filter.OrganizationFilterDto;
+import com.mealmap.organizationservice.core.dto.filter.OrganizationFilter;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationCreationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationUpdatingDto;
@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 public interface OrganizationService {
     PageDto<OrganizationDto> getPageOfOrganizations(
             Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder,
-            OrganizationFilterDto filter);
+            OrganizationFilter filter);
 
     OrganizationDto getOrganization(Integer id);
 

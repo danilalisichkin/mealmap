@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.controller.api;
 
-import com.mealmap.orderservice.core.dto.filter.OrderFilterDto;
+import com.mealmap.orderservice.core.dto.filter.OrderFilter;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
 import com.mealmap.orderservice.core.dto.page.PageDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
@@ -39,7 +39,7 @@ public class OrderController {
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") OrderSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @ModelAttribute @Valid OrderFilterDto filter,
+            @ModelAttribute @Valid OrderFilter filter,
             @RequestParam(required = false) String address) {
 
         PageDto<OrderDto> page = orderService.getPageOfOrders(

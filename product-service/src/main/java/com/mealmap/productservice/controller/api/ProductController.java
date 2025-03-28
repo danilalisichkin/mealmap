@@ -1,6 +1,6 @@
 package com.mealmap.productservice.controller.api;
 
-import com.mealmap.productservice.core.dto.filter.ProductFilterDto;
+import com.mealmap.productservice.core.dto.filter.ProductFilter;
 import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
@@ -45,7 +45,7 @@ public class ProductController {
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") ProductSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @ModelAttribute @Valid ProductFilterDto filter,
+            @ModelAttribute @Valid ProductFilter filter,
             @RequestParam(required = false) String search) {
 
         var page = productService.getPageOfProducts(offset, limit, sortBy, sortOrder, filter, search);

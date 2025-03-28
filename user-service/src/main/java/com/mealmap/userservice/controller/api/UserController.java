@@ -1,7 +1,7 @@
 package com.mealmap.userservice.controller.api;
 
-import com.mealmap.userservice.core.dto.filter.UserFilterDto;
-import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
+import com.mealmap.userservice.core.dto.filter.UserFilter;
+import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.dto.page.PageDto;
@@ -47,7 +47,7 @@ public class UserController {
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") UserSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @ModelAttribute @Valid UserFilterDto filter,
+            @ModelAttribute @Valid UserFilter filter,
             @RequestParam(required = false) String name) {
 
         PageDto<UserDto> page = userService.getPageOfUsers(offset, limit, sortBy, sortOrder, filter, name);
@@ -87,7 +87,7 @@ public class UserController {
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") StatusHistorySortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @ModelAttribute @Valid UserStatusHistoryFilterDto filter) {
+            @ModelAttribute @Valid UserStatusHistoryFilter filter) {
 
         PageDto<StatusHistoryDto> page =
                 userService.getUserStatusHistory(id, offset, limit, sortBy, sortOrder, filter);

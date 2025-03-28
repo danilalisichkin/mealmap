@@ -3,7 +3,7 @@ package com.mealmap.productservice.service.impl;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
-import com.mealmap.productservice.core.dto.filter.ProductFilterDto;
+import com.mealmap.productservice.core.dto.filter.ProductFilter;
 import com.mealmap.productservice.service.ElasticsearchQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addTerms
 @RequiredArgsConstructor
 public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService {
     @Override
-    public Query buildQueryForProducts(Pageable pageable, ProductFilterDto filter, String search) {
+    public Query buildQueryForProducts(Pageable pageable, ProductFilter filter, String search) {
         BoolQuery.Builder boolQuery = QueryBuilders.bool();
 
         applyQueryByProductSearch(boolQuery, search);
@@ -57,15 +57,15 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
         addWildcardQuery(query, search, "name", "children.name", "parent.name");
     }
 
-    private void applyQueryByPrice(BoolQuery.Builder query, ProductFilterDto filter) {
+    private void applyQueryByPrice(BoolQuery.Builder query, ProductFilter filter) {
         addRangeFilter(query, "price", filter.getMinPrice(), filter.getMaxPrice());
     }
 
-    private void applyQueryByWeight(BoolQuery.Builder query, ProductFilterDto filter) {
+    private void applyQueryByWeight(BoolQuery.Builder query, ProductFilter filter) {
         addRangeFilter(query, "weight", filter.getMinWeight(), filter.getMaxWeight());
     }
 
-    private void applyQueryByNutrients(BoolQuery.Builder query, ProductFilterDto filter) {
+    private void applyQueryByNutrients(BoolQuery.Builder query, ProductFilter filter) {
         addRangeFilter(query, "nutrients.calories", filter.getMinCalories(), filter.getMaxCalories());
         addRangeFilter(query, "nutrients.proteins", filter.getMinProteins(), filter.getMaxProteins());
         addRangeFilter(query, "nutrients.fats", filter.getMinFats(), filter.getMaxFats());
@@ -74,7 +74,7 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
         addRangeFilter(query, "nutrients.sugars", filter.getMinSugars(), filter.getMaxSugars());
     }
 
-    private void applyQueryByCategories(BoolQuery.Builder query, ProductFilterDto filter) {
+    private void applyQueryByCategories(BoolQuery.Builder query, ProductFilter filter) {
         addTermsFilter(query, "categories.id", filter.getCategories());
     }
 }

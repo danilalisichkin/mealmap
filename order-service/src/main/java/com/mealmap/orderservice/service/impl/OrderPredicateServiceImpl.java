@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.service.impl;
 
-import com.mealmap.orderservice.core.dto.filter.OrderFilterDto;
+import com.mealmap.orderservice.core.dto.filter.OrderFilter;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.PaymentStatus;
 import com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate;
@@ -22,7 +22,7 @@ import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate
 @Service
 public class OrderPredicateServiceImpl implements OrderPredicateService {
 
-    public Predicate buildPredicateForOrders(OrderFilterDto filter, String address) {
+    public Predicate buildPredicateForOrders(OrderFilter filter, String address) {
         BooleanBuilder predicateBuilder = new BooleanBuilder();
 
         addFilterByUserId(predicateBuilder, filter.getUserId());

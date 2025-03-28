@@ -14,7 +14,7 @@ import static com.mealmap.userservice.validator.RangeValidator.isValidRange;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserStatusHistoryFilterDto {
+public class UserStatusHistoryFilter {
     private StatusEvent statusEvent;
 
     @PastOrPresent

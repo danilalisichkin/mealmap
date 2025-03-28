@@ -1,6 +1,6 @@
 package com.mealmap.userservice.service.impl;
 
-import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
+import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
@@ -58,7 +58,7 @@ public class UserStatusHistoryServiceImpl implements UserStatusHistoryService {
     @Override
     public Page<StatusHistoryDto> getUserStatusHistory(
             User user, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,
-            UserStatusHistoryFilterDto filter) {
+            UserStatusHistoryFilter filter) {
 
         PageRequest pageRequest = PageBuilder.buildPageRequest(
                 offset, limit, sortBy.getValue(), sortOrder);

@@ -1,6 +1,6 @@
 package com.mealmap.organizationservice.controller.api;
 
-import com.mealmap.organizationservice.core.dto.filter.OrganizationFilterDto;
+import com.mealmap.organizationservice.core.dto.filter.OrganizationFilter;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationCreationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationUpdatingDto;
@@ -39,7 +39,7 @@ public class OrganizationController {
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
             @RequestParam(defaultValue = "ID") OrganizationSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @ModelAttribute @Valid OrganizationFilterDto filter) {
+            @ModelAttribute @Valid OrganizationFilter filter) {
 
         PageDto<OrganizationDto> page =
                 organizationService.getPageOfOrganizations(offset, limit, sortBy, sortOrder, filter);

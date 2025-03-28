@@ -6,7 +6,7 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import com.mealmap.productservice.core.dto.filter.ProductFilterDto;
+import com.mealmap.productservice.core.dto.filter.ProductFilter;
 import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
     @SneakyThrows
     public PageDto<ProductDto> getPageOfProducts(
             Integer offset, Integer limit, ProductSortField sortBy, Sort.Direction sortOrder,
-            ProductFilterDto filter, String search) {
+            ProductFilter filter, String search) {
 
         PageRequest pageRequest = PageBuilder.buildPageRequest(
                 offset, limit, sortBy.getValue(), sortOrder);

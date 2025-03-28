@@ -1,6 +1,6 @@
 package com.mealmap.productservice.service;
 
-import com.mealmap.productservice.core.dto.filter.ProductFilterDto;
+import com.mealmap.productservice.core.dto.filter.ProductFilter;
 import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
@@ -14,7 +14,7 @@ import java.util.Set;
 public interface ProductService {
     PageDto<ProductDto> getPageOfProducts(
             Integer offset, Integer limit, ProductSortField sortBy, Sort.Direction sortOrder,
-            ProductFilterDto filter, String search);
+            ProductFilter filter, String search);
 
     List<ProductDto> getProducts(Set<Long> ids);
 

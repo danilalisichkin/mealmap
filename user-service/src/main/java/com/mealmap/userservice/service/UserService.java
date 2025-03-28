@@ -1,7 +1,7 @@
 package com.mealmap.userservice.service;
 
-import com.mealmap.userservice.core.dto.filter.UserFilterDto;
-import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
+import com.mealmap.userservice.core.dto.filter.UserFilter;
+import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.dto.page.PageDto;
@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface UserService {
     PageDto<UserDto> getPageOfUsers(
             Integer offset, Integer limit, UserSortField sortBy, Sort.Direction sortOrder,
-            UserFilterDto filter, String name);
+            UserFilter filter, String name);
 
     UserDto getUser(UUID id);
 
@@ -27,7 +27,7 @@ public interface UserService {
 
     PageDto<StatusHistoryDto> getUserStatusHistory(
             UUID id, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,
-            UserStatusHistoryFilterDto filter);
+            UserStatusHistoryFilter filter);
 
     StatusHistoryDto activateUser(UUID id, StatusHistoryCreationDto statusDto);
 

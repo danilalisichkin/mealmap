@@ -1,7 +1,7 @@
 package com.mealmap.userservice.service.impl;
 
-import com.mealmap.userservice.core.dto.filter.UserFilterDto;
-import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilterDto;
+import com.mealmap.userservice.core.dto.filter.UserFilter;
+import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
 import com.mealmap.userservice.core.dto.page.PageDto;
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Cacheable
     public PageDto<UserDto> getPageOfUsers(
             Integer offset, Integer limit, UserSortField sortBy, Sort.Direction sortOrder,
-            UserFilterDto filter, String name) {
+            UserFilter filter, String name) {
 
         PageRequest request = PageBuilder.buildPageRequest(offset, limit, sortBy.getValue(), sortOrder);
 
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageDto<StatusHistoryDto> getUserStatusHistory(
             UUID id, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,
-            UserStatusHistoryFilterDto filter) {
+            UserStatusHistoryFilter filter) {
 
         User requestedUser = getUserEntity(id);
 
