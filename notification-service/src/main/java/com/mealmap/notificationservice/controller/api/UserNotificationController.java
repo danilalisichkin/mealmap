@@ -4,9 +4,11 @@ import com.mealmap.notificationservice.core.dto.notification.NotificationCreatio
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
 import com.mealmap.notificationservice.core.dto.page.PageDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
+import com.mealmap.notificationservice.service.UserNotificationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.index.qual.Positive;
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Sort;
@@ -23,8 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserNotificationController {
+    private final UserNotificationService userNotificationService;
+
     @GetMapping("/{userId}/notifications")
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(
             @PathVariable @UUID String userId,
@@ -33,7 +38,10 @@ public class UserNotificationController {
             @RequestParam(defaultValue = "ID") NotificationSortField sortBy,
             @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<NotificationDto> page =
+                userNotificationService.getPageOfNotifications(userId, offset, limit, sortBy, sortOrder);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @PostMapping("/{userId}/notifications")
@@ -41,6 +49,8 @@ public class UserNotificationController {
             @PathVariable @UUID String userId,
             @RequestBody @Valid NotificationCreationDto notificationDto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        NotificationDto notification = userNotificationService.createNotification(userId, notificationDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(notification);
     }
 }

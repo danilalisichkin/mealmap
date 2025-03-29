@@ -4,10 +4,12 @@ import com.mealmap.notificationservice.core.dto.filter.NotificationFilter;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
 import com.mealmap.notificationservice.core.dto.page.PageDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
+import com.mealmap.notificationservice.service.NotificationService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.index.qual.Positive;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -21,9 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/notifications")
 public class NotificationController {
-    @GetMapping()
+    private final NotificationService notificationService;
+
+    @GetMapping
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -32,6 +37,9 @@ public class NotificationController {
             @ModelAttribute @Valid NotificationFilter filter,
             @RequestParam(required = false) @Size(max = 4000) String search) {
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        PageDto<NotificationDto> page =
+                notificationService.getPageOfNotifications(offset, limit, sortBy, sortOrder, filter, search);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 }
