@@ -9,7 +9,7 @@ spring:
       replica-set-name: ${DB_REPLICA_SET_NAME:rs0}
       database: ${DB_NAME:order_database}
 mongock:
-  migration-scan-package: com.cabaggregator.rideservice.migration
+  migration-scan-package: com.mealmap.orderservice.migration
   transactional: true
   enabled: true
 business:
