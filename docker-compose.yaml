@@ -257,6 +257,42 @@ services:
     networks:
       - mealmap-network
 
+  notification-mongo-database1:
+    container_name: mealmap-notification-mongo-database1
+    image: mongo:7.0
+    command: [ "--replSet", "rs0", "--bind_ip", "0.0.0.0", "--port", "27017" ]
+    ports:
+      - "27026:27017"
+    volumes:
+      - notification-mongo-database1_data:/data/db
+    healthcheck:
+      test: test $$(mongosh --port 27017 --eval "try {rs.initiate({_id:'rs0',members:[{_id:0,host:\"notification-mongo-database1:27017\",priority:1}, {_id:1,host:\"notification-mongo-database2:27017\",priority:0}]})} catch(e) {rs.status().ok}") -eq 1
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
+    networks:
+      - mealmap-network
+    depends_on:
+      - notification-mongo-database2
+
+  notification-mongo-database2:
+    container_name: mealmap-notification-mongo-database2
+    image: mongo:7.0
+    command: [ "--replSet", "rs0", "--bind_ip", "0.0.0.0", "--port", "27017" ]
+    ports:
+      - "27027:27017"
+    volumes:
+      - notification-mongo-database2_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    networks:
+      - mealmap-network
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: mealmap-pgadmin
@@ -451,6 +487,8 @@ volumes:
   promo-mongo-database2_data:
   recommendation-mongo-database1_data:
   recommendation-mongo-database2_data:
+  notification-mongo-database1_data:
+  notification-mongo-database2_data:
   product-redis_data:
   user-redis_data:
   organization-redis_data:
