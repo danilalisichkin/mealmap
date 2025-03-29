@@ -7,10 +7,34 @@ spring:
       username: ${DB_USERNAME:mongo}
       password: ${DB_PASSWORD:root}
       replica-set-name: ${DB_REPLICA_SET_NAME:rs0}
-      database: ${DB_NAME:notification_service}
+      database: ${DB_NAME:notification_database}
+  mail:
+    host: ${MAIL_SERVICE_HOST:smtp.mailersend.net}
+    port: ${MAIL_SERVICE_PORT:587}
+    username: ${MAIL_SERVICE_CLIENT_USERNAME:MS_7Truiz@trial-xkjn41m21p04z781.mlsender.net}
+    password: ${MAIL_SERVICE_CLIENT_PASSWORD:mssp.xaYg5O5.0r83ql3j78pgzw1j.XPFbmTP}
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    default-encoding: UTF-8
 mongock:
   migration-scan-package: com.mealmap.notificationservice.migration
   transactional: true
   enabled: true
+business:
+  notifications:
+    email:
+      enabled: ${NOTIFICATIONS_EMAIL_ENABLED:true}
+      sender:
+        email: ${NOTIFICATIONS_EMAIL_SENDER_EMAIL:mealmap@trial-xkjn41m21p04z781.mlsender.net}
+        name: ${NOTIFICATIONS_EMAIL_SENDER_NAME:MealMap - сервис организации корпоративного питания}
+    telegram:
+      enabled: ${NOTIFICATIONS_TELEGRAM_ENABLED:false}
+    sms:
+      enabled: ${NOTIFICATIONS_SMS_ENABLED:false}
 server:
   port: ${SERVER_PORT:8091}

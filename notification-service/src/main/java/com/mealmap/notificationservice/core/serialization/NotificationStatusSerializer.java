@@ -3,7 +3,7 @@ package com.mealmap.notificationservice.core.serialization;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.mealmap.notificationservice.document.enums.NotificationStatus;
+import com.mealmap.notificationservice.doc.enums.NotificationStatus;
 
 import java.io.IOException;
 

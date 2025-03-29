@@ -1,4 +1,4 @@
-package com.mealmap.notificationservice.document.enums;
+package com.mealmap.notificationservice.doc.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

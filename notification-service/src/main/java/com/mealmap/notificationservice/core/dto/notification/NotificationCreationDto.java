@@ -1,6 +1,6 @@
 package com.mealmap.notificationservice.core.dto.notification;
 
-import com.mealmap.notificationservice.document.enums.Channel;
+import com.mealmap.notificationservice.doc.enums.Channel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

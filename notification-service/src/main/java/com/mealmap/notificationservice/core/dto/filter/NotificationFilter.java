@@ -1,12 +1,13 @@
 package com.mealmap.notificationservice.core.dto.filter;
 
-import com.mealmap.notificationservice.document.enums.Channel;
-import com.mealmap.notificationservice.document.enums.NotificationStatus;
+import com.mealmap.notificationservice.doc.enums.Channel;
+import com.mealmap.notificationservice.doc.enums.NotificationStatus;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,9 @@ import static com.mealmap.notificationservice.validator.RangeValidator.isValidRa
 @Builder
 @AllArgsConstructor
 public class NotificationFilter {
+    @UUID
+    private String userId;
+
     private Channel channel;
 
     private NotificationStatus status;

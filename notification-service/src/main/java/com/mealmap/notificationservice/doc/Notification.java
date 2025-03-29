@@ -1,20 +1,28 @@
-package com.mealmap.notificationservice.core.dto.notification;
+package com.mealmap.notificationservice.doc;
 
 import com.mealmap.notificationservice.doc.enums.Channel;
 import com.mealmap.notificationservice.doc.enums.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
+@NoArgsConstructor
 @AllArgsConstructor
-public class NotificationDto {
+@Document("notifications")
+public class Notification {
+    @Id
     private ObjectId id;
 
+    @Indexed
     private String userId;
 
     private Channel channel;

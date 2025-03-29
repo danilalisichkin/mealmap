@@ -1,7 +1,7 @@
 package com.mealmap.notificationservice.migration;
 
-import com.mealmap.notificationservice.document.Notification;
-import com.mealmap.notificationservice.document.UserContacts;
+import com.mealmap.notificationservice.doc.Notification;
+import com.mealmap.notificationservice.doc.UserContacts;
 import io.mongock.api.annotations.BeforeExecution;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;

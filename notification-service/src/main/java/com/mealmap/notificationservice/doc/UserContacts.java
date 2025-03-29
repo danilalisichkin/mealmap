@@ -1,4 +1,4 @@
-package com.mealmap.notificationservice.document;
+package com.mealmap.notificationservice.doc;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +8,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder(toBuilder = true)
@@ -23,15 +21,9 @@ public class UserContacts {
     @Indexed(unique = true)
     private String userId;
 
-    private String firstName;
-
     private String email;
 
     private String phoneNumber;
 
     private Long tgChatId;
-
-    private String message;
-
-    private LocalDateTime createdAt;
 }
