@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: telegram-bot
+telegram:
+  bot:
+    token: ${TG_BOT_TOKEN:7509632284:AAGcvu3Jnq4Ey7CufazKKLxQmr54Xlig_eg}
+    username: ${TG_BOT_USERNAME:CustomPublisherBot}
+server:
+  port: ${SERVER_PORT:8092}
