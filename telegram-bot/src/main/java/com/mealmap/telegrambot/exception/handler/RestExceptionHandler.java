@@ -2,6 +2,7 @@ package com.mealmap.telegrambot.exception.handler;
 
 import com.mealmap.telegrambot.core.message.ErrorCauseMessages;
 import com.mealmap.telegrambot.exception.ForbiddenException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -42,6 +42,19 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNoValidException(MethodArgumentNotValidException e) {
+        Map<String, List<String>> errorMap = new HashMap<>();
+
+        getValidationErrors(errorMap, e);
+
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        errorMap.toString()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolationException(ConstraintViolationException e) {
         Map<String, List<String>> errorMap = new HashMap<>();
 
         getValidationErrors(errorMap, e);
@@ -90,6 +103,10 @@ public class RestExceptionHandler {
             validationEx.getBindingResult()
                     .getFieldErrors().forEach(error ->
                             addError.accept(error.getField(), error.getDefaultMessage()));
+        } else if (e instanceof ConstraintViolationException constraintEx) {
+            constraintEx.getConstraintViolations()
+                    .forEach(violation ->
+                            addError.accept(violation.getPropertyPath().toString(), violation.getMessage()));
         }
     }
 }

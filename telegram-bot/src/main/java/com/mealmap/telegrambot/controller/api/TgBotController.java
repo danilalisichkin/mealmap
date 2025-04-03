@@ -2,6 +2,8 @@ package com.mealmap.telegrambot.controller.api;
 
 import com.mealmap.telegrambot.service.TgLinkService;
 import com.mealmap.telegrambot.service.TgNotificationService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,10 @@ public class TgBotController {
     private final TgLinkService tgLinkService;
 
     @PostMapping("/chats/{chatId}/message")
-    public ResponseEntity<Void> sendMessageToChat(@PathVariable Long chatId, @RequestBody String message) {
+    public ResponseEntity<Void> sendMessageToChat(
+            @PathVariable Long chatId,
+            @RequestBody @NotBlank @Size(max = 4096) String message) {
+
         tgNotificationService.sendMessageToChat(chatId, message);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
