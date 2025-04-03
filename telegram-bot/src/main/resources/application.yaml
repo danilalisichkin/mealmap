@@ -1,9 +1,21 @@
 spring:
   application:
     name: telegram-bot
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 telegram:
   bot:
     token: ${TG_BOT_TOKEN:7509632284:AAGcvu3Jnq4Ey7CufazKKLxQmr54Xlig_eg}
     username: ${TG_BOT_USERNAME:CustomPublisherBot}
+business:
+  kafka:
+    topics:
+      user-contacts-update-tg-chat:
+        name: user-contacts.update-tg-chat.v1
+        partitions: 1
+        replicas: 1
 server:
   port: ${SERVER_PORT:8092}

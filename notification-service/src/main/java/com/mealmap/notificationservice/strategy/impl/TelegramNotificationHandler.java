@@ -1,5 +1,6 @@
 package com.mealmap.notificationservice.strategy.impl;
 
+import com.mealmap.notificationservice.client.TelegramBotApiClient;
 import com.mealmap.notificationservice.config.NotificationsConfig;
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.mealmap.notificationservice.core.constant.TelegramMessageTemplates.MESSAGE_WITH_SUBJECT_TEMPLATE;
 import static com.mealmap.notificationservice.core.message.ApplicationMessages.NOTIFICATION_METHOD_IS_DISABLED;
 import static com.mealmap.notificationservice.core.message.ApplicationMessages.USER_TELEGRAM_CHAT_NOT_SET;
 
@@ -22,14 +24,18 @@ import static com.mealmap.notificationservice.core.message.ApplicationMessages.U
 public class TelegramNotificationHandler extends NotificationBaseHandler {
     private final NotificationsConfig notificationsConfig;
 
+    private final TelegramBotApiClient telegramBotApiClient;
+
     @Autowired
     protected TelegramNotificationHandler(
             NotificationMapper notificationMapper,
             NotificationRepository notificationRepository,
-            NotificationsConfig notificationsConfig) {
+            NotificationsConfig notificationsConfig,
+            TelegramBotApiClient telegramBotApiClient) {
 
         super(notificationMapper, notificationRepository);
         this.notificationsConfig = notificationsConfig;
+        this.telegramBotApiClient = telegramBotApiClient;
     }
 
     @Override
@@ -47,7 +53,11 @@ public class TelegramNotificationHandler extends NotificationBaseHandler {
 
         Notification notificationToCreate = initDefaultNotification(userContacts, notificationDto);
 
-        //TODO: API call to telegram-bot-service
+        telegramBotApiClient.sendMessageToChat(
+                chatId,
+                MESSAGE_WITH_SUBJECT_TEMPLATE.formatted(
+                        notificationDto.getSubject(),
+                        notificationDto.getMessage()));
 
         return notificationMapper.docToDto(
                 notificationRepository.save(notificationToCreate));

@@ -21,11 +21,30 @@ spring:
           starttls:
             enable: true
     default-encoding: UTF-8
+  kafka:
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      properties:
+        spring.json:
+          value.default.type: java.util.Map
+          trusted.packages: '*'
+          use.type.headers: false
+        spring.deserializer:
+          key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+          value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
 mongock:
   migration-scan-package: com.mealmap.notificationservice.migration
   transactional: true
   enabled: true
 business:
+  kafka:
+    topics:
+      user-contacts-update-tg-chat:
+        name: user-contacts.update-tg-chat.v1
+        consumer:
+          group-id: user-contacts.update-tg-chat.consumer.group
   notifications:
     email:
       enabled: ${NOTIFICATIONS_EMAIL_ENABLED:true}
@@ -33,8 +52,11 @@ business:
         email: ${NOTIFICATIONS_EMAIL_SENDER_EMAIL:mealmap@trial-xkjn41m21p04z781.mlsender.net}
         name: ${NOTIFICATIONS_EMAIL_SENDER_NAME:MealMap - сервис организации корпоративного питания}
     telegram:
-      enabled: ${NOTIFICATIONS_TELEGRAM_ENABLED:false}
+      enabled: ${NOTIFICATIONS_TELEGRAM_ENABLED:true}
     sms:
       enabled: ${NOTIFICATIONS_SMS_ENABLED:false}
+  services:
+    telegram-bot:
+      url: ${TELEGRAM_BOT_API_URL:http://localhost:8092/api/v1/telegram-bot/}
 server:
   port: ${SERVER_PORT:8091}

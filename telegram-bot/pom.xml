@@ -37,6 +37,12 @@
             <artifactId>telegrambots-abilities</artifactId>
         </dependency>
 
+        <!-- Other Dependencies -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

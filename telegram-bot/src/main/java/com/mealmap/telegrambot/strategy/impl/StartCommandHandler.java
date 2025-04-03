@@ -2,6 +2,8 @@ package com.mealmap.telegrambot.strategy.impl;
 
 import com.mealmap.telegrambot.core.enums.CommandType;
 import com.mealmap.telegrambot.exception.InternalErrorException;
+import com.mealmap.telegrambot.kafka.dto.KafkaUserContactsUpdateTgChatDto;
+import com.mealmap.telegrambot.kafka.producer.UserContactsUpdateTgChatProducer;
 import com.mealmap.telegrambot.strategy.BaseCommandHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,9 +21,15 @@ import static com.mealmap.telegrambot.core.message.ApplicationMessages.USER_LINK
 
 @Component
 public class StartCommandHandler extends BaseCommandHandler {
+    private final UserContactsUpdateTgChatProducer chatUpdateProducer;
+
     @Autowired
-    protected StartCommandHandler(TelegramClient tgClient) {
+    protected StartCommandHandler(
+            TelegramClient tgClient,
+            UserContactsUpdateTgChatProducer chatUpdateProducer) {
+
         super(tgClient);
+        this.chatUpdateProducer = chatUpdateProducer;
     }
 
     @Override
@@ -36,12 +44,12 @@ public class StartCommandHandler extends BaseCommandHandler {
                 String payload = parts[1];
                 String decodedUserId = new String(Base64.getUrlDecoder().decode(payload));
 
-                UUID userId = UUID.fromString(decodedUserId);
-                // TODO: send kafka event to update user's contacts: tgChatId
+                chatUpdateProducer.sendMessage(
+                        new KafkaUserContactsUpdateTgChatDto(UUID.fromString(decodedUserId), chatId));
 
                 SendMessage response = SendMessage.builder()
                         .chatId(chatId)
-                        .text(USER_LINKED.formatted(userId.toString()))
+                        .text(USER_LINKED)
                         .build();
 
                 tgClient.execute(response);
