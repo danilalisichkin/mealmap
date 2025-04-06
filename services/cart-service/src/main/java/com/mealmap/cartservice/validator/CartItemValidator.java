@@ -1,6 +1,6 @@
 package com.mealmap.cartservice.validator;
 
-import com.mealmap.cartservice.exception.ForbiddenException;
+import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 import org.springframework.stereotype.Component;
 
 import static com.mealmap.cartservice.core.constant.CartLimits.MAX_PRODUCTS_PER_ITEM;

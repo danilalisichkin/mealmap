@@ -2,8 +2,8 @@ package com.mealmap.preferenceservice.validator;
 
 import com.mealmap.preferenceservice.entity.CategoryPreference;
 import com.mealmap.preferenceservice.entity.ProductPreference;
-import com.mealmap.preferenceservice.exception.ConflictException;
-import com.mealmap.preferenceservice.exception.ResourceNotFoundException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

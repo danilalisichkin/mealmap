@@ -1,7 +1,7 @@
 package com.mealmap.orderservice.validator;
 
 import com.mealmap.orderservice.core.dto.order.OrderItemCreationDto;
-import com.mealmap.orderservice.exception.ForbiddenException;
+import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

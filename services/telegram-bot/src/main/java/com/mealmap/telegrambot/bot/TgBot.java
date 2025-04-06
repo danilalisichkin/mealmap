@@ -1,7 +1,7 @@
 package com.mealmap.telegrambot.bot;
 
+import com.mealmap.starters.exceptionstarter.exception.InternalErrorException;
 import com.mealmap.telegrambot.config.TgBotProperties;
-import com.mealmap.telegrambot.exception.InternalErrorException;
 import com.mealmap.telegrambot.strategy.manager.CommandManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

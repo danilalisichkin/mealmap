@@ -1,14 +1,14 @@
 package com.mealmap.authservice.sevice.impl;
 
 import com.mealmap.authservice.client.KeycloakFeignClient;
-import com.mealmap.authservice.exception.BadRequestException;
-import com.mealmap.authservice.exception.ResourceNotFoundException;
-import com.mealmap.authservice.exception.UnauthorizedException;
 import com.mealmap.authservice.keycloak.config.KeycloakClientConfig;
 import com.mealmap.authservice.keycloak.config.KeycloakServerConfig;
 import com.mealmap.authservice.keycloak.util.KeycloakFeignExceptionConvertor;
 import com.mealmap.authservice.keycloak.util.KeycloakResponseValidator;
 import com.mealmap.authservice.sevice.KeycloakResourceService;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
+import com.mealmap.starters.exceptionstarter.exception.UnauthorizedException;
 import feign.FeignException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotAuthorizedException;
@@ -184,14 +184,6 @@ public class KeycloakResourceServiceImpl implements KeycloakResourceService {
         userRepresentation.setEmail(email);
         userRepresentation.setFirstName(firstName);
         userRepresentation.setLastName(lastName);
-        userRepresentation.setAttributes(attributes);
-
-        return userRepresentation;
-    }
-
-    private UserRepresentation buildUserRepresentationForUpdate(Map<String, List<String>> attributes) {
-        UserRepresentation userRepresentation = new UserRepresentation();
-
         userRepresentation.setAttributes(attributes);
 
         return userRepresentation;

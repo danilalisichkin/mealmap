@@ -1,5 +1,6 @@
 package com.mealmap.userservice.service.impl;
 
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import com.mealmap.userservice.core.dto.filter.UserFilter;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
@@ -14,7 +15,6 @@ import com.mealmap.userservice.core.mapper.UserMapper;
 import com.mealmap.userservice.entity.User;
 import com.mealmap.userservice.entity.enums.StatusEvent;
 import com.mealmap.userservice.entity.enums.UserRole;
-import com.mealmap.userservice.exception.ResourceNotFoundException;
 import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
 import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.repository.UserRepository;

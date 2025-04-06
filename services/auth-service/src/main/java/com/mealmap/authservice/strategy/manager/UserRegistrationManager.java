@@ -3,8 +3,8 @@ package com.mealmap.authservice.strategy.manager;
 import com.mealmap.authservice.core.dto.UserDto;
 import com.mealmap.authservice.core.dto.UserRegisterDto;
 import com.mealmap.authservice.core.enums.UserRole;
-import com.mealmap.authservice.exception.BadRequestException;
 import com.mealmap.authservice.strategy.UserRegistrationHandler;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

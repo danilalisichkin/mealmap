@@ -1,8 +1,8 @@
 package com.mealmap.recommendationservice.client.decoder;
 
-import com.mealmap.recommendationservice.exception.BadRequestException;
-import com.mealmap.recommendationservice.exception.ConflictException;
-import com.mealmap.recommendationservice.exception.ResourceNotFoundException;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.http.HttpStatus;

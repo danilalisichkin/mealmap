@@ -29,6 +29,12 @@
             <artifactId>mongodb-springdata-v4-driver</artifactId>
         </dependency>
 
+        <!-- Custom Starters -->
+        <dependency>
+            <groupId>com.mealmap.starters</groupId>
+            <artifactId>exception-starter</artifactId>
+        </dependency>
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

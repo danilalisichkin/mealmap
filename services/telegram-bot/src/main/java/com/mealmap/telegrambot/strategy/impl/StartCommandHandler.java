@@ -1,7 +1,7 @@
 package com.mealmap.telegrambot.strategy.impl;
 
+import com.mealmap.starters.exceptionstarter.exception.InternalErrorException;
 import com.mealmap.telegrambot.core.enums.CommandType;
-import com.mealmap.telegrambot.exception.InternalErrorException;
 import com.mealmap.telegrambot.kafka.dto.KafkaUserContactsUpdateTgChatDto;
 import com.mealmap.telegrambot.kafka.producer.UserContactsUpdateTgChatProducer;
 import com.mealmap.telegrambot.strategy.BaseCommandHandler;

@@ -1,8 +1,8 @@
 package com.mealmap.authservice.sevice.impl;
 
-import com.mealmap.authservice.exception.BadRequestException;
-import com.mealmap.authservice.exception.ResourceNotFoundException;
 import com.mealmap.authservice.sevice.KeycloakRoleService;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.resource.RolesResource;

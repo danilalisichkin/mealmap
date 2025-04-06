@@ -1,9 +1,9 @@
 package com.mealmap.authservice.keycloak.util;
 
 import com.mealmap.authservice.core.message.ApplicationMessages;
-import com.mealmap.authservice.exception.BadRequestException;
-import com.mealmap.authservice.exception.ConflictException;
-import com.mealmap.authservice.exception.UnauthorizedException;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.UnauthorizedException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.Response;
 import lombok.AccessLevel;

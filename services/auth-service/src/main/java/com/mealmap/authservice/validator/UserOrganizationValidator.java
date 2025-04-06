@@ -3,7 +3,7 @@ package com.mealmap.authservice.validator;
 import com.mealmap.authservice.client.OrganizationFeignClient;
 import com.mealmap.authservice.client.dto.organization.OrganizationType;
 import com.mealmap.authservice.core.enums.UserRole;
-import com.mealmap.authservice.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

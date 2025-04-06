@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>exception-starter</module>
         <module>notification-starter</module>
     </modules>
 
@@ -25,6 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <notification.strater.version>1.0-SNAPSHOT</notification.strater.version>
+        <exception.strater.version>1.0-SNAPSHOT</exception.strater.version>
 
         <apt.maven.plugin.version>1.1.3</apt.maven.plugin.version>
     </properties>
@@ -35,6 +37,11 @@
                 <groupId>com.mealmap.starters</groupId>
                 <artifactId>notification-starter</artifactId>
                 <version>${notification.strater.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mealmap.starters</groupId>
+                <artifactId>exception-starter</artifactId>
+                <version>${exception.strater.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

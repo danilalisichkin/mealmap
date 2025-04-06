@@ -1,9 +1,9 @@
 package com.mealmap.cartservice.validator;
 
 import com.mealmap.cartservice.entity.Cart;
-import com.mealmap.cartservice.exception.ConflictException;
-import com.mealmap.cartservice.exception.ForbiddenException;
 import com.mealmap.cartservice.repository.CartRepository;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

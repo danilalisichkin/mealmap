@@ -1,6 +1,6 @@
 package com.mealmap.telegrambot.service.impl;
 
-import com.mealmap.telegrambot.exception.InternalErrorException;
+import com.mealmap.starters.exceptionstarter.exception.InternalErrorException;
 import com.mealmap.telegrambot.service.TgNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

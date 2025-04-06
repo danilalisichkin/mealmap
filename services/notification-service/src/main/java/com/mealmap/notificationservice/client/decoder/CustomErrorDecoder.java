@@ -1,8 +1,8 @@
 package com.mealmap.notificationservice.client.decoder;
 
-import com.mealmap.notificationservice.exception.BadRequestException;
-import com.mealmap.notificationservice.exception.ConflictException;
-import com.mealmap.notificationservice.exception.ResourceNotFoundException;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.http.HttpStatus;

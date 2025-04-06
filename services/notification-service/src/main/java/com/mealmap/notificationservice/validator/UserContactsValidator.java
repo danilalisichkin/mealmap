@@ -1,7 +1,7 @@
 package com.mealmap.notificationservice.validator;
 
-import com.mealmap.notificationservice.exception.ConflictException;
 import com.mealmap.notificationservice.repository.UserContactsRepository;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

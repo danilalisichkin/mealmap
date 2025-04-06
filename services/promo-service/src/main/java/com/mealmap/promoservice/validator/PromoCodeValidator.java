@@ -1,8 +1,8 @@
 package com.mealmap.promoservice.validator;
 
-import com.mealmap.promoservice.exception.BadRequestException;
-import com.mealmap.promoservice.exception.ConflictException;
 import com.mealmap.promoservice.repository.PromoCodeRepository;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

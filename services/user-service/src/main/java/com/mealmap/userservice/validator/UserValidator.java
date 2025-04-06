@@ -1,6 +1,6 @@
 package com.mealmap.userservice.validator;
 
-import com.mealmap.userservice.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
 import com.mealmap.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

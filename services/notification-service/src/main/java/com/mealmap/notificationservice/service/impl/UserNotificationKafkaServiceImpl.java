@@ -1,12 +1,12 @@
 package com.mealmap.notificationservice.service.impl;
 
 import com.mealmap.notificationservice.doc.UserContacts;
-import com.mealmap.notificationservice.exception.InternalErrorException;
 import com.mealmap.notificationservice.kafka.dto.KafkaNotificationCreationDto;
 import com.mealmap.notificationservice.kafka.mapper.NotificationKafkaMapper;
 import com.mealmap.notificationservice.repository.UserContactsRepository;
 import com.mealmap.notificationservice.service.UserNotificationKafkaService;
 import com.mealmap.notificationservice.strategy.manager.NotificationManager;
+import com.mealmap.starters.exceptionstarter.exception.InternalErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -4,8 +4,8 @@ import com.mealmap.orderservice.core.enums.OrderLifecyclePhase;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.PaymentStatus;
 import com.mealmap.orderservice.doc.Order;
-import com.mealmap.orderservice.exception.ForbiddenException;
 import com.mealmap.orderservice.strategy.OrderLifecycleHandler;
+import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 import org.springframework.stereotype.Component;
 
 import static com.mealmap.orderservice.core.message.ApplicationMessages.ORDER_NOT_PAID;

@@ -1,8 +1,8 @@
 package com.mealmap.orderservice.client.decoder;
 
-import com.mealmap.orderservice.exception.BadRequestException;
-import com.mealmap.orderservice.exception.ConflictException;
-import com.mealmap.orderservice.exception.ResourceNotFoundException;
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.http.HttpStatus;

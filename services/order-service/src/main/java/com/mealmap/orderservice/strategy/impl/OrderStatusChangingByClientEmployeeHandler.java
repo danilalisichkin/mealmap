@@ -3,9 +3,9 @@ package com.mealmap.orderservice.strategy.impl;
 import com.mealmap.orderservice.core.enums.OrderLifecyclePhase;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.doc.Order;
-import com.mealmap.orderservice.exception.ForbiddenException;
 import com.mealmap.orderservice.strategy.OrderStatusChangingHandler;
 import com.mealmap.orderservice.strategy.manager.OrderLifecycleManager;
+import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

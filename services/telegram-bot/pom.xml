@@ -37,6 +37,12 @@
             <artifactId>telegrambots-abilities</artifactId>
         </dependency>
 
+        <!-- Custom Starters -->
+        <dependency>
+            <groupId>com.mealmap.starters</groupId>
+            <artifactId>exception-starter</artifactId>
+        </dependency>
+
         <!-- Other Dependencies -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>

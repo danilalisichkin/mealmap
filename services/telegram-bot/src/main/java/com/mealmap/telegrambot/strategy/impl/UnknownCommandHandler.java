@@ -1,7 +1,7 @@
 package com.mealmap.telegrambot.strategy.impl;
 
+import com.mealmap.starters.exceptionstarter.exception.InternalErrorException;
 import com.mealmap.telegrambot.core.enums.CommandType;
-import com.mealmap.telegrambot.exception.InternalErrorException;
 import com.mealmap.telegrambot.strategy.BaseCommandHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

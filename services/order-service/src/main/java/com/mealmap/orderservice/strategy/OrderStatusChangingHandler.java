@@ -3,7 +3,7 @@ package com.mealmap.orderservice.strategy;
 import com.mealmap.orderservice.core.enums.OrderLifecyclePhase;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.doc.Order;
-import com.mealmap.orderservice.exception.ForbiddenException;
+import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 
 import static com.mealmap.orderservice.core.message.ApplicationMessages.CANT_CHANGE_ORDER_STATUS;
 

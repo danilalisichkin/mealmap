@@ -1,6 +1,6 @@
 package com.mealmap.authservice.client.decoder;
 
-import com.mealmap.authservice.exception.ResourceNotFoundException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.http.HttpStatus;

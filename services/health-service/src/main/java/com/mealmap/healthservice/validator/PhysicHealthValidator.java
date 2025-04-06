@@ -1,7 +1,7 @@
 package com.mealmap.healthservice.validator;
 
-import com.mealmap.healthservice.exception.ConflictException;
 import com.mealmap.healthservice.repository.PhysicHealthRepository;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

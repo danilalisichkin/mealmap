@@ -1,9 +1,9 @@
 package com.mealmap.healthservice.validator;
 
 import com.mealmap.healthservice.entity.PhysicHealth;
-import com.mealmap.healthservice.exception.ConflictException;
-import com.mealmap.healthservice.exception.ResourceNotFoundException;
 import com.mealmap.healthservice.repository.DietRepository;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

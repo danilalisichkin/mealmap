@@ -1,8 +1,8 @@
 package com.mealmap.productservice.validator;
 
-import com.mealmap.productservice.exception.ConflictException;
-import com.mealmap.productservice.exception.ResourceNotFoundException;
 import com.mealmap.productservice.repository.CategoryRepository;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
+import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
