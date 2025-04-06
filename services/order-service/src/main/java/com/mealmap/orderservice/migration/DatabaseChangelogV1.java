@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.migration;
 
-import com.mealmap.orderservice.document.Order;
+import com.mealmap.orderservice.doc.Order;
 import io.mongock.api.annotations.BeforeExecution;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;

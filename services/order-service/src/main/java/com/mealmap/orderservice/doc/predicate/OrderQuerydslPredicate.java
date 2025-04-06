@@ -1,8 +1,8 @@
-package com.mealmap.orderservice.document.predicate;
+package com.mealmap.orderservice.doc.predicate;
 
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.PaymentStatus;
-import com.mealmap.orderservice.document.QOrder;
+import com.mealmap.orderservice.doc.QOrder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimePath;
 import lombok.AccessLevel;

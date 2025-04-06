@@ -3,7 +3,7 @@ package com.mealmap.orderservice.service.impl;
 import com.mealmap.orderservice.core.dto.filter.OrderFilter;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.PaymentStatus;
-import com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate;
+import com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate;
 import com.mealmap.orderservice.service.OrderPredicateService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.hasDeliveryAddressLike;
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.hasItemWithProductId;
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.hasPaymentStatus;
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.hasStatus;
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.isCompletedAtBetween;
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.isOrderedAtBetween;
-import static com.mealmap.orderservice.document.predicate.OrderQuerydslPredicate.isReadyAtBetween;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.hasDeliveryAddressLike;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.hasItemWithProductId;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.hasPaymentStatus;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.hasStatus;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.isCompletedAtBetween;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.isOrderedAtBetween;
+import static com.mealmap.orderservice.doc.predicate.OrderQuerydslPredicate.isReadyAtBetween;
 
 @Service
 public class OrderPredicateServiceImpl implements OrderPredicateService {

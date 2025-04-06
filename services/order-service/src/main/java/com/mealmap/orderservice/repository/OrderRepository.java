@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.repository;
 
-import com.mealmap.orderservice.document.Order;
+import com.mealmap.orderservice.doc.Order;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

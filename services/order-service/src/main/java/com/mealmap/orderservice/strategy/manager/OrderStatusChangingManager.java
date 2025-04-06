@@ -1,7 +1,7 @@
 package com.mealmap.orderservice.strategy.manager;
 
 import com.mealmap.orderservice.core.enums.OrderStatus;
-import com.mealmap.orderservice.document.Order;
+import com.mealmap.orderservice.doc.Order;
 import com.mealmap.orderservice.strategy.OrderStatusChangingHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -45,6 +45,12 @@
             </exclusions>
         </dependency>
 
+        <!-- Custom Starters -->
+        <dependency>
+            <groupId>com.mealmap.starters</groupId>
+            <artifactId>notification-starter</artifactId>
+        </dependency>
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -105,6 +111,7 @@
                 <artifactId>apt-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>process</goal>
                         </goals>

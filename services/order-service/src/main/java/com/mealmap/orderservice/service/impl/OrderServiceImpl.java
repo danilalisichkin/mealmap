@@ -7,7 +7,7 @@ import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.sort.OrderSortField;
 import com.mealmap.orderservice.core.mapper.OrderMapper;
 import com.mealmap.orderservice.core.mapper.PageMapper;
-import com.mealmap.orderservice.document.Order;
+import com.mealmap.orderservice.doc.Order;
 import com.mealmap.orderservice.exception.ResourceNotFoundException;
 import com.mealmap.orderservice.repository.OrderRepository;
 import com.mealmap.orderservice.service.OrderPredicateService;

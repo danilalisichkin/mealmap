@@ -1,4 +1,4 @@
-package com.mealmap.orderservice.document.value;
+package com.mealmap.orderservice.doc.value;
 
 import com.mealmap.orderservice.core.enums.PaymentStatus;
 import lombok.AllArgsConstructor;
