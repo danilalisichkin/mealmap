@@ -31,7 +31,7 @@
 
         <!-- Custom Starters -->
         <dependency>
-            <groupId>com.mealmap</groupId>
+            <groupId>com.mealmap.starters</groupId>
             <artifactId>notification-starter</artifactId>
         </dependency>
 

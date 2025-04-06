@@ -2,10 +2,12 @@ package com.mealmap.notificationservice.service.impl;
 
 import com.mealmap.notificationservice.doc.UserContacts;
 import com.mealmap.notificationservice.exception.InternalErrorException;
+import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsCreationDto;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateTgChatDto;
 import com.mealmap.notificationservice.kafka.mapper.UserContactsKafkaMapper;
 import com.mealmap.notificationservice.repository.UserContactsRepository;
 import com.mealmap.notificationservice.service.UserContactsKafkaService;
+import com.mealmap.notificationservice.validator.UserContactsValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,24 @@ import static com.mealmap.notificationservice.core.message.ApplicationMessages.U
 @Service
 @RequiredArgsConstructor
 public class UserContactsKafkaServiceImpl implements UserContactsKafkaService {
+    private final UserContactsValidator userContactsValidator;
+
     private final UserContactsKafkaMapper userContactsKafkaMapper;
 
     private final UserContactsRepository userContactsRepository;
+
+    @Override
+    @Transactional
+    public void createUserContacts(KafkaUserContactsCreationDto dto) {
+        try {
+            userContactsValidator.validateUserIdUniqueness(dto.getUserId().toString());
+
+            userContactsRepository.save(
+                    userContactsKafkaMapper.dtoToDoc(dto));
+        } catch (Exception e) {
+            throw new InternalErrorException(e);
+        }
+    }
 
     @Override
     @Transactional

@@ -3,7 +3,6 @@ package com.mealmap.preferenceservice.repository;
 import com.mealmap.preferenceservice.entity.UserPreferences;
 import com.mealmap.preferenceservice.entity.enums.PreferenceType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.mealmap.notificationservice.strategy.manager;
+package com.mealmap.notificationservice.strategy;
 
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.mapper.NotificationMapper;
@@ -6,7 +6,6 @@ import com.mealmap.notificationservice.doc.Notification;
 import com.mealmap.notificationservice.doc.UserContacts;
 import com.mealmap.notificationservice.doc.enums.NotificationStatus;
 import com.mealmap.notificationservice.repository.NotificationRepository;
-import com.mealmap.notificationservice.strategy.NotificationHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 

@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.mealmap</groupId>
+    <groupId>com.mealmap.starters</groupId>
     <artifactId>starters-bom</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -30,9 +30,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.mealmap</groupId>
+                <groupId>com.mealmap.starters</groupId>
                 <artifactId>notification-starter</artifactId>
-                <version>${project.version}</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

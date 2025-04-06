@@ -41,10 +41,18 @@ mongock:
 business:
   kafka:
     topics:
+      user-contacts-creation:
+        name: user-contacts.creation.v1
+        consumer:
+          group-id: user-contacts.creation.consumer.group
       user-contacts-update-tg-chat:
         name: user-contacts.update-tg-chat.v1
         consumer:
           group-id: user-contacts.update-tg-chat.consumer.group
+      notification-creation:
+        name: notification.creation.v1
+        consumer:
+          group-id: notification.creation.consumer.group
   notifications:
     email:
       enabled: ${NOTIFICATIONS_EMAIL_ENABLED:true}

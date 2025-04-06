@@ -42,7 +42,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.mealmap</groupId>
+                <groupId>com.mealmap.starters</groupId>
                 <artifactId>starters-bom</artifactId>
                 <version>${starters.bom.version}</version>
                 <type>pom</type>

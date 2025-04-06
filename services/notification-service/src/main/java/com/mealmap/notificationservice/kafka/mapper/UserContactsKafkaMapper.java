@@ -1,6 +1,7 @@
 package com.mealmap.notificationservice.kafka.mapper;
 
 import com.mealmap.notificationservice.doc.UserContacts;
+import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsCreationDto;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateTgChatDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,6 +10,10 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserContactsKafkaMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tgChatId", ignore = true)
+    UserContacts dtoToDoc(KafkaUserContactsCreationDto dto);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "email", ignore = true)

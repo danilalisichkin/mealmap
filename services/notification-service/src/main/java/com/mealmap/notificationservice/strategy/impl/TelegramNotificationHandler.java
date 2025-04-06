@@ -11,7 +11,7 @@ import com.mealmap.notificationservice.doc.enums.Channel;
 import com.mealmap.notificationservice.exception.ForbiddenException;
 import com.mealmap.notificationservice.exception.ResourceNotFoundException;
 import com.mealmap.notificationservice.repository.NotificationRepository;
-import com.mealmap.notificationservice.strategy.manager.NotificationBaseHandler;
+import com.mealmap.notificationservice.strategy.NotificationBaseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

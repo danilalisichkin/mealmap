@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.stereotype.Service;
 
-import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addWildcardQuery;
 import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addRangeFilter;
 import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addTermsFilter;
+import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addWildcardQuery;
 
 @Service
 @RequiredArgsConstructor
