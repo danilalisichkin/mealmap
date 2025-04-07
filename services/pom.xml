@@ -25,6 +25,7 @@
         <module>product-service</module>
         <module>promo-service</module>
         <module>preference-service</module>
+        <module>recommendation-service</module>
         <module>telegram-bot</module>
         <module>user-service</module>
     </modules>
