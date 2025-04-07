@@ -1,0 +1,14 @@
+{
+  "policies":[
+    {
+      "name": "IsActivePolicy",
+      "description": "compared isActive attribute",
+      "fileName": "user-is-active-policy.js"
+    },
+    {
+      "name": "IsNotBlockedPolicy",
+      "description": "compared isBlocked and isTemporaryBlocked attributes",
+      "fileName": "user-is-not-blocked-policy.js"
+    }
+  ]
+}

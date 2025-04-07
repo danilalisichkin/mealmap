@@ -384,15 +384,16 @@ services:
       - mealmap-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.0.7
+    image: quay.io/keycloak/keycloak:26.1.4
     container_name: mealmap-keycloak
     restart: on-failure
-    command: start-dev --import-realm --health-enabled=true --metrics-enabled=true
+    command: start-dev --import-realm --health-enabled=true --metrics-enabled=true --features=scripts
     ports:
       - "8080:8080"
       - "9000:9000"
     volumes:
       - ./system-services/keycloak/export:/opt/keycloak/data/import
+      - ./system-services/keycloak/auth-scripts/policies.jar:/opt/keycloak/providers/policies.jar
     environment:
       KC_HTTP_PORT: 8080
       KEYCLOAK_ADMIN: admin
