@@ -38,6 +38,10 @@
             <groupId>com.mealmap.starters</groupId>
             <artifactId>exception-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.mealmap.starters</groupId>
+            <artifactId>security-starter</artifactId>
+        </dependency>
 
         <!-- Other Dependencies -->
         <dependency>

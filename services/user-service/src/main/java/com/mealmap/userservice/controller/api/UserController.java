@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,6 +43,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<UserDto>> getPageOfUsers(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -56,6 +58,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
         UserDto user = userService.getUser(id);
 
@@ -63,6 +66,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable UUID id, @RequestBody @Valid UserUpdatingDto userDto) {
 
@@ -72,6 +76,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDto> updateUserRole(
             @PathVariable UUID id, @RequestBody @NotNull UserRole role) {
 
@@ -81,6 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/status-history")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
     public ResponseEntity<PageDto<StatusHistoryDto>> getUserStatusHistory(
             @PathVariable UUID id,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -96,6 +102,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
     public ResponseEntity<StatusHistoryDto> activateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -105,6 +112,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
     public ResponseEntity<StatusHistoryDto> deactivateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -114,6 +122,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/block")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> blockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -123,6 +132,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/temporary-block")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> temporaryBlockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -132,6 +142,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/unblock")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> unblockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
