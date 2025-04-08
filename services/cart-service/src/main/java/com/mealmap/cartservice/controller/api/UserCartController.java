@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class UserCartController {
     private final UserCartService userCartService;
 
     @GetMapping("/{userId}/cart")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<CartDto> getCart(@PathVariable UUID userId) {
         CartDto cart = userCartService.getCart(userId);
 
@@ -38,6 +40,7 @@ public class UserCartController {
     }
 
     @PostMapping("/{userId}/cart/items")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<CartDto> addItemToCart(
             @PathVariable UUID userId,
             @RequestBody @Valid CartItemAddingDto itemDto) {
@@ -48,6 +51,7 @@ public class UserCartController {
     }
 
     @PatchMapping("/{userId}/cart/items/{itemId}/quantity")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<CartItemDto> changeCartItemQuantity(
             @PathVariable UUID userId,
             @PathVariable Long itemId,
@@ -59,6 +63,7 @@ public class UserCartController {
     }
 
     @DeleteMapping("/{userId}/cart/items/{itemId}")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<Void> deleteItemFromCart(
             @PathVariable UUID userId,
             @PathVariable Long itemId) {
@@ -69,6 +74,7 @@ public class UserCartController {
     }
 
     @DeleteMapping("/{userId}/cart")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<Void> clearCart(@PathVariable UUID userId) {
         userCartService.clearCart(userId);
 
