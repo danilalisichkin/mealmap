@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,7 @@ public class TgBotController {
     private final TgLinkService tgLinkService;
 
     @PostMapping("/chats/{chatId}/message")
+    @PreAuthorize("isAuthenticated()") //TODO: allow usage only for internal services
     public ResponseEntity<Void> sendMessageToChat(
             @PathVariable Long chatId,
             @RequestBody @NotBlank @Size(max = 4096) String message) {
@@ -36,6 +38,7 @@ public class TgBotController {
     }
 
     @GetMapping("/links/start")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<String> generateStartLink(@RequestParam UUID userId) {
         String link = tgLinkService.generateStartLinkForUser(userId);
 
