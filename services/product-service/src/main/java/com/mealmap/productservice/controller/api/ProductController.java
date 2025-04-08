@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow recommendation-service use this method
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         List<ProductDto> allProducts = productService.getAllProducts();
 
@@ -61,6 +63,7 @@ public class ProductController {
     }
 
     @GetMapping("/bulk")
+    @PreAuthorize("isAuthenticated()") //TODO: allow recommendation-service use this method
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
             @RequestParam @Size(min = 2, max = 20) Set<@NotNull Long> ids) {
 
@@ -77,6 +80,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Admin use this method
     public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductCreatingDto productDto) {
         ProductDto product = productService.createProduct(productDto);
 
@@ -84,6 +88,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Admin use this method
     public ResponseEntity<ProductDto> updateProduct(
             @PathVariable Long id, @RequestBody @Valid ProductUpdatingDto productDto) {
 
@@ -93,6 +98,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Admin use this method
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
 

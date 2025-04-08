@@ -4,6 +4,7 @@ import com.mealmap.productservice.service.ElasticsearchSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ public class SyncController {
     private final ElasticsearchSyncService esSyncService;
 
     @PostMapping("/products")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> syncProducts() {
         esSyncService.syncProducts();
 
@@ -22,6 +24,7 @@ public class SyncController {
     }
 
     @PostMapping("/categories")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> syncCategories() {
         esSyncService.syncCategories();
 
