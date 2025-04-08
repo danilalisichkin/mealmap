@@ -393,7 +393,6 @@ services:
       - "9000:9000"
     volumes:
       - ./system-services/keycloak/export:/opt/keycloak/data/import
-      - ./system-services/keycloak/auth-scripts/policies.jar:/opt/keycloak/providers/policies.jar
     environment:
       KC_HTTP_PORT: 8080
       KEYCLOAK_ADMIN: admin
