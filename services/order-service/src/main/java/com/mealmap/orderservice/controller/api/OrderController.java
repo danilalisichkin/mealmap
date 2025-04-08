@@ -16,6 +16,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,6 +36,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<OrderDto>> getPageOfOrders(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -49,6 +52,7 @@ public class OrderController {
     }
     
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Employee use this method
     public ResponseEntity<OrderDto> getOrder(@PathVariable ObjectId id) {
         OrderDto order = orderService.getOrder(id);
 
@@ -56,6 +60,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Employee use this method
     public ResponseEntity<OrderDto> updateOrderStatus(
             @PathVariable ObjectId id,
             @RequestBody @NotNull OrderStatus status) {
