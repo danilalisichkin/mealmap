@@ -18,6 +18,7 @@
     <modules>
         <module>exception-starter</module>
         <module>notification-starter</module>
+        <module>pagination-starter</module>
         <module>security-starter</module>
     </modules>
 
@@ -26,8 +27,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <notification.strater.version>1.0-SNAPSHOT</notification.strater.version>
+        <pagination.starter.version>1.0-SNAPSHOT</pagination.starter.version>
         <exception.strater.version>1.0-SNAPSHOT</exception.strater.version>
+        <notification.strater.version>1.0-SNAPSHOT</notification.strater.version>
         <security.strater.version>1.0-SNAPSHOT</security.strater.version>
 
         <apt.maven.plugin.version>1.1.3</apt.maven.plugin.version>
@@ -37,13 +39,18 @@
         <dependencies>
             <dependency>
                 <groupId>com.mealmap.starters</groupId>
-                <artifactId>notification-starter</artifactId>
-                <version>${notification.strater.version}</version>
+                <artifactId>pagination-starter</artifactId>
+                <version>${pagination.starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mealmap.starters</groupId>
                 <artifactId>exception-starter</artifactId>
                 <version>${exception.strater.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mealmap.starters</groupId>
+                <artifactId>notification-starter</artifactId>
+                <version>${notification.strater.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mealmap.starters</groupId>
