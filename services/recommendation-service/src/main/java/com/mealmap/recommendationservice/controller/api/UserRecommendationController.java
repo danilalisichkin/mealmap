@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class UserRecommendationController {
     private final RecommendationService recommendationService;
 
     @GetMapping("/{userId}/recommendations")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<PageDto<UserRecommendationDto>> getUserRecommendations(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -42,6 +44,7 @@ public class UserRecommendationController {
     }
 
     @GetMapping("/{userId}/recommendations/new")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<UserRecommendationDto> getNewUserRecommendation(@PathVariable UUID userId) {
         UserRecommendationDto recommendation = recommendationService.getNewUserRecommendation(userId);
 
