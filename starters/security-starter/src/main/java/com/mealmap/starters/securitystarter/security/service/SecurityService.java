@@ -1,6 +1,7 @@
 package com.mealmap.starters.securitystarter.security.service;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -16,40 +17,40 @@ import static com.mealmap.starters.securitystarter.security.util.JwtClaimsExtrac
 public class SecurityService {
     public boolean isActive(Authentication authentication) {
         if (authentication instanceof JwtAuthenticationToken) {
-            return extractIsActive(getTokenValue(authentication));
+            return extractIsActive(getJwt(authentication));
         }
         return false;
     }
 
     public boolean isBlocked(Authentication authentication) {
         if (authentication instanceof JwtAuthenticationToken) {
-            return extractIsBlocked(getTokenValue(authentication));
+            return extractIsBlocked(getJwt(authentication));
         }
         return false;
     }
 
     public boolean isTemporaryBlocked(Authentication authentication) {
         if (authentication instanceof JwtAuthenticationToken) {
-            return extractIsTemporaryBlocked(getTokenValue(authentication));
+            return extractIsTemporaryBlocked(getJwt(authentication));
         }
         return false;
     }
 
     public boolean isOrganizationMember(Authentication authentication, Long organizationId) {
         if (authentication instanceof JwtAuthenticationToken) {
-            return organizationId.equals(extractOrganizationId(getTokenValue(authentication)));
+            return organizationId.equals(extractOrganizationId(getJwt(authentication)));
         }
         return false;
     }
 
     public boolean hasUserId(Authentication authentication, UUID userId) {
         if (authentication instanceof JwtAuthenticationToken) {
-            return userId.equals(extractUserId(getTokenValue(authentication)));
+            return userId.equals(extractUserId(getJwt(authentication)));
         }
         return false;
     }
 
-    private String getTokenValue(Authentication authentication) {
-        return ((JwtAuthenticationToken) authentication).getToken().getTokenValue();
+    private Jwt getJwt(Authentication authentication) {
+        return ((JwtAuthenticationToken) authentication).getToken();
     }
 }

@@ -1,6 +1,7 @@
 package com.mealmap.starters.securitystarter.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +21,12 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import static com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor.extractUserRoles;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
     private final ObjectMapper objectMapper;
+
     private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
     public WebSecurityConfig(
@@ -42,14 +42,14 @@ public class WebSecurityConfig {
         return http
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(r -> r
-                        .anyRequest()
-                        .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .accessDeniedHandler(accessDeniedHandler())
                         .authenticationEntryPoint(authenticationEntryPoint()))
+                .authorizeHttpRequests(r -> r
+                        .anyRequest()
+                        .authenticated())
                 .exceptionHandling(h -> h
                         .accessDeniedHandler(accessDeniedHandler())
                         .authenticationEntryPoint(authenticationEntryPoint()))
@@ -66,8 +66,7 @@ public class WebSecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(jwt ->
-                extractUserRoles(jwt.getTokenValue()));
+        converter.setJwtGrantedAuthoritiesConverter(JwtClaimsExtractor::extractUserRoles);
         converter.setPrincipalClaimName("sub");
 
         return converter;

@@ -1,6 +1,7 @@
 package com.mealmap.starters.securitystarter.autoconfigure;
 
 import com.mealmap.starters.securitystarter.security.config.WebSecurityConfig;
+import com.mealmap.starters.securitystarter.security.filter.UserAuthorizationFilter;
 import com.mealmap.starters.securitystarter.security.service.SecurityService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -10,9 +11,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 @AutoConfiguration
 @ConditionalOnClass(name = "org.springframework.security.config.annotation.web.builders.HttpSecurity")
@@ -20,15 +18,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @EnableConfigurationProperties(OAuth2ResourceServerProperties.class)
 @Import(WebSecurityConfig.class)
 public class SecurityAutoConfigure {
-    @Bean
-    @ConditionalOnMissingBean
-    public JwtDecoder jwtDecoder(OAuth2ResourceServerProperties properties) {
-        if (properties.getJwt().getIssuerUri() != null) {
-            return JwtDecoders.fromIssuerLocation(properties.getJwt().getIssuerUri());
-        }
-        return NimbusJwtDecoder.withJwkSetUri(properties.getJwt().getJwkSetUri()).build();
-    }
-
     @Bean
     @ConditionalOnMissingBean
     public OAuth2ResourceServerProperties oAuth2ResourceServerProperties() {
@@ -42,5 +31,11 @@ public class SecurityAutoConfigure {
     @ConditionalOnMissingBean
     public SecurityService securityService() {
         return new SecurityService();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UserAuthorizationFilter userAuthorizationFilter() {
+        return new UserAuthorizationFilter(securityService());
     }
 }

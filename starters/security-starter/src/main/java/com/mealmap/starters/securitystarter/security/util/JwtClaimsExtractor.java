@@ -7,8 +7,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,78 +19,70 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtClaimsExtractor {
 
-    private static JWTClaimsSet getClaims(final String token) {
+    private static JWTClaimsSet getClaims(Jwt jwt) {
         try {
-            return SignedJWT
-                    .parse(token)
-                    .getJWTClaimsSet();
+            return SignedJWT.parse(jwt.getTokenValue()).getJWTClaimsSet();
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("Failed to parse JWT", e);
         }
     }
 
-    public static UUID extractUserId(String token) {
+    public static UUID extractUserId(Jwt jwt) {
+        if (jwt == null) {
+            throw new IllegalArgumentException("JWT cannot be null");
+        }
+        return UUID.fromString(jwt.getSubject());
+    }
+
+    public static Long extractOrganizationId(Jwt jwt) {
         try {
-            return UUID.fromString(
-                    getClaims(token)
-                            .getStringClaim("sub"));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return getClaims(jwt).getLongClaim("organization_id");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract organization_id from JWT", e);
         }
     }
 
-    public static Long extractOrganizationId(String token) {
+    public static Boolean extractIsActive(Jwt jwt) {
         try {
-            return getClaims(token)
-                    .getLongClaim("organization_id");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return getClaims(jwt).getBooleanClaim("is_active");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract is_active from JWT", e);
         }
     }
 
-    public static Boolean extractIsActive(String token) {
+    public static Boolean extractIsBlocked(Jwt jwt) {
         try {
-            return getClaims(token)
-                    .getBooleanClaim("is_active");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return getClaims(jwt).getBooleanClaim("is_blocked");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract is_blocked from JWT", e);
         }
     }
 
-    public static Boolean extractIsBlocked(String token) {
+    public static Boolean extractIsTemporaryBlocked(Jwt jwt) {
         try {
-            return getClaims(token)
-                    .getBooleanClaim("is_blocked");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return getClaims(jwt).getBooleanClaim("is_temporary_blocked");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract is_temporary_blocked from JWT", e);
         }
     }
 
-    public static Boolean extractIsTemporaryBlocked(String token) {
+    public static List<GrantedAuthority> extractUserRoles(Jwt jwt) {
         try {
-            return getClaims(token)
-                    .getBooleanClaim("is_temporary_blocked");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            Map<String, Object> realmAccess = getClaims(jwt).getJSONObjectClaim("realm_access");
+
+            @SuppressWarnings("unchecked")
+            List<String> roles = (List<String>) realmAccess.get("roles");
+
+            if (roles == null) {
+                return Collections.emptyList();
+            }
+
+            return roles.stream()
+                    .map(Prefix.ROLE::concat)
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract roles from JWT", e);
         }
-    }
-
-    public static List<GrantedAuthority> extractUserRoles(String token) {
-        Map<String, Object> realmAccess;
-
-        try {
-            realmAccess = getClaims(token)
-                    .getJSONObjectClaim("realm_access");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-        @SuppressWarnings("unchecked")
-        List<String> roles = (List<String>) realmAccess.get("roles");
-
-        return roles.stream()
-                .map(Prefix.ROLE::concat)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
     }
 }
