@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class PromoStatController {
     private final PromoStatService promoStatService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<PromoStatDto>> getPageOfPromoStats(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -43,6 +45,7 @@ public class PromoStatController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PromoStatDto> getPromoStat(@PathVariable ObjectId id) {
         PromoStatDto promoStat = promoStatService.getPromoStat(id);
 
@@ -50,6 +53,7 @@ public class PromoStatController {
     }
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()") //TODO: allow order-service use this method, using JWT
     public ResponseEntity<PromoStatDto> createPromoStat(
             @RequestBody @Valid PromoStatCreationDto statDto) {
 

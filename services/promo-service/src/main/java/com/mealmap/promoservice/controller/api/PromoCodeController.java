@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,7 @@ public class PromoCodeController {
     private final PromoCodeService promoCodeService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<PromoCodeDto>> getPageOfPromoCodes(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -45,6 +47,7 @@ public class PromoCodeController {
     }
 
     @GetMapping("/{code}")
+    @PreAuthorize("isAuthenticated()") //TODO: allow order-service use this method
     public ResponseEntity<PromoCodeDto> getPromoCode(@PathVariable @Size(min = 2, max = 20) String code) {
         PromoCodeDto promoCode = promoCodeService.getPromoCode(code);
 
@@ -52,6 +55,7 @@ public class PromoCodeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PromoCodeDto> createPromoCode(@RequestBody @Valid PromoCodeCreationDto codeDto) {
         PromoCodeDto promoCode = promoCodeService.createPromoCode(codeDto);
 
@@ -59,6 +63,7 @@ public class PromoCodeController {
     }
 
     @PutMapping("/{code}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PromoCodeDto> updatePromoCode(
             @PathVariable @Size(min = 2, max = 20) String code,
             @RequestBody @Valid PromoCodeUpdatingDto codeDto) {
