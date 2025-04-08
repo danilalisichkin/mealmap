@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class UserNotificationController {
     private final UserNotificationService userNotificationService;
 
     @GetMapping("/{userId}/notifications")
+    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(
             @PathVariable @UUID String userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -45,6 +47,7 @@ public class UserNotificationController {
     }
 
     @PostMapping("/{userId}/notifications")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<NotificationDto> createNotification(
             @PathVariable @UUID String userId,
             @RequestBody @Valid NotificationCreationDto notificationDto) {
