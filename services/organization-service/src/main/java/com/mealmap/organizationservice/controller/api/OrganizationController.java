@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,6 +35,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfOrganizations(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -55,6 +57,7 @@ public class OrganizationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<OrganizationDto> createOrganization(
             @RequestBody @Valid OrganizationCreationDto organizationDto) {
 
@@ -64,6 +67,7 @@ public class OrganizationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Company Admin use this method
     public ResponseEntity<OrganizationDto> updateOrganization(
             @PathVariable Integer id, @RequestBody @Valid OrganizationUpdatingDto organizationDto) {
 
