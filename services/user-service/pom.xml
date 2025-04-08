@@ -32,11 +32,15 @@
         <!-- Custom Starters -->
         <dependency>
             <groupId>com.mealmap.starters</groupId>
-            <artifactId>notification-starter</artifactId>
+            <artifactId>pagination-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.mealmap.starters</groupId>
             <artifactId>exception-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mealmap.starters</groupId>
+            <artifactId>notification-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.mealmap.starters</groupId>

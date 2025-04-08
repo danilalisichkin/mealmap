@@ -48,6 +48,10 @@
         <!-- Custom Starters -->
         <dependency>
             <groupId>com.mealmap.starters</groupId>
+            <artifactId>pagination-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mealmap.starters</groupId>
             <artifactId>exception-starter</artifactId>
         </dependency>
         <dependency>

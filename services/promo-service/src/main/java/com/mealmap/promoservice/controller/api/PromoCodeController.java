@@ -1,11 +1,11 @@
 package com.mealmap.promoservice.controller.api;
 
-import com.mealmap.promoservice.core.dto.page.PageDto;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeCreationDto;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeDto;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeUpdatingDto;
 import com.mealmap.promoservice.core.enums.sort.PromoCodeSortField;
 import com.mealmap.promoservice.service.PromoCodeService;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;

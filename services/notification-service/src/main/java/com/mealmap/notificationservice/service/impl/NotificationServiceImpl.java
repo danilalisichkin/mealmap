@@ -2,15 +2,15 @@ package com.mealmap.notificationservice.service.impl;
 
 import com.mealmap.notificationservice.core.dto.filter.NotificationFilter;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
-import com.mealmap.notificationservice.core.dto.page.PageDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
 import com.mealmap.notificationservice.core.mapper.NotificationMapper;
-import com.mealmap.notificationservice.core.mapper.PageMapper;
 import com.mealmap.notificationservice.doc.Notification;
 import com.mealmap.notificationservice.repository.NotificationRepository;
 import com.mealmap.notificationservice.service.NotificationPredicateService;
 import com.mealmap.notificationservice.service.NotificationService;
-import com.mealmap.notificationservice.util.PageBuilder;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.starters.paginationstarter.mapper.PageMapper;
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

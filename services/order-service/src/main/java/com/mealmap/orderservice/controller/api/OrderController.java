@@ -2,10 +2,10 @@ package com.mealmap.orderservice.controller.api;
 
 import com.mealmap.orderservice.core.dto.filter.OrderFilter;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
-import com.mealmap.orderservice.core.dto.page.PageDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.sort.OrderSortField;
 import com.mealmap.orderservice.service.OrderService;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +16,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +49,7 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Employee use this method
     public ResponseEntity<OrderDto> getOrder(@PathVariable ObjectId id) {

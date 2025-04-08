@@ -2,9 +2,9 @@ package com.mealmap.orderservice.service;
 
 import com.mealmap.orderservice.core.dto.order.OrderCreationDto;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
-import com.mealmap.orderservice.core.dto.page.PageDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.sort.OrderSortField;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 

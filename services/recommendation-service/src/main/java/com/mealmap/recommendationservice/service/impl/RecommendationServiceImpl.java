@@ -2,15 +2,15 @@ package com.mealmap.recommendationservice.service.impl;
 
 import com.mealmap.recommendationservice.ai.dto.ChatRecommendations;
 import com.mealmap.recommendationservice.core.dto.UserRecommendationDto;
-import com.mealmap.recommendationservice.core.dto.page.PageDto;
 import com.mealmap.recommendationservice.core.enums.sort.UserRecommendationSortField;
-import com.mealmap.recommendationservice.core.mapper.PageMapper;
 import com.mealmap.recommendationservice.core.mapper.UserRecommendationMapper;
 import com.mealmap.recommendationservice.document.UserRecommendation;
 import com.mealmap.recommendationservice.repository.UserRecommendationRepository;
 import com.mealmap.recommendationservice.service.PromptBuildingService;
 import com.mealmap.recommendationservice.service.RecommendationService;
-import com.mealmap.recommendationservice.util.PageBuilder;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.starters.paginationstarter.mapper.PageMapper;
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.ai.chat.client.ChatClient;

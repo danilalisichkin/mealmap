@@ -1,10 +1,10 @@
 package com.mealmap.userservice.controller.api;
 
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import com.mealmap.userservice.core.dto.filter.UserFilter;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
-import com.mealmap.userservice.core.dto.page.PageDto;
 import com.mealmap.userservice.core.dto.user.UserDto;
 import com.mealmap.userservice.core.dto.user.UserUpdatingDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;

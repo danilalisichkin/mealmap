@@ -7,12 +7,10 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.mealmap.productservice.core.dto.filter.ProductFilter;
-import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.core.enums.sort.ProductSortField;
-import com.mealmap.productservice.core.mapper.PageMapper;
 import com.mealmap.productservice.core.mapper.ProductMapper;
 import com.mealmap.productservice.document.ProductDoc;
 import com.mealmap.productservice.entity.Category;
@@ -21,9 +19,12 @@ import com.mealmap.productservice.repository.CategoryRepository;
 import com.mealmap.productservice.repository.ProductRepository;
 import com.mealmap.productservice.service.ElasticsearchQueryService;
 import com.mealmap.productservice.service.ProductService;
-import com.mealmap.productservice.util.PageBuilder;
+import com.mealmap.productservice.util.ElasticsearchPageBuilder;
 import com.mealmap.productservice.validator.ProductValidator;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.starters.paginationstarter.mapper.PageMapper;
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
 
         return pageMapper.pageToPageDto(
                 productMapper.docPageToDtoPage(
-                        PageBuilder.buildPage(response, pageRequest)));
+                        ElasticsearchPageBuilder.buildPage(response, pageRequest)));
     }
 
     @Override

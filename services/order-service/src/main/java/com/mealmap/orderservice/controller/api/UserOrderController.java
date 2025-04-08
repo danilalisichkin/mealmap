@@ -2,10 +2,10 @@ package com.mealmap.orderservice.controller.api;
 
 import com.mealmap.orderservice.core.dto.order.OrderCreationDto;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
-import com.mealmap.orderservice.core.dto.page.PageDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.sort.OrderSortField;
 import com.mealmap.orderservice.service.UserOrderService;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;

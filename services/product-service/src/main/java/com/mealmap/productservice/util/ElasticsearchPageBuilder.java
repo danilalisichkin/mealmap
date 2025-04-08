@@ -6,20 +6,12 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PageBuilder {
-    public static PageRequest buildPageRequest(
-            Integer offset, Integer limit, String sortField, Sort.Direction sortOrder) {
-
-        return PageRequest.of(offset, limit, Sort.by(sortOrder, sortField));
-    }
-
+public final class ElasticsearchPageBuilder {
     public static <T> Page<T> buildPage(SearchResponse<T> response, Pageable pageable) {
         List<T> content = response.hits().hits().stream()
                 .map(Hit::source)

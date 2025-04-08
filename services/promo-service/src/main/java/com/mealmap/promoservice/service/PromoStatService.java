@@ -1,9 +1,9 @@
 package com.mealmap.promoservice.service;
 
-import com.mealmap.promoservice.core.dto.page.PageDto;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatCreationDto;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatDto;
 import com.mealmap.promoservice.core.enums.sort.PromoStatSortField;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Sort;
 

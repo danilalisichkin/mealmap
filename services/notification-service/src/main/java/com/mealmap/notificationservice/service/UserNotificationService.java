@@ -2,8 +2,8 @@ package com.mealmap.notificationservice.service;
 
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
-import com.mealmap.notificationservice.core.dto.page.PageDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.springframework.data.domain.Sort;
 
 public interface UserNotificationService {

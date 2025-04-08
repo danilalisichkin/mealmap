@@ -1,8 +1,8 @@
 package com.mealmap.recommendationservice.service;
 
 import com.mealmap.recommendationservice.core.dto.UserRecommendationDto;
-import com.mealmap.recommendationservice.core.dto.page.PageDto;
 import com.mealmap.recommendationservice.core.enums.sort.UserRecommendationSortField;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.springframework.data.domain.Sort;
 
 import java.util.UUID;

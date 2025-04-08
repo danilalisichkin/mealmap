@@ -1,20 +1,20 @@
 package com.mealmap.promoservice.service.impl;
 
-import com.mealmap.promoservice.core.dto.page.PageDto;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatCreationDto;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatDto;
 import com.mealmap.promoservice.core.enums.sort.PromoStatSortField;
-import com.mealmap.promoservice.core.mapper.PageMapper;
 import com.mealmap.promoservice.core.mapper.PromoStatMapper;
 import com.mealmap.promoservice.document.PromoCode;
 import com.mealmap.promoservice.document.PromoStat;
 import com.mealmap.promoservice.repository.PromoCodeRepository;
 import com.mealmap.promoservice.repository.PromoStatRepository;
 import com.mealmap.promoservice.service.PromoStatService;
-import com.mealmap.promoservice.util.PageBuilder;
 import com.mealmap.promoservice.validator.PromoCodeValidator;
 import com.mealmap.promoservice.validator.PromoStatValidator;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.starters.paginationstarter.mapper.PageMapper;
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.PageRequest;

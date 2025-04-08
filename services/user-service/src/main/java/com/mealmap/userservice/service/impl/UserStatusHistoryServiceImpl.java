@@ -1,5 +1,6 @@
 package com.mealmap.userservice.service.impl;
 
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
@@ -12,7 +13,6 @@ import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.repository.UserStatusHistoryRepository;
 import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.service.UserStatusHistoryService;
-import com.mealmap.userservice.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

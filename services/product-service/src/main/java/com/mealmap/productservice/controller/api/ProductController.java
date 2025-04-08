@@ -1,12 +1,12 @@
 package com.mealmap.productservice.controller.api;
 
 import com.mealmap.productservice.core.dto.filter.ProductFilter;
-import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.core.enums.sort.ProductSortField;
 import com.mealmap.productservice.service.ProductService;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;

@@ -2,9 +2,9 @@ package com.mealmap.notificationservice.controller.api;
 
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
-import com.mealmap.notificationservice.core.dto.page.PageDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
 import com.mealmap.notificationservice.service.UserNotificationService;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.PositiveOrZero;

@@ -1,16 +1,17 @@
 package com.mealmap.userservice.service.impl;
 
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.starters.paginationstarter.mapper.PageMapper;
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import com.mealmap.userservice.core.dto.filter.UserFilter;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;
-import com.mealmap.userservice.core.dto.page.PageDto;
 import com.mealmap.userservice.core.dto.user.UserDto;
 import com.mealmap.userservice.core.dto.user.UserUpdatingDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
 import com.mealmap.userservice.core.enums.sort.UserSortField;
-import com.mealmap.userservice.core.mapper.PageMapper;
 import com.mealmap.userservice.core.mapper.UserMapper;
 import com.mealmap.userservice.entity.User;
 import com.mealmap.userservice.entity.enums.StatusEvent;
@@ -22,7 +23,6 @@ import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.service.UserService;
 import com.mealmap.userservice.service.UserStatusHistoryService;
 import com.mealmap.userservice.strategy.manager.UserStatusChangingManager;
-import com.mealmap.userservice.util.PageBuilder;
 import com.mealmap.userservice.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;

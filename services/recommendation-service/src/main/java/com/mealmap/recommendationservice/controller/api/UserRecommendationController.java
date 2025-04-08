@@ -1,9 +1,9 @@
 package com.mealmap.recommendationservice.controller.api;
 
 import com.mealmap.recommendationservice.core.dto.UserRecommendationDto;
-import com.mealmap.recommendationservice.core.dto.page.PageDto;
 import com.mealmap.recommendationservice.core.enums.sort.UserRecommendationSortField;
 import com.mealmap.recommendationservice.service.RecommendationService;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;

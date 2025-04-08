@@ -4,8 +4,8 @@ import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
-import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.springframework.data.domain.Sort;
 
 public interface CategoryService {
