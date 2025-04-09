@@ -30,12 +30,9 @@ business:
     grant-type: ${KEYCLOAK_GRANT_TYPE:client_credentials}
     email-service:
       enabled: ${KEYCLOAK_EMAIL_SERVICE_ENABLED:false}
-    admin:
-      client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
-      client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:5OpVHHUSEP3O8tSk3MbjTxx6Efn5ASUl}
     client:
-      client-id: ${KEYCLOAK_CLIENT_CLIENT_SECRET:mealmap-client}
-      client-secret: ${KEYCLOAK_CLIENT_CLIENT_SECRET:CikyzVJQFlmJaa3TsM7SJi8Y76edNtgS}
+      client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:auth-service}
+      client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:gbLelnwDQ3xKPvokRNSRX1rriyhhU2rd}
   kafka:
     topics:
       user-creation:

@@ -16,15 +16,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 public class KeycloakResourceConfig {
     private final KeycloakServerConfig kcServerConfig;
 
-    private final KeycloakAdminConfig kcAdminConfig;
+    private final KeycloakClientConfig kcClientConfig;
 
     @Bean
     public Keycloak keycloak() {
         return KeycloakBuilder.builder()
                 .serverUrl(kcServerConfig.getServerUrl())
                 .realm(kcServerConfig.getRealm())
-                .clientId(kcAdminConfig.getClientId())
-                .clientSecret(kcAdminConfig.getClientSecret())
+                .clientId(kcClientConfig.getClientId())
+                .clientSecret(kcClientConfig.getClientSecret())
                 .grantType(kcServerConfig.getGrantType())
                 .build();
     }
