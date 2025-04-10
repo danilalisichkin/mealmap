@@ -33,7 +33,7 @@ public class UserPreferencesController {
     private final UserPreferencesService userPreferencesService;
 
     @GetMapping("/{userId}/preferences")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)") //TODO: allow recommendation-service use this method
+    @PreAuthorize("hasUserId(#userId) or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
     public ResponseEntity<UserPreferencesDto> getAllPreferences(@PathVariable UUID userId) {
         UserPreferencesDto userPreference = userPreferencesService.getAllPreferences(userId);
 
@@ -41,7 +41,7 @@ public class UserPreferencesController {
     }
 
     @GetMapping("/{userId}/preferences/products")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<List<ProductPreferenceDto>> getProductPreferences(
             @PathVariable UUID userId,
             @RequestParam(required = false) PreferenceType preferenceType) {
@@ -53,7 +53,7 @@ public class UserPreferencesController {
     }
 
     @GetMapping("/{userId}/preferences/categories")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<List<CategoryPreferenceDto>> getCategoryPreferences(
             @PathVariable UUID userId,
             @RequestParam(required = false) PreferenceType preferenceType) {
@@ -65,7 +65,7 @@ public class UserPreferencesController {
     }
 
     @PostMapping("/{userId}/preferences/products")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<ProductPreferenceDto> addProductPreference(
             @PathVariable UUID userId,
             @RequestBody @Valid ProductPreferenceCreationDto productPreferenceDto) {
@@ -77,7 +77,7 @@ public class UserPreferencesController {
     }
 
     @PostMapping("/{userId}/preferences/categories")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<CategoryPreferenceDto> addCategoryPreference(
             @PathVariable UUID userId,
             @RequestBody @Valid CategoryPreferenceCreationDto categoryPreferenceDto) {
@@ -89,7 +89,7 @@ public class UserPreferencesController {
     }
 
     @DeleteMapping("/{userId}/preferences/products/{id}")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<Void> removeProductPreference(@PathVariable UUID userId, @PathVariable Long id) {
         userPreferencesService.removeProductPreference(userId, id);
 
@@ -97,7 +97,7 @@ public class UserPreferencesController {
     }
 
     @DeleteMapping("/{userId}/preferences/categories/{id}")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<Void> removeCategoryPreference(@PathVariable UUID userId, @PathVariable Long id) {
         userPreferencesService.removeCategoryPreference(userId, id);
 

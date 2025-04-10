@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
+    @PreAuthorize("hasUserId(#id) or hasRole('ADMIN')")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
         UserDto user = userService.getUser(id);
 
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
+    @PreAuthorize("hasUserId(#id) or hasRole('ADMIN')")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable UUID id, @RequestBody @Valid UserUpdatingDto userDto) {
 
@@ -86,7 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/status-history")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
+    @PreAuthorize("hasUserId(#id) or hasRole('ADMIN')")
     public ResponseEntity<PageDto<StatusHistoryDto>> getUserStatusHistory(
             @PathVariable UUID id,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -102,7 +102,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/activate")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
+    @PreAuthorize("hasUserId(#id) or hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> activateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -112,7 +112,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/deactivate")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #id)")
+    @PreAuthorize("hasUserId(#id) or hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> deactivateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 

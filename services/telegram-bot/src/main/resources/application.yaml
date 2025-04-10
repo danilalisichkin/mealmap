@@ -10,6 +10,11 @@ telegram:
   bot:
     token: ${TG_BOT_TOKEN:7509632284:AAGcvu3Jnq4Ey7CufazKKLxQmr54Xlig_eg}
     username: ${TG_BOT_USERNAME:CustomPublisherBot}
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:telegram-bot}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:fGxyiddJQOB4mHOQhPDXJJk27ItCYwfI}
 business:
   kafka:
     topics:

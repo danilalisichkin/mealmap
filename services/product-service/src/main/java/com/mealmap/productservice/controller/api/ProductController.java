@@ -55,7 +55,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow recommendation-service use this method
+    @PreAuthorize("isApplicationService() and hasRole('RECOMMENDATION_SERVICE')")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         List<ProductDto> allProducts = productService.getAllProducts();
 
@@ -63,7 +63,7 @@ public class ProductController {
     }
 
     @GetMapping("/bulk")
-    @PreAuthorize("isAuthenticated()") //TODO: allow recommendation-service use this method
+    @PreAuthorize("isApplicationService() and hasRole('ORDER_SERVICE')")
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
             @RequestParam @Size(min = 2, max = 20) Set<@NotNull Long> ids) {
 

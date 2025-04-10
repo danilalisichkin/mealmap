@@ -8,6 +8,11 @@ spring:
       password: ${DB_PASSWORD:root}
       replica-set-name: ${DB_REPLICA_SET_NAME:rs0}
       database: ${DB_NAME:promo_database}
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:promo-service}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:JHcA6IvV87TLa9HisfZU232rkkjmLPGm}
 mongock:
   migration-scan-package: com.mealmap.promoservice.migration
   transactional: true

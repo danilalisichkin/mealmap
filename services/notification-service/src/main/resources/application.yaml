@@ -34,6 +34,11 @@ spring:
         spring.deserializer:
           key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
           value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:notification-service}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:IZkO3Ga47lVqu9Iwo4n5W9gbVy0Myqgi}
 mongock:
   migration-scan-package: com.mealmap.notificationservice.migration
   transactional: true

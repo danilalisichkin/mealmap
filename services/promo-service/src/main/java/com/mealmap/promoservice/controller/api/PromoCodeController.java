@@ -47,7 +47,7 @@ public class PromoCodeController {
     }
 
     @GetMapping("/{code}")
-    @PreAuthorize("isAuthenticated()") //TODO: allow order-service use this method
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PromoCodeDto> getPromoCode(@PathVariable @Size(min = 2, max = 20) String code) {
         PromoCodeDto promoCode = promoCodeService.getPromoCode(code);
 

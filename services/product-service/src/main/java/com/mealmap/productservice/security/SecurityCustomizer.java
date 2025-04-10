@@ -14,9 +14,9 @@ public class SecurityCustomizer {
         return web -> web
                 .ignoring()
                 .requestMatchers(GET, "/api/v1/categories")
-                .requestMatchers(GET, "/api/v1/categories/{id}")
-                .requestMatchers(GET, "/api/v1/categories/{id}/tree")
+                .requestMatchers(GET, "/api/v1/categories/{id:^[0-9]+$}")
+                .requestMatchers(GET, "/api/v1/categories/{id:^[0-9]+$}/tree")
                 .requestMatchers(GET, "/api/v1/products")
-                .requestMatchers(GET, "/api/v1/products/{id}");
+                .requestMatchers(GET, "/api/v1/products/{id:^[0-9]+$}");
     }
 }

@@ -1,5 +1,6 @@
 package com.mealmap.recommendationservice.client;
 
+import com.mealmap.recommendationservice.client.config.FeignOAuth2Config;
 import com.mealmap.recommendationservice.client.config.PreferenceApiClientConfig;
 import com.mealmap.recommendationservice.core.model.preference.Preferences;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,7 +13,7 @@ import java.util.UUID;
         name = "preference-api",
         url = "${business.services.preference.url}",
         contextId = "preferenceClient",
-        configuration = PreferenceApiClientConfig.class)
+        configuration = {PreferenceApiClientConfig.class, FeignOAuth2Config.class})
 public interface PreferenceApiClient {
     @GetMapping("/{userId}/preferences")
     Preferences getUserPreferences(@PathVariable UUID userId);

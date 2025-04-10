@@ -34,7 +34,7 @@ public class UserHealthController {
     private final UserHealthService userHealthService;
 
     @GetMapping("/{userId}/physic-health")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)") //TODO: allow recommendation-service use this method
+    @PreAuthorize("hasUserId(#userId) or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
     public ResponseEntity<PhysicHealthDto> getUserPhysicHealth(@PathVariable UUID userId) {
         PhysicHealthDto physicHealth = userHealthService.getUserPhysicHealth(userId);
 
@@ -42,7 +42,7 @@ public class UserHealthController {
     }
 
     @GetMapping("/{userId}/physic-health/history")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<List<PhysicHealthHistoryDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
         List<PhysicHealthHistoryDto> healthHistory = userHealthService.getUserPhysicHealthHistory(userId);
 
@@ -50,7 +50,7 @@ public class UserHealthController {
     }
 
     @GetMapping("/{userId}/diet")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)") //TODO: allow recommendation-service use this method
+    @PreAuthorize("hasUserId(#userId) or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
     public ResponseEntity<DietDto> getUserDiet(@PathVariable UUID userId) {
         DietDto userDiet = userHealthService.getUserDiet(userId);
 
@@ -58,7 +58,7 @@ public class UserHealthController {
     }
 
     @PostMapping("/{userId}/physic-health")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<PhysicHealthDto> createUserPhysicHealth(
             @PathVariable UUID userId,
             @RequestBody @Valid PhysicHealthCreationDto userPhysicHealthDto) {
@@ -69,7 +69,7 @@ public class UserHealthController {
     }
 
     @PostMapping("/{userId}/diet")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<DietDto> createUserDiet(
             @PathVariable UUID userId,
             @RequestBody @Valid DietCreationDto userDietDto) {
@@ -80,7 +80,7 @@ public class UserHealthController {
     }
 
     @PutMapping("/{userId}/physic-health")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<PhysicHealthDto> updateUserPhysicHealth(
             @PathVariable UUID userId,
             @RequestBody @Valid PhysicHealthUpdatingDto userPhysicHealthDto) {
@@ -91,7 +91,7 @@ public class UserHealthController {
     }
 
     @PutMapping("/{userId}/diet")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<DietDto> updateUserDiet(
             @PathVariable UUID userId,
             @RequestBody @Valid DietUpdatingDto userDietDto) {
@@ -102,7 +102,7 @@ public class UserHealthController {
     }
 
     @DeleteMapping("/{userId}/diet")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<Void> deleteUserDiet(@PathVariable UUID userId) {
         userHealthService.deleteUserDiet(userId);
 

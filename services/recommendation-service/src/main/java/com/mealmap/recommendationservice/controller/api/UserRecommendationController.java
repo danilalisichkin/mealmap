@@ -29,7 +29,7 @@ public class UserRecommendationController {
     private final RecommendationService recommendationService;
 
     @GetMapping("/{userId}/recommendations")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<PageDto<UserRecommendationDto>> getUserRecommendations(
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -44,7 +44,7 @@ public class UserRecommendationController {
     }
 
     @GetMapping("/{userId}/recommendations/new")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<UserRecommendationDto> getNewUserRecommendation(@PathVariable UUID userId) {
         UserRecommendationDto recommendation = recommendationService.getNewUserRecommendation(userId);
 

@@ -27,7 +27,7 @@ public class TgBotController {
     private final TgLinkService tgLinkService;
 
     @PostMapping("/chats/{chatId}/message")
-    @PreAuthorize("isAuthenticated()") //TODO: allow usage only for internal services
+    @PreAuthorize("isApplicationService() and hasRole('NOTIFICATION_SERVICE')")
     public ResponseEntity<Void> sendMessageToChat(
             @PathVariable Long chatId,
             @RequestBody @NotBlank @Size(max = 4096) String message) {
@@ -38,7 +38,7 @@ public class TgBotController {
     }
 
     @GetMapping("/links/start")
-    @PreAuthorize("hasRole('ADMIN') or @securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<String> generateStartLink(@RequestParam UUID userId) {
         String link = tgLinkService.generateStartLinkForUser(userId);
 

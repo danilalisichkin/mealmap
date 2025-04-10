@@ -17,14 +17,11 @@ spring:
           temperature: ${AI_OLLAMA_CHAT_TEMPERATURE:1.0}
       init:
         pull-model-strategy: ${AI_OLLAMA_PULL_STRATEGY:always}
-logging:
-  level:
-    org:
-      springframework:
-        ai:
-          chat:
-            client:
-              advisor: DEBUG
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:recommendation-service}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:YO4pPxzpV0RofhaEVg7t5tcdGJwL6gJ3}
 mongock:
   migration-scan-package: com.cabaggregator.rideservice.migration
   transactional: true

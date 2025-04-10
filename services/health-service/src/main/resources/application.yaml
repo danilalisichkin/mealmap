@@ -11,5 +11,10 @@ spring:
     show-sql: true
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:health-service}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:d17hPRAz1H8kWs7XIyBOieoDl4qzkaus}
 server:
   port: ${SERVER_PORT:8089}

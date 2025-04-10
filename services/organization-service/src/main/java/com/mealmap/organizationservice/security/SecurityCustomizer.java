@@ -11,6 +11,6 @@ public class SecurityCustomizer {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web
                 .ignoring()
-                .requestMatchers("/api/v1/organizations/{id}");
+                .requestMatchers("/api/v1/organizations/{id:^[0-9]+$}");
     }
 }

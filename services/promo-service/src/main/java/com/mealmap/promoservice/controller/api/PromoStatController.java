@@ -53,7 +53,7 @@ public class PromoStatController {
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()") //TODO: allow order-service use this method, using JWT
+    @PreAuthorize("hasUserId(#statDto.userId) or (isApplicationService() and hasRole('ORDER_SERVICE'))")
     public ResponseEntity<PromoStatDto> createPromoStat(
             @RequestBody @Valid PromoStatCreationDto statDto) {
 

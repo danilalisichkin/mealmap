@@ -32,7 +32,7 @@ public class UserNotificationController {
     private final UserNotificationService userNotificationService;
 
     @GetMapping("/{userId}/notifications")
-    @PreAuthorize("@securityService.hasUserId(authentication, #userId)")
+    @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(
             @PathVariable @UUID String userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -47,7 +47,7 @@ public class UserNotificationController {
     }
 
     @PostMapping("/{userId}/notifications")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasUserId(#userId) or hasRole('ADMIN')")
     public ResponseEntity<NotificationDto> createNotification(
             @PathVariable @UUID String userId,
             @RequestBody @Valid NotificationCreationDto notificationDto) {

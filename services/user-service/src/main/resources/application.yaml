@@ -33,6 +33,11 @@ spring:
         spring.deserializer:
           key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
           value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:user-service}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:KIWfKreN9sVqxFibdShwYodDdtgjiqHq}
 business:
   kafka:
     topics:
