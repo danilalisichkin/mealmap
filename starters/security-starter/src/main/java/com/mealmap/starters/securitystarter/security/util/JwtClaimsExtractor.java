@@ -66,6 +66,14 @@ public final class JwtClaimsExtractor {
         }
     }
 
+    public static String extractClientId(Jwt jwt) {
+        try {
+            return getClaims(jwt).getStringClaim("client_id");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to extract client_id from JWT", e);
+        }
+    }
+
     public static List<GrantedAuthority> extractUserRoles(Jwt jwt) {
         try {
             Map<String, Object> realmAccess = getClaims(jwt).getJSONObjectClaim("realm_access");
