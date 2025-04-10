@@ -8,7 +8,6 @@ import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
-import com.mealmap.productservice.core.dto.page.PageDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import com.mealmap.productservice.core.mapper.CategoryMapper;
 import com.mealmap.productservice.document.CategoryDoc;
@@ -16,8 +15,12 @@ import com.mealmap.productservice.entity.Category;
 import com.mealmap.productservice.repository.CategoryRepository;
 import com.mealmap.productservice.service.CategoryService;
 import com.mealmap.productservice.service.ElasticsearchQueryService;
+import com.mealmap.productservice.util.ElasticsearchPageBuilder;
 import com.mealmap.productservice.validator.CategoryValidator;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
+import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.starters.paginationstarter.mapper.PageMapper;
+import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.cache.annotation.CacheConfig;
@@ -65,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         return pageMapper.pageToPageDto(
                 categoryMapper.docPageToDtoPage(
-                        PageBuilder.buildPage(response, pageRequest)));
+                        ElasticsearchPageBuilder.buildPage(response, pageRequest)));
     }
 
     @Override

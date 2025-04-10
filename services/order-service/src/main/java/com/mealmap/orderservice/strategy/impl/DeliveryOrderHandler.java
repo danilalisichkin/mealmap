@@ -22,7 +22,6 @@ public class DeliveryOrderHandler implements OrderLifecycleHandler {
 
     @Override
     public void handle(Order order) {
-        // TODO: send message to notification-service(?)
         order.setStatus(OrderStatus.ON_THE_WAY);
 
         notificationClient.sendNotification(new Notification(

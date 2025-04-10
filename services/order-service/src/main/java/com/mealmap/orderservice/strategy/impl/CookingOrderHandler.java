@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class CookingOrderHandler implements OrderLifecycleHandler {
     @Override
     public void handle(Order order) {
-        // TODO: send message to notification-service(?)
         order.setStatus(OrderStatus.IN_PROGRESS);
     }
 

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class TransferOrderForDeliveryHandler implements OrderLifecycleHandler {
     @Override
     public void handle(Order order) {
-        // TODO: send message to delivery-service, notification-service(?)
         order.setReadyAt(LocalDateTime.now());
         order.setStatus(OrderStatus.READY);
     }

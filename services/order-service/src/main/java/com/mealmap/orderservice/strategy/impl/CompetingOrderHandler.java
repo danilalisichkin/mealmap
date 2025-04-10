@@ -14,7 +14,6 @@ import static com.mealmap.orderservice.core.message.ApplicationMessages.ORDER_NO
 public class CompetingOrderHandler implements OrderLifecycleHandler {
     @Override
     public void handle(Order order) {
-        // TODO: send message to notification-service(?)
         if (!order.getPaymentInfo().getPaymentStatus().equals(PaymentStatus.PAID)) {
             throw new ForbiddenException(ORDER_NOT_PAID);
         }
