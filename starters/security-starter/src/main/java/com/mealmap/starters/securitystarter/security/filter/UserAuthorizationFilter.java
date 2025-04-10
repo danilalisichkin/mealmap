@@ -1,40 +1,38 @@
 package com.mealmap.starters.securitystarter.security.filter;
 
-import com.mealmap.starters.securitystarter.security.service.SecurityService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
-@RequiredArgsConstructor
-public class UserAuthorizationFilter extends OncePerRequestFilter {
-    private final SecurityService securityService;
+import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isActive;
+import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isApplicationService;
+import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isBlocked;
+import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isTemporaryBlocked;
 
+@Component
+public class UserAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication instanceof JwtAuthenticationToken jwtAuth) {
-            if (!securityService.isActive(jwtAuth)) {
+        if (authentication != null && !isApplicationService(authentication)) {
+            if (!isActive(authentication)) {
                 throw new AccessDeniedException("User is not active");
-            } else if (securityService.isBlocked(jwtAuth)) {
+            } else if (isBlocked(authentication)) {
                 throw new AccessDeniedException("User is blocked");
-            } else if (securityService.isTemporaryBlocked(jwtAuth)) {
+            } else if (isTemporaryBlocked(authentication)) {
                 throw new AccessDeniedException("User is temporary blocked");
             }
         }
