@@ -9,7 +9,7 @@ import com.mealmap.userservice.core.dto.user.UserDto;
 import com.mealmap.userservice.core.dto.user.UserUpdatingDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
 import com.mealmap.userservice.core.enums.sort.UserSortField;
-import com.mealmap.userservice.entity.enums.UserRole;
+import com.mealmap.userservice.entity.enums.Role;
 import org.springframework.data.domain.Sort;
 
 import java.util.UUID;
@@ -23,7 +23,9 @@ public interface UserService {
 
     UserDto updateUser(UUID id, UserUpdatingDto userDto);
 
-    UserDto updateUserRole(UUID id, UserRole role);
+    UserDto assignRole(UUID id, Role role);
+
+    UserDto unassignRole(UUID id, Role role);
 
     PageDto<StatusHistoryDto> getUserStatusHistory(
             UUID id, Integer offset, Integer limit, StatusHistorySortField sortBy, Sort.Direction sortOrder,

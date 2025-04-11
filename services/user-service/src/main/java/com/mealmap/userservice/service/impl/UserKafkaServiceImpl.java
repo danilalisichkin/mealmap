@@ -1,8 +1,8 @@
 package com.mealmap.userservice.service.impl;
 
-import com.mealmap.starters.notificationstarter.client.NotificationClient;
-import com.mealmap.starters.notificationstarter.kafka.KafkaConfiguration;
 import com.mealmap.userservice.entity.User;
+import com.mealmap.userservice.entity.UserRole;
+import com.mealmap.userservice.entity.enums.Role;
 import com.mealmap.userservice.kafka.dto.KafkaUserCreationDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
 import com.mealmap.userservice.kafka.dto.KafkaUserStatusUpdateDto;
@@ -24,11 +24,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserKafkaServiceImpl implements UserKafkaService {
-    private final NotificationClient notificationClient;
-
     private final UserContactsKafkaService userContactsKafkaService;
 
     private final UserPreferencesKafkaService userPreferencesKafkaService;
@@ -52,7 +53,6 @@ public class UserKafkaServiceImpl implements UserKafkaService {
     private final UserKafkaMapper userKafkaMapper;
 
     private final UserRepository userRepository;
-    private final KafkaConfiguration kafkaConfiguration;
 
     @Override
     @Transactional
@@ -62,6 +62,12 @@ public class UserKafkaServiceImpl implements UserKafkaService {
         userValidator.validateEmailUniqueness(userDto.getEmail());
 
         User userToCreate = userKafkaMapper.creationDtoToEntity(userDto);
+        List<UserRole> rolesToAssign = Collections.singletonList(
+                UserRole.builder()
+                        .user(userToCreate)
+                        .role(Role.valueOf(userDto.getRole()))
+                        .build());
+        userToCreate.setRoles(rolesToAssign);
 
         userRepository.save(userToCreate);
 

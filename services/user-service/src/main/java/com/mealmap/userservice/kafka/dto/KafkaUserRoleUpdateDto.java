@@ -12,7 +12,7 @@ import java.util.UUID;
 public class KafkaUserRoleUpdateDto {
     private UUID id;
 
-    private String oldRole;
+    private boolean isToAssign;
 
     private String newRole;
 }

@@ -1,14 +1,15 @@
 package com.mealmap.authservice.kafka.dto;
 
 import com.mealmap.authservice.core.dto.UserStatus;
-import com.mealmap.authservice.core.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class KafkaUserCreationDto {
     private UUID id;
@@ -25,7 +26,7 @@ public class KafkaUserCreationDto {
 
     private UserStatus status;
 
-    private UserRole role;
+    private String role;
 
     private LocalDate createdAt;
 }

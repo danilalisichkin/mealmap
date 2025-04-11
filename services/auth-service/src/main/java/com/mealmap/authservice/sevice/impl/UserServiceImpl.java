@@ -2,7 +2,7 @@ package com.mealmap.authservice.sevice.impl;
 
 import com.mealmap.authservice.core.dto.UserRegisterDto;
 import com.mealmap.authservice.core.dto.UserStatus;
-import com.mealmap.authservice.core.enums.UserRole;
+import com.mealmap.authservice.core.enums.Role;
 import com.mealmap.authservice.sevice.KeycloakResourceService;
 import com.mealmap.authservice.sevice.KeycloakRoleService;
 import com.mealmap.authservice.sevice.UserService;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final KeycloakRoleService kcRoleService;
 
     @Override
-    public UserRepresentation createUser(UserRegisterDto userRegisterDto, UserRole role, UserStatus status) {
+    public UserRepresentation createUser(UserRegisterDto userRegisterDto, Role role, UserStatus status) {
         Map<String, List<String>> organizationAsAttributes =
                 UserAttributesBuilder.buildFromOrganizationId(userRegisterDto.getOrganizationId());
         Map<String, List<String>> statusAsAttributes =

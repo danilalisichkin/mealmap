@@ -8,8 +8,9 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum OrganizationType {
-    COMPANY(1),
-    SUPPLIER(2);
+    OPERATOR(1),
+    SUPPLIER(2),
+    CUSTOMER(3);
 
     private final Integer id;
 

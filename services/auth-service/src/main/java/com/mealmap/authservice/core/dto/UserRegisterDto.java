@@ -1,6 +1,6 @@
 package com.mealmap.authservice.core.dto;
 
-import com.mealmap.authservice.core.enums.UserRole;
+import com.mealmap.authservice.core.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -40,5 +40,5 @@ public class UserRegisterDto {
     Integer organizationId;
 
     @NotNull
-    UserRole role;
+    Role role;
 }

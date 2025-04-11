@@ -7,5 +7,5 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserKafkaMapper {
-    KafkaUserCreationDto DtoToCreationDto(UserDto dto);
+    KafkaUserCreationDto dtoToCreationDto(UserDto dto);
 }

@@ -13,16 +13,16 @@ public final class UserDefaults {
                 false);
     }
 
-    public static UserStatus clientHeadStatus() {
+    public static UserStatus supplierStatus() {
         return new UserStatus(
                 false,
                 false,
                 false);
     }
 
-    public static UserStatus supplierAdminStatus() {
+    public static UserStatus customerStatus() {
         return new UserStatus(
-                false,
+                true,
                 false,
                 false);
     }

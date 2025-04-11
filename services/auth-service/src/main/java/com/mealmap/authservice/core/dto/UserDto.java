@@ -1,6 +1,6 @@
 package com.mealmap.authservice.core.dto;
 
-import com.mealmap.authservice.core.enums.UserRole;
+import com.mealmap.authservice.core.enums.Role;
 import lombok.Builder;
 import lombok.Data;
 
@@ -24,7 +24,7 @@ public class UserDto {
 
     private UserStatus status;
 
-    private UserRole role;
+    private Role role;
 
     private LocalDate createdAt;
 }

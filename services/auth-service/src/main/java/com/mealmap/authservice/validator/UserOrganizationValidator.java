@@ -2,7 +2,7 @@ package com.mealmap.authservice.validator;
 
 import com.mealmap.authservice.client.OrganizationFeignClient;
 import com.mealmap.authservice.client.dto.organization.OrganizationType;
-import com.mealmap.authservice.core.enums.UserRole;
+import com.mealmap.authservice.core.enums.Role;
 import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,25 +14,23 @@ import static com.mealmap.authservice.core.message.ApplicationMessages.USER_WITH
 public class UserOrganizationValidator {
     private final OrganizationFeignClient organizationFeignClient;
 
-    public void validateUserRelationToOrganization(Integer organizationId, UserRole userRole) {
+    public void validateUserRelationToOrganization(Integer organizationId, Role role) {
         OrganizationType organizationType = organizationFeignClient.getOrganization(organizationId).getType();
 
-        boolean isUserSupplierWorker = userRole.equals(UserRole.SUPPLIER_ADMIN)
-                || userRole.equals(UserRole.SUPPLIER_EMPLOYEE);
+        boolean isUserSupplierWorker = role.equals(Role.SUPPLIER);
 
         if (organizationType.equals(OrganizationType.SUPPLIER) && !isUserSupplierWorker) {
             throw new BadRequestException(
                     USER_WITH_ROLE_CANT_BE_REGISTERED_IN_ORGANIZATION_WITH_TYPE.formatted(
-                            userRole.name(), organizationType.name()));
+                            role.name(), organizationType.name()));
         }
 
-        boolean isUserClientWorker = userRole.equals(UserRole.CLIENT_HEAD)
-                || userRole.equals(UserRole.CLIENT_EMPLOYEE);
+        boolean isUserCustomerWorker = role.equals(Role.CUSTOMER);
 
-        if (organizationType.equals(OrganizationType.COMPANY) && !isUserClientWorker) {
+        if (organizationType.equals(OrganizationType.CUSTOMER) && !isUserCustomerWorker) {
             throw new BadRequestException(
                     USER_WITH_ROLE_CANT_BE_REGISTERED_IN_ORGANIZATION_WITH_TYPE.formatted(
-                            userRole.name(), organizationType.name()));
+                            role.name(), organizationType.name()));
         }
     }
 }

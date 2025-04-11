@@ -14,4 +14,7 @@ public final class ApplicationMessages {
     public static final String USER_IS_ALREADY_TEMPORARY_BLOCKED = "пользователь уже временно заблокирован";
     public static final String USER_IS_ALREADY_BLOCKED = "пользователь уже заблокирован";
     public static final String USER_IS_NOT_BLOCKED = "пользователь на данный момент не заблокирован";
+    public static final String ROLE_IS_ALREADY_ASSIGNED = "роль уже назначена пользователю";
+    public static final String ROLE_IS_NOT_ASSIGNED_YET = "роль еще не была назначена пользователю";
+
 }

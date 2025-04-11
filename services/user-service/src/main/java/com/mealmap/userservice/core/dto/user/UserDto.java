@@ -1,6 +1,6 @@
 package com.mealmap.userservice.core.dto.user;
 
-import com.mealmap.userservice.entity.enums.UserRole;
+import com.mealmap.userservice.entity.enums.Role;
 import com.mealmap.userservice.entity.value.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -29,7 +30,7 @@ public class UserDto {
 
     private UserStatus status;
 
-    private UserRole role;
+    private List<Role> roles;
 
     private LocalDate createdAt;
 }

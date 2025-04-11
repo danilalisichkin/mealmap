@@ -33,7 +33,7 @@ public class UserKafkaServiceImpl implements UserKafkaService {
     @Override
     public void createUser(UserDto dto) {
         userCreationProducer.sendMessage(
-                userKafkaMapper.DtoToCreationDto(dto));
+                userKafkaMapper.dtoToCreationDto(dto));
     }
 
     @Override
@@ -59,8 +59,11 @@ public class UserKafkaServiceImpl implements UserKafkaService {
     public void updateUserRole(KafkaUserRoleUpdateDto updateDto) {
         UserResource userResource = kcResourceService.findUserResourceByUserId(updateDto.getId().toString());
 
-        kcRoleService.unassignRoleFromUser(userResource, updateDto.getOldRole());
-        kcRoleService.assignRoleToUser(userResource, updateDto.getNewRole());
+        if (updateDto.isToAssign()) {
+            kcRoleService.assignRoleToUser(userResource, updateDto.getNewRole());
+        } else {
+            kcRoleService.unassignRoleFromUser(userResource, updateDto.getNewRole());
+        }
     }
 
     @Override

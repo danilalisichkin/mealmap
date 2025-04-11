@@ -55,9 +55,9 @@
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
       "attributes" : { }
     }, {
-      "id" : "ae20a0d4-9c6b-44a2-bfa2-fc0505292d62",
-      "name" : "SUPPLIER_ADMIN",
-      "description" : "user_role-supplier_admin",
+      "id" : "e2206c12-6d9b-48ef-90dc-5b3def1d5568",
+      "name" : "ADMIN",
+      "description" : "user_role-admin",
       "composite" : false,
       "clientRole" : false,
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
@@ -95,9 +95,25 @@
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
       "attributes" : { }
     }, {
+      "id" : "82504e62-8452-4766-b86a-4eb616bfae35",
+      "name" : "SUPPLIER",
+      "description" : "user_role-supplier",
+      "composite" : false,
+      "clientRole" : false,
+      "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
+      "attributes" : { }
+    }, {
       "id" : "89b0716b-e979-4602-a53b-f5ac379005b0",
       "name" : "ORDER_SERVICE",
       "description" : "service",
+      "composite" : false,
+      "clientRole" : false,
+      "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
+      "attributes" : { }
+    }, {
+      "id" : "4d0b568e-ca8b-422a-87fc-b9d41b0da688",
+      "name" : "OPERATOR",
+      "description" : "user_role-operator",
       "composite" : false,
       "clientRole" : false,
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
@@ -111,33 +127,9 @@
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
       "attributes" : { }
     }, {
-      "id" : "dab7664d-7a76-4cb4-bb07-ed9bd5be4027",
-      "name" : "CLIENT_HEAD",
-      "description" : "user_role-client_head",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
-      "attributes" : { }
-    }, {
-      "id" : "b9380d9e-3c9b-4af7-b98a-e6716ef3c0be",
-      "name" : "ADMIN",
-      "description" : "user_role-admin",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
-      "attributes" : { }
-    }, {
       "id" : "40943639-409c-4acc-a304-c52c13f76223",
       "name" : "PROMO_SERVICE",
       "description" : "service",
-      "composite" : false,
-      "clientRole" : false,
-      "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
-      "attributes" : { }
-    }, {
-      "id" : "7a37eab2-736f-448f-b1fe-f582a5fbd544",
-      "name" : "SUPPLIER_EMPLOYEE",
-      "description" : "user_role-supplier_employee",
       "composite" : false,
       "clientRole" : false,
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
@@ -180,17 +172,17 @@
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
       "attributes" : { }
     }, {
-      "id" : "c544a561-c6dd-4019-829e-c770ab3feb76",
-      "name" : "PRODUCT_SERVICE",
-      "description" : "service",
+      "id" : "f7c4ceda-aa66-43d1-82b9-0ed51d5dc7a3",
+      "name" : "CUSTOMER",
+      "description" : "user_role-customer",
       "composite" : false,
       "clientRole" : false,
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
       "attributes" : { }
     }, {
-      "id" : "9265985c-d549-4d0a-b582-8ccd1eb5d634",
-      "name" : "CLIENT_EMPLOYEE",
-      "description" : "user_role-client_employee",
+      "id" : "c544a561-c6dd-4019-829e-c770ab3feb76",
+      "name" : "PRODUCT_SERVICE",
+      "description" : "service",
       "composite" : false,
       "clientRole" : false,
       "containerId" : "9870091c-a5f7-4e7c-93bd-5eae04f1d106",
@@ -515,11 +507,11 @@
   "webAuthnPolicyPasswordlessAcceptableAaguids" : [ ],
   "webAuthnPolicyPasswordlessExtraOrigins" : [ ],
   "users" : [ {
-    "id" : "8261a67e-d259-402a-b10b-bbbdde7995fa",
+    "id" : "f5a1fd44-d87f-45f4-b113-bbc08f4fe1c7",
     "username" : "375254533567",
     "firstName" : "Сабрина какашка",
     "lastName" : "ковзан",
-    "email" : "testudsffdsserftedsdsfst@gmail.com",
+    "email" : "test@gmail.com",
     "emailVerified" : false,
     "attributes" : {
       "organizationId" : [ "3" ],
@@ -527,30 +519,30 @@
       "isTemporaryBlocked" : [ "false" ],
       "isActive" : [ "true" ]
     },
-    "createdTimestamp" : 1744199613787,
+    "createdTimestamp" : 1744366494325,
     "enabled" : true,
     "totp" : false,
     "credentials" : [ {
-      "id" : "538a303e-eada-47ee-bdc4-2997cbf1949c",
+      "id" : "aefc9bed-a770-43f3-ae19-a4721b7ea030",
       "type" : "password",
-      "createdDate" : 1744199614087,
-      "secretData" : "{\"value\":\"+jwGb2eELOyAd7PeJK9OcIiRtD0tJvYB4OCwXY3UryM=\",\"salt\":\"OcQuc2ps2i71O26M9ObwTA==\",\"additionalParameters\":{}}",
+      "createdDate" : 1744366494499,
+      "secretData" : "{\"value\":\"Bl7/DHf54zGDl93arop+B2HqWf+TJebLCOtJpPRLmwM=\",\"salt\":\"BeJeCm1+drNSmfmoBerE8w==\",\"additionalParameters\":{}}",
       "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-mealmap-realm", "CLIENT_EMPLOYEE" ],
+    "realmRoles" : [ "default-roles-mealmap-realm", "CUSTOMER" ],
     "notBefore" : 0,
     "groups" : [ ]
   }, {
     "id" : "0e3901b5-fb3f-44e4-b691-adac0a735789",
     "username" : "375291234567",
-    "firstName" : "John",
-    "lastName" : "Pork",
-    "email" : "client-employee@company.com",
+    "firstName" : "Иванов",
+    "lastName" : "Иван",
+    "email" : "client@company.com",
     "emailVerified" : false,
     "attributes" : {
-      "organizationId" : [ "1" ],
+      "organizationId" : [ "3" ],
       "isBlocked" : [ "false" ],
       "isTemporaryBlocked" : [ "false" ],
       "isActive" : [ "true" ]
@@ -568,18 +560,47 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-mealmap-realm", "CLIENT_EMPLOYEE" ],
+    "realmRoles" : [ "CUSTOMER" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "242b8caf-d198-4a10-a7ec-15ae2c2b6772",
+    "username" : "375293333333",
+    "firstName" : "Пупкин",
+    "lastName" : "Василий",
+    "email" : "suplier-admin@food.com",
+    "emailVerified" : false,
+    "attributes" : {
+      "organizationId" : [ "2" ],
+      "isBlocked" : [ "false" ],
+      "isTemporaryBlocked" : [ "false" ],
+      "isActive" : [ "true" ]
+    },
+    "createdTimestamp" : 1744364234522,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "b3609753-a348-489a-8cf8-fabbfcce8c34",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1744364242593,
+      "secretData" : "{\"value\":\"1/4QGtUk++U3xnE8zS5GweZjV7mMuc9lAOdt6B0LFm8=\",\"salt\":\"OfLaGxKuxPsigr4v5A3wfw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ADMIN", "SUPPLIER" ],
     "notBefore" : 0,
     "groups" : [ ]
   }, {
     "id" : "ef38cc33-c3df-4b76-aa8c-de6be555f45c",
     "username" : "375296666666",
-    "firstName" : "Admin",
-    "lastName" : "Admin",
-    "email" : "admin@admin.com",
+    "firstName" : "Админов",
+    "lastName" : "Администратор",
+    "email" : "operator-admin@admin.com",
     "emailVerified" : false,
     "attributes" : {
-      "organizationId" : [ "2" ],
+      "organizationId" : [ "1" ],
       "isBlocked" : [ "false" ],
       "isTemporaryBlocked" : [ "false" ],
       "isActive" : [ "true" ]
@@ -597,63 +618,7 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "ADMIN", "default-roles-mealmap-realm" ],
-    "notBefore" : 0,
-    "groups" : [ ]
-  }, {
-    "id" : "09b52678-7e22-4a53-8118-232982ae0446",
-    "username" : "375334533567",
-    "firstName" : "Сабрина какашка",
-    "lastName" : "ковзан",
-    "email" : "testudsffdssertedsdsfst@gmail.com",
-    "emailVerified" : false,
-    "attributes" : {
-      "organizationId" : [ "3" ],
-      "isBlocked" : [ "false" ],
-      "isTemporaryBlocked" : [ "false" ],
-      "isActive" : [ "true" ]
-    },
-    "createdTimestamp" : 1744199434625,
-    "enabled" : true,
-    "totp" : false,
-    "credentials" : [ {
-      "id" : "c01ce50f-509b-4388-b718-2e472d4bbb68",
-      "type" : "password",
-      "createdDate" : 1744199435256,
-      "secretData" : "{\"value\":\"RMnQQ54eKvgHdAdyQu6d/3FTBptpbiogXq5cxLHDpvQ=\",\"salt\":\"fAYTe4GGuedjVR/QWm2xQw==\",\"additionalParameters\":{}}",
-      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-    } ],
-    "disableableCredentialTypes" : [ ],
-    "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-mealmap-realm", "CLIENT_EMPLOYEE" ],
-    "notBefore" : 0,
-    "groups" : [ ]
-  }, {
-    "id" : "495a6582-2ccf-492b-83a4-7905ddfa688d",
-    "username" : "375334567567",
-    "firstName" : "Сабрина какашка",
-    "lastName" : "ковзан",
-    "email" : "testusertedsdsfst@gmail.com",
-    "emailVerified" : false,
-    "attributes" : {
-      "organizationId" : [ "3" ],
-      "isBlocked" : [ "false" ],
-      "isTemporaryBlocked" : [ "false" ],
-      "isActive" : [ "true" ]
-    },
-    "createdTimestamp" : 1744199004173,
-    "enabled" : true,
-    "totp" : false,
-    "credentials" : [ {
-      "id" : "5e0b1d14-1f41-4406-ab41-0286bf185152",
-      "type" : "password",
-      "createdDate" : 1744199004891,
-      "secretData" : "{\"value\":\"Q/WP0L3ujWSZqM7T8kNt8SbjqwA6DQ2XqAJvdwDOxlQ=\",\"salt\":\"pzgYqXMxguTDbfIwC5Bhog==\",\"additionalParameters\":{}}",
-      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-    } ],
-    "disableableCredentialTypes" : [ ],
-    "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-mealmap-realm", "CLIENT_EMPLOYEE" ],
+    "realmRoles" : [ "OPERATOR", "ADMIN" ],
     "notBefore" : 0,
     "groups" : [ ]
   }, {

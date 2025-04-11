@@ -1,12 +1,14 @@
 package com.mealmap.userservice.entity;
 
-import com.mealmap.userservice.entity.enums.UserRole;
 import com.mealmap.userservice.entity.value.UserStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -49,8 +52,8 @@ public class User {
     @Embedded
     private UserStatus status;
 
-    @Column(nullable = false)
-    private UserRole role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<UserRole> roles;
 
     @Column(updatable = false)
     private LocalDate createdAt;

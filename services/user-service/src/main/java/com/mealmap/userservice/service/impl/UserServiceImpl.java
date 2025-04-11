@@ -1,5 +1,7 @@
 package com.mealmap.userservice.service.impl;
 
+import com.mealmap.starters.exceptionstarter.exception.BadRequestException;
+import com.mealmap.starters.exceptionstarter.exception.ConflictException;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import com.mealmap.starters.paginationstarter.dto.PageDto;
 import com.mealmap.starters.paginationstarter.mapper.PageMapper;
@@ -14,8 +16,8 @@ import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
 import com.mealmap.userservice.core.enums.sort.UserSortField;
 import com.mealmap.userservice.core.mapper.UserMapper;
 import com.mealmap.userservice.entity.User;
+import com.mealmap.userservice.entity.enums.Role;
 import com.mealmap.userservice.entity.enums.StatusEvent;
-import com.mealmap.userservice.entity.enums.UserRole;
 import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
 import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.repository.UserRepository;
@@ -37,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.mealmap.userservice.core.message.ApplicationMessages.ROLE_IS_ALREADY_ASSIGNED;
+import static com.mealmap.userservice.core.message.ApplicationMessages.ROLE_IS_NOT_ASSIGNED_YET;
 import static com.mealmap.userservice.core.message.ApplicationMessages.USER_NOT_FOUND;
 import static com.mealmap.userservice.entity.specification.UserSpecification.hasFirstNameLike;
 import static com.mealmap.userservice.entity.specification.UserSpecification.hasLastNameLike;
@@ -112,22 +116,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     @CachePut(key = "#id")
-    public UserDto updateUserRole(UUID id, UserRole role) {
+    public UserDto assignRole(UUID id, Role role) {
         User userToUpdate = getUserEntity(id);
-        UserRole oldRole = userToUpdate.getRole();
 
-        if (!oldRole.equals(role)) {
-            userToUpdate.setRole(role);
+        boolean isAlreadyAssigned = userToUpdate.getRoles().stream()
+                .filter(ur -> ur.getRole().equals(role))
+                .findFirst()
+                .isEmpty();
 
-            userRepository.save(userToUpdate);
-
+        if (isAlreadyAssigned) {
             userKafkaService.updateUserRole(
-                    new KafkaUserRoleUpdateDto(id, oldRole.name(), role.name()));
-        }
+                    new KafkaUserRoleUpdateDto(id, true, role.name()));
 
-        return userMapper.entityToDto(userToUpdate);
+            return userMapper.entityToDto(
+                    userRepository.save(userToUpdate));
+        } else {
+            throw new ConflictException(ROLE_IS_ALREADY_ASSIGNED);
+        }
+    }
+
+    @Override
+    @CachePut(key = "#id")
+    public UserDto unassignRole(UUID id, Role role) {
+        User userToUpdate = getUserEntity(id);
+
+        boolean isRoleExistedAndRemoved = userToUpdate.getRoles()
+                .removeIf(ur -> ur.getRole().equals(role));
+
+        if (isRoleExistedAndRemoved) {
+            userKafkaService.updateUserRole(
+                    new KafkaUserRoleUpdateDto(id, false, role.name()));
+
+            return userMapper.entityToDto(
+                    userRepository.save(userToUpdate));
+        } else {
+            throw new BadRequestException(ROLE_IS_NOT_ASSIGNED_YET);
+        }
     }
 
     @Override

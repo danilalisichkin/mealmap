@@ -9,7 +9,7 @@ import com.mealmap.userservice.core.dto.user.UserDto;
 import com.mealmap.userservice.core.dto.user.UserUpdatingDto;
 import com.mealmap.userservice.core.enums.sort.StatusHistorySortField;
 import com.mealmap.userservice.core.enums.sort.UserSortField;
-import com.mealmap.userservice.entity.enums.UserRole;
+import com.mealmap.userservice.entity.enums.Role;
 import com.mealmap.userservice.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,12 +76,22 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @PutMapping("/{id}/role")
+    @PostMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDto> updateUserRole(
-            @PathVariable UUID id, @RequestBody @NotNull UserRole role) {
+    public ResponseEntity<UserDto> assignRole(
+            @PathVariable UUID id, @RequestBody @NotNull Role role) {
 
-        UserDto user = userService.updateUserRole(id, role);
+        UserDto user = userService.assignRole(id, role);
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @DeleteMapping("/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDto> unassignRole(
+            @PathVariable UUID id, @RequestBody @NotNull Role role) {
+
+        UserDto user = userService.unassignRole(id, role);
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
