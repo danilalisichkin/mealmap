@@ -53,6 +53,11 @@ business:
           group-id: user.status-update.group
   services:
     organization:
-      url: ${ORGANIZATION_API_URL:http://localhost:8087/api/v1/organizations/}
+      name: ${ORGANIZATION_API_NAME:organization-service}
+      path: ${ORGANIZATION_API_PATH:api/v1/organizations}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8083}

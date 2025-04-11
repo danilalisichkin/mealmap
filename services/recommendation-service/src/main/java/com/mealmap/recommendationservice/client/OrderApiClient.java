@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
-        name = "order-api",
-        url = "${business.services.order.url}",
+        name = "${business.services.order.name}",
+        path = "${business.services.order.path}",
         contextId = "orderClient",
         configuration = {OrderApiClientConfig.class, FeignOAuth2Config.class})
 public interface OrderApiClient {

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
 @FeignClient(
-        name = "user-health-api",
-        url = "${business.services.health.url}",
+        name = "${business.services.health.name}",
+        path = "${business.services.health.path}",
         contextId = "healthClient",
         configuration = {HealthApiClientConfig.class, FeignOAuth2Config.class})
 public interface HealthApiClient {

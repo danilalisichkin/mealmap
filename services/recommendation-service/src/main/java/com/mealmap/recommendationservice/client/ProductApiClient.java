@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @FeignClient(
-        name = "product-api",
-        url = "${business.services.product.url}",
+        name = "${business.services.product.name}",
+        path = "${business.services.product.path}",
         contextId = "productClient",
         configuration = {ProductApiClientConfig.class, FeignOAuth2Config.class})
 public interface ProductApiClient {

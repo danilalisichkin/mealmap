@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
-        name = "telegram-bot-api",
-        url = "${business.services.telegram-bot.url}",
+        name = "${business.services.telegram-bot.name}",
+        path = "${business.services.telegram-bot.path}",
         contextId = "productClient",
         configuration = {TelegramBotApiClientConfig.class, FeignOAuth2Config.class})
 public interface TelegramBotApiClient {

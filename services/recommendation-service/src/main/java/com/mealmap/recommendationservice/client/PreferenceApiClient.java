@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
 
 @FeignClient(
-        name = "preference-api",
-        url = "${business.services.preference.url}",
+        name = "${business.services.preference.name}",
+        path = "${business.services.preference.path}",
         contextId = "preferenceClient",
         configuration = {PreferenceApiClientConfig.class, FeignOAuth2Config.class})
 public interface PreferenceApiClient {

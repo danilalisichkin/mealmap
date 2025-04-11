@@ -70,6 +70,11 @@ business:
       enabled: ${NOTIFICATIONS_SMS_ENABLED:false}
   services:
     telegram-bot:
-      url: ${TELEGRAM_BOT_API_URL:http://localhost:8092/api/v1/telegram-bot/}
+      name: ${TELEGRAM_BOT_API_NAME:telegram-bot}
+      path: ${TELEGRAM_BOT_API_PATH:api/v1/telegram-bot}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8091}

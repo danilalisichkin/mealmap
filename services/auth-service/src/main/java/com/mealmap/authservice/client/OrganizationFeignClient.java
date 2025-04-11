@@ -6,8 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "organization-api",
-        url = "${business.services.organization.url}",
+@FeignClient(
+        name = "${business.services.organization.name}",
+        path = "${business.services.organization.path}",
         configuration = OrganizationApiClientConfig.class)
 public interface OrganizationFeignClient {
 

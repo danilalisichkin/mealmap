@@ -44,5 +44,9 @@ business:
     category:
       name: ${CACHE_CATEGORY_NAME:categoryCache}
       ttl: ${CACHE_CATEGORY_TTL:36000}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8081}

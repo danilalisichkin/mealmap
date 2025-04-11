@@ -17,5 +17,9 @@ mongock:
   migration-scan-package: com.mealmap.promoservice.migration
   transactional: true
   enabled: true
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8086}

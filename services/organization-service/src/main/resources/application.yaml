@@ -27,5 +27,9 @@ business:
     organization:
       name: ${CACHE_ORGANIZATION_NAME:organizationCache}
       ttl: ${CACHE_ORGANIZATION_TTL:7200}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8087}

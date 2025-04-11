@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(
-        name = "promo-code-api",
-        url = "${business.services.promo-code.url}",
+        name = "${business.services.promo-code.name}",
+        path = "${business.services.promo-code.path}",
         contextId = "promoCodeClient",
         configuration = {PromoCodeApiClientConfig.class, FeignOAuth2Config.class})
 public interface PromoCodeApiClient {

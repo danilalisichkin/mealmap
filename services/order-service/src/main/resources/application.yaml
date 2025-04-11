@@ -25,10 +25,17 @@ mongock:
 business:
   services:
     promo-code:
-      url: ${PROMO_CODE_API_URL:http://localhost:8086/api/v1/promo-codes/}
+      name: ${PROMO_API_NAME:promo-service}
+      path: ${PROMO_API_PATH:api/v1/promo-codes}
     promo-stat:
-      url: ${PROMO_STAT_API_URL:http://localhost:8086/api/v1/promo-stats/}
+      name: ${PROMO_API_NAME:promo-service}
+      path: ${PROMO_API_PATH:api/v1/promo-stats}
     product:
-      url: ${PRODUCT_API_URL:http://localhost:8081/api/v1/products/}
+      name: ${PRODUCT_API_NAME:product-service}
+      path: ${PRODUCT_API_PATH:api/v1/products}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8084}

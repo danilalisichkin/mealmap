@@ -29,16 +29,24 @@ mongock:
 business:
   services:
     product:
-      url: ${PRODUCT_API_URL:http://localhost:8081/api/v1/products/}
+      name: ${PRODUCT_API_NAME:product-service}
+      path: ${PRODUCT_API_PATH:api/v1/products}
     order:
-      url: ${USER_ORDER_API_URL:http://localhost:8084/api/v1/users/}
+      name: ${ORDER_API_NAME:order-service}
+      path: ${ORDER_API_PATH:api/v1/users}
     preference:
-      url: ${USER_PREFERENCE_API_URL:http://localhost:8088/api/v1/users/}
+      name: ${PREFERENCE_API_NAME:preference-service}
+      path: ${PREFERENCE_API_PATH:api/v1/users}
     health:
-      url: ${USER_HEALTH_API_URL:http://localhost:8089/api/v1/users/}
+      name: ${HEALTH_API_NAME:health-service}
+      path: ${HEALTH_API_PATH:api/v1/users}
   recommendation:
     settings:
       last-orders:
         count: ${RECOMMENDATION_SETTINGS_LAST_ORDERS_COUNT:10}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8090}

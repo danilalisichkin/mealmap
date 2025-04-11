@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
-        name = "promo-stat-api",
-        url = "${business.services.promo-stat.url}",
+        name = "${business.services.promo-stat.name}",
+        path = "${business.services.promo-stat.path}",
         contextId = "promoStatClient",
         configuration = {PromoStatApiClientConfig.class, FeignOAuth2Config.class})
 public interface PromoStatApiClient {

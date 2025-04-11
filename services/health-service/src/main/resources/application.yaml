@@ -16,5 +16,9 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:health-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:d17hPRAz1H8kWs7XIyBOieoDl4qzkaus}
+eureka:
+  client:
+    service-url:
+      default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
 server:
   port: ${SERVER_PORT:8089}
