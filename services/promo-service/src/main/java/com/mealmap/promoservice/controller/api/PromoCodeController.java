@@ -34,7 +34,7 @@ public class PromoCodeController {
     private final PromoCodeService promoCodeService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<PromoCodeDto>> getPageOfPromoCodes(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -55,7 +55,7 @@ public class PromoCodeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PromoCodeDto> createPromoCode(@RequestBody @Valid PromoCodeCreationDto codeDto) {
         PromoCodeDto promoCode = promoCodeService.createPromoCode(codeDto);
 
@@ -63,7 +63,7 @@ public class PromoCodeController {
     }
 
     @PutMapping("/{code}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PromoCodeDto> updatePromoCode(
             @PathVariable @Size(min = 2, max = 20) String code,
             @RequestBody @Valid PromoCodeUpdatingDto codeDto) {

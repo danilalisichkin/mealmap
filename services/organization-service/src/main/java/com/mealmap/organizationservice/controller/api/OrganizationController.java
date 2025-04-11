@@ -35,7 +35,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfOrganizations(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -57,7 +57,7 @@ public class OrganizationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
     public ResponseEntity<OrganizationDto> createOrganization(
             @RequestBody @Valid OrganizationCreationDto organizationDto) {
 
@@ -67,7 +67,7 @@ public class OrganizationController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Company Admin use this method
+    @PreAuthorize("hasRole('ADMIN') and (isOrganizationMember(#id) or hasRole('OPERATOR'))")
     public ResponseEntity<OrganizationDto> updateOrganization(
             @PathVariable Integer id, @RequestBody @Valid OrganizationUpdatingDto organizationDto) {
 

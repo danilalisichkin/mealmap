@@ -30,7 +30,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,

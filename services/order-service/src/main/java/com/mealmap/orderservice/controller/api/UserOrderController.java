@@ -36,7 +36,7 @@ public class UserOrderController {
     private final UserOrderService userOrderService;
 
     @GetMapping("/{userId}/orders")
-    @PreAuthorize("hasUserId(#userId) or hasRole('ADMIN') or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
+    @PreAuthorize("hasUserId(#userId) or (hasRole('ADMIN') and hasRole('OPERATOR')) or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
     public ResponseEntity<PageDto<OrderDto>> getPageOfUserOrders(
             @PathVariable @UUID String userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,

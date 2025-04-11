@@ -123,7 +123,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/deactivate")
-    @PreAuthorize("hasUserId(#id) or hasRole('ADMIN')")
+    @PreAuthorize("hasUserId(#id) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<StatusHistoryDto> deactivateUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -133,7 +133,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/block")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow company Admin use this method
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> blockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -143,7 +143,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/temporary-block")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow company Admin use this method
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> temporaryBlockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 
@@ -153,7 +153,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/unblock")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow company Admin use this method
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> unblockUser(
             @PathVariable UUID id, @RequestBody @Valid StatusHistoryCreationDto statusDto) {
 

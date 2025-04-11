@@ -47,7 +47,7 @@ public class UserNotificationController {
     }
 
     @PostMapping("/{userId}/notifications")
-    @PreAuthorize("hasUserId(#userId) or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
     public ResponseEntity<NotificationDto> createNotification(
             @PathVariable @UUID String userId,
             @RequestBody @Valid NotificationCreationDto notificationDto) {

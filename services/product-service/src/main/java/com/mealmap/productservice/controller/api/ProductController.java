@@ -80,7 +80,7 @@ public class ProductController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Admin use this method
+    @PreAuthorize("hasRole('SUPPLIER') and hasRole('ADMIN') and isOrganizationMember(#productDto.supplierId)")
     public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductCreatingDto productDto) {
         ProductDto product = productService.createProduct(productDto);
 
@@ -88,7 +88,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Admin use this method
+    @PreAuthorize("hasRole('SUPPLIER') and hasRole('ADMIN') and isOrganizationMember(#productDto.supplierId)")
     public ResponseEntity<ProductDto> updateProduct(
             @PathVariable Long id, @RequestBody @Valid ProductUpdatingDto productDto) {
 
@@ -98,7 +98,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')") //TODO: allow Supplier Admin use this method
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
 

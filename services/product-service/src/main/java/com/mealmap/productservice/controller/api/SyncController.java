@@ -16,7 +16,7 @@ public class SyncController {
     private final ElasticsearchSyncService esSyncService;
 
     @PostMapping("/products")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> syncProducts() {
         esSyncService.syncProducts();
 
@@ -24,7 +24,7 @@ public class SyncController {
     }
 
     @PostMapping("/categories")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> syncCategories() {
         esSyncService.syncCategories();
 

@@ -32,7 +32,7 @@ public class PromoStatController {
     private final PromoStatService promoStatService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<PromoStatDto>> getPageOfPromoStats(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -45,7 +45,7 @@ public class PromoStatController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PromoStatDto> getPromoStat(@PathVariable ObjectId id) {
         PromoStatDto promoStat = promoStatService.getPromoStat(id);
 
