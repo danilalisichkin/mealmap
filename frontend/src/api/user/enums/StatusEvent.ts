@@ -1,0 +1,7 @@
+export enum StatusEvent {
+    ACTIVATE = "ACTIVATE",
+    DEACTIVATE = "DEACTIVATE",
+    BLOCK = "BLOCK",
+    TEMPORARY_BLOCK = "TEMPORARY_BLOCK",
+    UNBLOCK = "UNBLOCK",
+}

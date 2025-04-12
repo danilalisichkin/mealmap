@@ -1,0 +1,5 @@
+export enum DietType {
+    MAINTENANCE = "MAINTENANCE",
+    WEIGHT_LOSS = "WEIGHT_LOSS",
+    WEIGHT_GAIN = "WEIGHT_GAIN",
+}
