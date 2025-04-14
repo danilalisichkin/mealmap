@@ -1,4 +1,4 @@
 export enum CategorySortField {
-    ID = "ID",
-    NAME = "NAME",
+  ID = "ID",
+  NAME = "NAME",
 }

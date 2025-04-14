@@ -1,5 +1,5 @@
 export enum NotificationStatus {
-    SENT = "SENT",
-    FAILED = "FAILED",	
-    PENDING = "PENDING",
+  SENT = "SENT",
+  FAILED = "FAILED",
+  PENDING = "PENDING",
 }

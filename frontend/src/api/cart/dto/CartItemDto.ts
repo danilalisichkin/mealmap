@@ -1,5 +1,5 @@
 export interface CartItemDto {
-    id: number;
-    productId: number;
-    quantity: number;
+  id: number;
+  productId: number;
+  quantity: number;
 }

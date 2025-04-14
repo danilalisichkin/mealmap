@@ -1,5 +1,5 @@
 export interface UserFilter {
-    isActive?: boolean;
-    isBlocked?: boolean;
-    isTemporaryBlocked?: boolean;
+  isActive?: boolean;
+  isBlocked?: boolean;
+  isTemporaryBlocked?: boolean;
 }

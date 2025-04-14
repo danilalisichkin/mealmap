@@ -1,6 +1,6 @@
 export interface OrderItemDto {
-    productId: number;
-    supplierId: number;
-    priceWhenOrdered: number;
-    quantity: number;
+  productId: number;
+  supplierId: number;
+  priceWhenOrdered: number;
+  quantity: number;
 }

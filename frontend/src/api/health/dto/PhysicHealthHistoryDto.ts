@@ -1,5 +1,5 @@
 export interface PhysicHealthHistoryDto {
-    id: number;
-    weight: number;
-    createdAt: string; // ISO date string
+  id: number;
+  weight: number;
+  createdAt: string; // ISO date string
 }

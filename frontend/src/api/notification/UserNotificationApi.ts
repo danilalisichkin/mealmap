@@ -1,30 +1,38 @@
 import ApiClient from "./client/ApiClient";
 import { NotificationDto } from "./dto/NotificationDto";
-import { NotificationFilter } from "./dto/NotificationFilter";
+import { NotificationCreationDto } from "./dto/NotificationCreationDto";
 import { NotificationSortField } from "./enums/NotificationSortField";
 import { PageDto } from "../common/dto/PageDto";
 
-export const NotificationApi = {
-  getNotifications: async (
+export const UserNotificationApi = {
+  getUserNotifications: async (
+    userId: string,
     offset: number = 0,
     limit: number = 10,
     sortBy: NotificationSortField = NotificationSortField.ID,
-    sortOrder: "ASC" | "DESC" = "ASC",
-    filter?: NotificationFilter,
-    search?: string
+    sortOrder: "ASC" | "DESC" = "ASC"
   ): Promise<PageDto<NotificationDto>> => {
     const response = await ApiClient.get<PageDto<NotificationDto>>(
-      "/notifications",
+      `/users/${userId}/notifications`,
       {
         params: {
           offset,
           limit,
           sortBy,
           sortOrder,
-          ...filter,
-          search,
         },
       }
+    );
+    return response.data;
+  },
+
+  createUserNotification: async (
+    userId: string,
+    notificationDto: NotificationCreationDto
+  ): Promise<NotificationDto> => {
+    const response = await ApiClient.post<NotificationDto>(
+      `/users/${userId}/notifications`,
+      notificationDto
     );
     return response.data;
   },

@@ -1,3 +1,3 @@
 export enum UserRecommendationSortField {
-    CREATED_AT = "createdAt",
+  CREATED_AT = "createdAt",
 }
