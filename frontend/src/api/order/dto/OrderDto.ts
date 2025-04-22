@@ -1,13 +1,15 @@
+import { Address } from "../../common/dto/Address";
 import { OrderStatus } from "../enums/OrderStatus";
 import { OrderItemDto } from "./OrderItemDto";
+import { PaymentInfo } from "./PaymentInfo";
 
 export interface OrderDto {
   id: string; // ObjectId as a string
   userId: string;
-  deliveryAddress: string; // Assuming Address is a string
+  deliveryAddress: Address; // Assuming Address is a string
   status: OrderStatus;
   promoCode: string;
-  paymentInfo: string; // Assuming PaymentInfo is a string
+  paymentInfo: PaymentInfo; // Assuming PaymentInfo is a string
   orderedAt: string; // ISO date-time string
   readyAt: string; // ISO date-time string
   completedAt: string; // ISO date-time string
