@@ -1,0 +1,45 @@
+.nutrient-chart {
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding-top: 20px;
+}
+
+.nutrient-chart-bar {
+  width: 30px;
+  background: linear-gradient(to top, #3b82f6, #60a5fa);
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  transition: height 0.5s ease;
+}
+
+.nutrient-chart-bar::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.nutrient-chart-bar.proteins {
+  background: linear-gradient(to top, #10b981, #34d399);
+}
+
+.nutrient-chart-bar.fats {
+  background: linear-gradient(to top, #f59e0b, #fbbf24);
+}
+
+.nutrient-chart-bar.carbs {
+  background: linear-gradient(to top, #8b5cf6, #a78bfa);
+}
+
+.nutrient-chart-bar.fiber {
+  background: linear-gradient(to top, #ec4899, #f472b6);
+}
+
+.nutrient-chart-bar.sugar {
+  background: linear-gradient(to top, #6366f1, #818cf8);
+}
