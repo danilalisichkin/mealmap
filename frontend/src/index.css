@@ -22,8 +22,7 @@ h6 {
 
 /* Стили для ссылок */
 a {
-  color: #61dafb;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 a:hover {

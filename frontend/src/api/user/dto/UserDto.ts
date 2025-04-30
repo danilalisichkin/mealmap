@@ -1,4 +1,5 @@
 import { Role } from "../enums/Role";
+import { UserStatus } from "./UserStatus";
 
 export interface UserDto {
   id: string; // UUID as a string
@@ -7,7 +8,7 @@ export interface UserDto {
   firstName: string;
   lastName: string;
   organizationId: number;
-  status: string; // Assuming UserStatus is a string
+  status: UserStatus;
   roles: Role[];
   createdAt: string; // ISO date string
 }
