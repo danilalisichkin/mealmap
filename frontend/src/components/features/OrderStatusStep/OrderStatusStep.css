@@ -1,0 +1,30 @@
+.order-timeline-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 32px;
+  height: calc(100% - 24px);
+  width: 2px;
+  background-color: #e5e7eb;
+}
+
+.order-timeline-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: -20px;
+  z-index: 1;
+}
+
+.order-timeline-dot.active {
+  color: white;
+}
+
+.order-timeline-dot.inactive {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+}
