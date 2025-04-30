@@ -1,0 +1,12 @@
+.cart-item:hover {
+  background-color: #f8fafc;
+}
+
+.cart-item-remove {
+  transition: all 0.2s ease;
+}
+
+.cart-item-remove:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+}
