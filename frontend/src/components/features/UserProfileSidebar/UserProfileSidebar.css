@@ -1,0 +1,10 @@
+.profile-avatar {
+  background: linear-gradient(135deg, #48bb78 0%, #4299e1 100%);
+}
+
+.user-status-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(25%, 25%);
+}
