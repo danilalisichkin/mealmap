@@ -1,0 +1,9 @@
+.profile-history-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 40px;
+  height: calc(100% - 32px);
+  width: 2px;
+  background-color: #e2e8f0;
+}
