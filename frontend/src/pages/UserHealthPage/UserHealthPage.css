@@ -1,0 +1,22 @@
+.tab-button {
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  border-bottom: 3px solid #48bb78;
+  color: #48bb78;
+}
+
+.health-card {
+  transition: transform 0.2s;
+}
+
+.health-card:hover {
+  transform: translateY(-2px);
+}
+
+.progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
