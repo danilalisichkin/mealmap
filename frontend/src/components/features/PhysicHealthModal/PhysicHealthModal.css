@@ -1,0 +1,7 @@
+.modal {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+}
