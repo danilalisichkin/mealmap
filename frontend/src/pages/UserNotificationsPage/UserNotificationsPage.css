@@ -1,0 +1,48 @@
+.channel-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.channel-telegram {
+  background-color: #2ca5e0;
+  color: white;
+}
+
+.channel-email {
+  background-color: #718096;
+  color: white;
+}
+
+.channel-sms {
+  background-color: #48bb78;
+  color: white;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.status-sent {
+  background-color: #48bb78;
+}
+
+.status-failed {
+  background-color: #f56565;
+}
+
+.status-pending {
+  background-color: #ecc94b;
+}
+
+.notification-item.unread {
+  background-color: #f8fafc;
+}
