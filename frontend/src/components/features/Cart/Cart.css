@@ -1,0 +1,8 @@
+.cart-panel {
+  transition: all 0.3s ease;
+  transform: translateX(100%);
+}
+
+.cart-panel.open {
+  transform: translateX(0);
+}
