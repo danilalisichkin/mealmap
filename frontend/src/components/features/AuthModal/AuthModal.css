@@ -1,0 +1,17 @@
+.modal {
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.form-tab {
+  transition: all 0.2s ease;
+}
+
+.form-tab.active {
+  color: white;
+}
