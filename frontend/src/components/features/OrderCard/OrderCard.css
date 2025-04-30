@@ -1,0 +1,70 @@
+.order-card {
+  transition: all 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-NEW {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.status-IN_PROGRESS {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.status-READY {
+  background-color: #10b981;
+  color: white;
+}
+
+.status-ON_THE_WAY {
+  background-color: #6366f1;
+  color: white;
+}
+
+.status-COMPLETED {
+  background-color: #6b7280;
+  color: white;
+}
+
+.status-CANCELED {
+  background-color: #ef4444;
+  color: white;
+}
+
+.product-image {
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.expand-btn {
+  transition: all 0.3s ease;
+}
+
+.expand-btn.rotated {
+  transform: rotate(180deg);
+}
+
+.order-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.order-details.expanded {
+  max-height: 1000px;
+}
