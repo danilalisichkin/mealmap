@@ -8,6 +8,7 @@ import { UserStatusHistoryFilter } from "./dto/UserStatusHistoryFilter";
 import { Role } from "./enums/Role";
 import { StatusHistorySortField } from "./enums/StatusHistorySortField";
 import { UserSortField } from "./enums/UserSortField";
+import { PageDto } from "../common/dto/PageDto";
 
 export const UserApi = {
   getUsers: async (
@@ -56,10 +57,10 @@ export const UserApi = {
     offset: number = 0,
     limit: number = 10,
     sortBy: StatusHistorySortField = StatusHistorySortField.ID,
-    sortOrder: "ASC" | "DESC" = "ASC",
+    sortOrder: "ASC" | "DESC" = "DESC",
     filter?: UserStatusHistoryFilter
-  ): Promise<StatusHistoryDto[]> => {
-    const response = await ApiClient.get<StatusHistoryDto[]>(
+  ): Promise<PageDto<StatusHistoryDto>> => {
+    const response = await ApiClient.get<PageDto<StatusHistoryDto>>(
       `/users/${id}/status-history`,
       {
         params: { offset, limit, sortBy, sortOrder, ...filter },
