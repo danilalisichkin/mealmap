@@ -26,7 +26,12 @@ export const AuthApi = {
   ): Promise<KeycloakAccessTokenDto> => {
     const response = await ApiClient.post<KeycloakAccessTokenDto>(
       "/auth/refresh-token",
-      { refreshToken }
+      refreshToken,
+      {
+        headers: {
+          "Content-Type": "text/plain",
+        },
+      }
     );
     return response.data;
   },
