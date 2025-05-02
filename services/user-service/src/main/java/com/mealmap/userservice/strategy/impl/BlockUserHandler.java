@@ -26,6 +26,7 @@ public class BlockUserHandler extends UserStatusChangingBaseHandler {
 
         super(statusHistoryService, notificationClient);
     }
+
     @Override
     public StatusHistoryDto handle(User user, StatusHistoryCreationDto statusDto) {
         boolean isAlreadyBlocked = user.getStatus().getIsBlocked();
