@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { NotificationStatus } from "../../api/notification/enums/NotificationStatus";
 import { Channel } from "../../api/notification/enums/Channel";
 import "./UserNotificationsPage.css";
 import UserNotificationItem from "../../components/features/UserNotificationItem/UserNotificationItem";
-import { mockNotifications } from "../../mock/notifications";
+import { useLocation } from "react-router-dom";
+import { NotificationDto } from "../../api/notification/dto/NotificationDto";
+import { UserNotificationApi } from "../../api/notification/UserNotificationApi";
+import { PageDto } from "../../api/common/dto/PageDto";
+import { NotificationSortField } from "../../api/notification/enums/NotificationSortField";
+import Pagination from "../../components/commons/Pagination/Pagination";
+import NotificationSort from "../../components/features/NotificationSort/NotificatonSort";
 
 interface UserNotificationsPageProps {}
 
@@ -28,6 +34,11 @@ const channelMap: Record<
   },
 };
 
+const DEFAULT_PAGINATION_OPTIONS = {
+  PAGE_NUMBER: 1,
+  PAGE_SIZE: 10,
+};
+
 const statusMap: Record<NotificationStatus, { class: string; label: string }> =
   {
     [NotificationStatus.SENT]: { class: "status-sent", label: "Отправлено" },
@@ -39,29 +50,90 @@ const statusMap: Record<NotificationStatus, { class: string; label: string }> =
   };
 
 const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
-  // TODO: API CALL
-  const notifications = mockNotifications;
+  const location = useLocation();
+  const userId = location.state?.userId ?? null;
+
+  const [notificationPage, setNotificationPage] =
+    useState<PageDto<NotificationDto> | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [sortField, setSortField] = useState<NotificationSortField>(
+    NotificationSortField.SENT_AT
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = useState(
+    DEFAULT_PAGINATION_OPTIONS.PAGE_NUMBER
+  );
+
+  const fetchNotifications = useCallback(async () => {
+    if (!userId) {
+      setError("Пользователь не авторизован");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await UserNotificationApi.getUserNotifications(
+        userId,
+        currentPage - 1,
+        DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE,
+        sortField,
+        sortOrder.toUpperCase() as "ASC" | "DESC"
+      );
+      setNotificationPage(response);
+    } catch (err) {
+      console.error("Ошибка при загрузке уведомлений:", err);
+      setError("Не удалось загрузить уведомления.");
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, currentPage, sortField, sortOrder]);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSortChange = (
+    field: NotificationSortField,
+    order: "asc" | "desc"
+  ) => {
+    setSortField(field);
+    setSortOrder(order);
+    setCurrentPage(1);
+  };
+
+  if (loading) {
+    return <div className="text-center py-12">Загрузка...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-12 text-red-500">{error}</div>;
+  }
+
+  if (!notificationPage) {
+    return <div className="text-center py-12">Нет уведомлений</div>;
+  }
 
   return (
-    <main className="container mx-auto px-4 py-2">
-      <div className="flex overflow-x-auto mb-4 pb-2 hide-scrollbar">
-        <button
-          className="filter-tab active px-4 py-2 text-sm font-medium whitespace-nowrap"
-          data-filter="all"
-        >
-          Все
-        </button>
-        <button
-          className="filter-tab px-4 py-2 text-sm font-medium whitespace-nowrap"
-          data-filter="unread"
-        >
-          Непрочитанные
-        </button>
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h1 className="text-3xl font-bold text-gray-900">Мои уведомления</h1>
+        <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
+          <NotificationSort
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSortChange={handleSortChange}
+          />
+        </div>
       </div>
-
       <div id="notification-list" className="space-y-2">
-        {notifications.length > 0 ? (
-          notifications.map((notification) => {
+        {notificationPage.items.length > 0 ? (
+          notificationPage.items.map((notification) => {
             const channelInfo = channelMap[notification.channel] || {
               icon: "fas fa-question",
               class: "bg-gray-200 text-gray-500",
@@ -97,6 +169,15 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
           </div>
         )}
       </div>
+      <Pagination
+        page={currentPage}
+        pageSize={
+          notificationPage.pageSize ?? DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE
+        }
+        totalPages={notificationPage.totalPages || 1}
+        totalElements={notificationPage.totalElements || 0}
+        onPageChange={handlePageChange}
+      />
     </main>
   );
 };
