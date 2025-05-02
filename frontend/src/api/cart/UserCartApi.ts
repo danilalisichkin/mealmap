@@ -27,7 +27,7 @@ export const CartApi = {
   ): Promise<CartItemDto> => {
     const response = await ApiClient.patch<CartItemDto>(
       `/users/${userId}/cart/items/${itemId}/quantity`,
-      { quantity }
+      quantity,
     );
     return response.data;
   },
