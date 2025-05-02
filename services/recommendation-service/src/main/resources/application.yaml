@@ -22,6 +22,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:recommendation-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:YO4pPxzpV0RofhaEVg7t5tcdGJwL6gJ3}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 mongock:
   migration-scan-package: com.cabaggregator.rideservice.migration
   transactional: true

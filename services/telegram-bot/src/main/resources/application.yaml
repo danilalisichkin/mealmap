@@ -15,6 +15,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:telegram-bot}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:fGxyiddJQOB4mHOQhPDXJJk27ItCYwfI}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 business:
   kafka:
     topics:

@@ -39,6 +39,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:notification-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:IZkO3Ga47lVqu9Iwo4n5W9gbVy0Myqgi}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 mongock:
   migration-scan-package: com.mealmap.notificationservice.migration
   transactional: true

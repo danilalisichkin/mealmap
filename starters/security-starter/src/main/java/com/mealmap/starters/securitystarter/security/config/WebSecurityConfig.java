@@ -1,6 +1,7 @@
 package com.mealmap.starters.securitystarter.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mealmap.starters.securitystarter.security.properties.WebSecurityProperties;
 import com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +22,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,18 +34,23 @@ public class WebSecurityConfig {
 
     private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
+    private final WebSecurityProperties webSecurityProperties;
+
     public WebSecurityConfig(
             ObjectMapper objectMapper,
-            OAuth2ResourceServerProperties oAuth2ResourceServerProperties) {
+            OAuth2ResourceServerProperties oAuth2ResourceServerProperties,
+            WebSecurityProperties webSecurityProperties) {
 
         this.objectMapper = objectMapper;
         this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
+        this.webSecurityProperties = webSecurityProperties;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
@@ -54,6 +64,20 @@ public class WebSecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler())
                         .authenticationEntryPoint(authenticationEntryPoint()))
                 .build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(webSecurityProperties.getAllowedOrigins());
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsFilter(source);
     }
 
     @Bean

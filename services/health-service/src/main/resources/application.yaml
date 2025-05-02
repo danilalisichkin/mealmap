@@ -16,6 +16,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:health-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:d17hPRAz1H8kWs7XIyBOieoDl4qzkaus}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 eureka:
   client:
     service-url:

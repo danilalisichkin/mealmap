@@ -34,6 +34,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:preference-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:ZZg5TJNas4AqXWeKzxGQaoI7w79TMuOL}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 business:
   kafka:
     topics:

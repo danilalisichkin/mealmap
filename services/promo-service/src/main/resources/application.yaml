@@ -13,6 +13,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:promo-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:JHcA6IvV87TLa9HisfZU232rkkjmLPGm}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 mongock:
   migration-scan-package: com.mealmap.promoservice.migration
   transactional: true

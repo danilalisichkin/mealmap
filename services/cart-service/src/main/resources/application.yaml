@@ -28,6 +28,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:cart-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:uwLKx3pwga1ySl4bGGnKtlO1BZ1P8phH}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 business:
   kafka:
     topics:

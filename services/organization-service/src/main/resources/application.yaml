@@ -22,6 +22,10 @@ security:
     client:
       client-id: ${OAUTH2_CLIENT_CLIENT_ID:organization-service}
       client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:OEFH4kqAgr7DdKYim6ZVo5O30kaWXagN}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 business:
   cache:
     organization:
