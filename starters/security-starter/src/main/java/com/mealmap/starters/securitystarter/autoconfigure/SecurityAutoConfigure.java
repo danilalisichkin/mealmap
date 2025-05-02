@@ -5,6 +5,7 @@ import com.mealmap.starters.securitystarter.security.config.WebSecurityConfig;
 import com.mealmap.starters.securitystarter.security.expression.config.ExpressionConfig;
 import com.mealmap.starters.securitystarter.security.filter.UserAuthorizationFilter;
 import com.mealmap.starters.securitystarter.security.properties.OAuth2ClientProperties;
+import com.mealmap.starters.securitystarter.security.properties.WebSecurityProperties;
 import com.mealmap.starters.securitystarter.security.service.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -18,7 +19,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 
 @AutoConfiguration
 @ConditionalOnProperty(prefix = "security", name = "enabled", havingValue = "true", matchIfMissing = true)
-@EnableConfigurationProperties({OAuth2ResourceServerProperties.class, OAuth2ClientProperties.class})
+@EnableConfigurationProperties({OAuth2ResourceServerProperties.class, OAuth2ClientProperties.class, WebSecurityProperties.class})
 @Import({WebSecurityConfig.class, OAuth2ClientConfig.class, ExpressionConfig.class})
 public class SecurityAutoConfigure {
     @Bean
