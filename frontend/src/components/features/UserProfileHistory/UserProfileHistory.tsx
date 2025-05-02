@@ -39,15 +39,21 @@ const UserProfileHistory: React.FC<UserProfileHistoryProps> = ({ history }) => (
   <div className="bg-white rounded-lg shadow-sm p-6">
     <h3 className="text-lg font-bold text-gray-800 mb-6">История профиля</h3>
     <div className="space-y-4 relative">
-      {history.map((item) => (
-        <UserProfileHistoryItem
-          key={item.id}
-          item={item}
-          statusIcons={statusIcons}
-          statusColors={statusColors}
-          getStatusLabel={getStatusLabel}
-        />
-      ))}
+      {history.length === 0 ? (
+        <div className="text-left text-gray-500 mt-4">
+          История изменения профиля пуста
+        </div>
+      ) : (
+        history.map((item) => (
+          <UserProfileHistoryItem
+            key={item.id}
+            item={item}
+            statusIcons={statusIcons}
+            statusColors={statusColors}
+            getStatusLabel={getStatusLabel}
+          />
+        ))
+      )}
     </div>
   </div>
 );

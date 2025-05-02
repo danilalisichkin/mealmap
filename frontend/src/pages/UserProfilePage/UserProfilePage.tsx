@@ -1,21 +1,72 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import UserProfileSidebar from "../../components/features/UserProfileSidebar/UserProfileSidebar";
 import UserProfileStats from "../../components/features/UserProfileStats/UserProfileStats";
 import UserProfileHistory from "../../components/features/UserProfileHistory/UserProfileHistory";
 import UserPreferences from "../../components/features/UserPreferences/UserPreferences";
-import { mockUser, mockUserStatusHistory } from "../../mock/user";
 import { mockPreferences } from "../../mock/preferences";
+import { useAuth } from "../../contexts/AuthContext";
+import { UserApi } from "../../api/user/UserApi";
+import { UserDto } from "../../api/user/dto/UserDto";
+import NotFoundError from "../../components/commons/NotFoundError/NotFoundError";
+import { StatusHistoryDto } from "../../api/user/dto/StatusHistoryDto";
 
 interface UserProfilePageProps {}
 
 const UserProfilePage: React.FC<UserProfilePageProps> = () => {
-  // TODO: API CALL
-  const user = mockUser;
-  const tgChatId = 2;
+  const { userId } = useAuth();
+  const [user, setUser] = useState<UserDto | null>(null);
+
+  const [userStatusHistory, setUserStatusHistory] = useState<
+    StatusHistoryDto[] | null
+  >(null);
   const [userPreferences, setUserPreferences] = useState(mockPreferences);
-  const userStatusHistory = mockUserStatusHistory;
+  const tgChatId = 2;
   const totalOrders = 20;
   const totalDiscounted = 1000;
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchUser = useCallback(async () => {
+    if (!userId) {
+      setError("Пользователь не авторизован");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const fetchedUser = await UserApi.getUserById(userId);
+      setUser(fetchedUser);
+    } catch (err) {
+      console.error("Ошибка при загрузке пользователя:", err);
+      setError("Не удалось загрузить данные пользователя.");
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  const fetchUserStatusHistory = useCallback(async () => {
+    if (!userId) {
+      setError("Пользователь не авторизован");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const fetchedHistory = await UserApi.getUserStatusHistory(userId);
+      setUserStatusHistory(fetchedHistory.items);
+    } catch (err) {
+      console.error("Ошибка при загрузке пользователя:", err);
+      setError("Не удалось загрузить данные пользователя.");
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchUser();
+    fetchUserStatusHistory();
+  }, [fetchUser, fetchUserStatusHistory]);
 
   const handleProductPreferenceRemove = (id: number) => {
     // TODO: послать запрос на API
@@ -39,6 +90,19 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
     }));
   };
 
+  if (loading) {
+    return <div className="text-center py-12">Загрузка...</div>;
+  }
+
+  if (error || !user) {
+    return (
+      <NotFoundError
+        title="Упс! Кажется, профиль пользователя не найден"
+        message="Возможно, данного пользователя на существует"
+      />
+    );
+  }
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
@@ -55,7 +119,9 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
             onProductPreferencesRemove={handleProductPreferenceRemove}
             onCategoryPreferencesRemove={handleCategoryPreferenceRemove}
           />
-          <UserProfileHistory history={userStatusHistory} />
+          {userStatusHistory && (
+            <UserProfileHistory history={userStatusHistory} />
+          )}
         </div>
       </div>
     </main>
