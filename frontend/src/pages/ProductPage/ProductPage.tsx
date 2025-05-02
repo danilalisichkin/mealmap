@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ProductDto } from "../../api/product/dto/ProductDto";
 import { useLocation, useParams } from "react-router-dom";
+import { ProductApi } from "../../api/product/ProductApi";
+import NotFoundError from "../../components/commons/NotFoundError/NotFoundError";
 
 interface ProductPageProps {}
 
@@ -10,21 +12,38 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   const [product, setProduct] = useState<ProductDto | null>(
     location.state?.product ?? null
   );
+  
+  const [loading, setLoading] = useState<boolean>(!product);
+  const [error, setError] = useState<boolean | null>(null);
+
+  const fetchProduct = async () => {
+    if (!product && params.id) {
+      try {
+        setLoading(true);
+        const fetchedProduct = await ProductApi.getProductById(Number(params.id));
+        setProduct(fetchedProduct);
+      } catch (err) {
+        console.error("Ошибка при загрузке продукта:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (!product && params.id) {
-      // TODO: replace with API call
-      import("../../mock/products").then(({ mockProducts }) => {
-        const found = mockProducts.find((p) => String(p.id) === params.id);
-        if (found) setProduct(found);
-      });
-    }
-  }, [product, params.id]);
+    fetchProduct();
+  }, [params.id]);
+
 
   const [quantity, setQuantity] = useState(1);
 
-  if (!product) {
+  if (loading) {
     return <div className="text-center py-12">Загрузка...</div>;
+  }
+
+  if (error || !product) {
+    return <NotFoundError title="Упс! Кажется, блюдо не найдено" message="Похоже, что запрашиваемое блюдо не существует в каталоге" />
   }
 
   return (

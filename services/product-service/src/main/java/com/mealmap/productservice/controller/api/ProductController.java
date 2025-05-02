@@ -63,7 +63,7 @@ public class ProductController {
     }
 
     @GetMapping("/bulk")
-    @PreAuthorize("isApplicationService() and hasRole('ORDER_SERVICE')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
             @RequestParam @Size(min = 2, max = 20) Set<@NotNull Long> ids) {
 

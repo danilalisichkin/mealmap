@@ -28,6 +28,16 @@ export const ProductApi = {
     return response.data;
   },
 
+  bulkGetProducts: async (ids: number[]): Promise<ProductDto[]> => {
+    const response = await ApiClient.get<ProductDto[]>("/products/bulk", {
+      params: { ids },
+      paramsSerializer: (params) => {
+        return `ids=${params.ids.join(",")}`;
+      },
+    });
+    return response.data;
+  },
+
   getProductById: async (id: number): Promise<ProductDto> => {
     const response = await ApiClient.get<ProductDto>(`/products/${id}`);
     return response.data;
