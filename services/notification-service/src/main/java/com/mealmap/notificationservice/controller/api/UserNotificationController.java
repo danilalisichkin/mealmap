@@ -1,5 +1,6 @@
 package com.mealmap.notificationservice.controller.api;
 
+import com.mealmap.notificationservice.core.dto.contacts.UserContactsDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
@@ -44,6 +45,14 @@ public class UserNotificationController {
                 userNotificationService.getPageOfNotifications(userId, offset, limit, sortBy, sortOrder);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
+    }
+
+    @GetMapping("/{userId}/contacts")
+    @PreAuthorize("hasUserId(#userId) or (hasRole('ADMIN') and hasRole('OPERATOR'))")
+    public ResponseEntity<UserContactsDto> getContacts(@PathVariable @UUID String userId) {
+        UserContactsDto contacts = userNotificationService.getContacts(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(contacts);
     }
 
     @PostMapping("/{userId}/notifications")

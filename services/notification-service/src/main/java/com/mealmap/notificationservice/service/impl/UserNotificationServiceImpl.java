@@ -1,8 +1,10 @@
 package com.mealmap.notificationservice.service.impl;
 
+import com.mealmap.notificationservice.core.dto.contacts.UserContactsDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
+import com.mealmap.notificationservice.core.mapper.ContactsMapper;
 import com.mealmap.notificationservice.core.mapper.NotificationMapper;
 import com.mealmap.notificationservice.doc.Notification;
 import com.mealmap.notificationservice.doc.UserContacts;
@@ -30,6 +32,8 @@ public class UserNotificationServiceImpl implements UserNotificationService {
 
     private final PageMapper pageMapper;
 
+    private final ContactsMapper contactsMapper;
+
     private final NotificationMapper notificationMapper;
 
     private final UserContactsRepository userContactsRepository;
@@ -46,6 +50,13 @@ public class UserNotificationServiceImpl implements UserNotificationService {
 
         return pageMapper.pageToPageDto(
                 notificationMapper.docPageToDtoPage(notifications));
+    }
+
+    @Override
+    public UserContactsDto getContacts(String userId) {
+        UserContacts userContacts = getUserContactsDoc(userId);
+
+        return contactsMapper.docToDto(userContacts);
     }
 
     @Override
