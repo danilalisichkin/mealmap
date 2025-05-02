@@ -9,24 +9,27 @@ import UserNotificationsPage from "./pages/UserNotificationsPage/UserNotificatio
 import CatalogPage from "./pages/CatalogPage/CatalogPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserHealthPage from "./pages/UserHealthPage/UserHealthPage";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <div className="w-full min-h-screen flex flex-col">
-        <Header title="Meal Map" />
-        <Routes>
-          <Route path="/" element={<CatalogPage />} />
-          <Route path="/profile" element={<UserProfilePage />} />
-          <Route path="/user/health" element={<UserHealthPage />} />
-          <Route path="/orders" element={<UserOrdersPage />} />
-          <Route path="/cart/checkout" element={<CartCheckoutPage />} />
-          <Route path="/notifications" element={<UserNotificationsPage />} />
-          <Route path="/product/:id" element={<ProductPage />} />
-        </Routes>
-        <Footer />
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="w-full min-h-screen flex flex-col">
+          <Header title="Meal Map" />
+          <Routes>
+            <Route path="/catalog" element={<CatalogPage />} />
+            <Route path="/catalog/product/:id" element={<ProductPage />} />
+            <Route path="/user/:userId/profile" element={<UserProfilePage />} />
+            <Route path="/user/:userId/health" element={<UserHealthPage />} />
+            <Route path="/user/:userId/orders" element={<UserOrdersPage />} />
+            <Route path="/user/:userId/notifications" element={<UserNotificationsPage />} />
+            <Route path="/cart/checkout" element={<CartCheckoutPage />} />
+          </Routes>
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 
