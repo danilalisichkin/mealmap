@@ -54,6 +54,10 @@ business:
         name: user-contacts.creation.v1
         consumer:
           group-id: user-contacts.creation.consumer.group
+      user-contacts-update:
+        name: user-contacts.update.v1
+        consumer:
+          group-id: user-contacts.update.consumer.group
       user-contacts-update-tg-chat:
         name: user-contacts.update-tg-chat.v1
         consumer:

@@ -19,8 +19,10 @@ import com.mealmap.userservice.entity.User;
 import com.mealmap.userservice.entity.enums.Role;
 import com.mealmap.userservice.entity.enums.StatusEvent;
 import com.mealmap.userservice.kafka.dto.KafkaUserRoleUpdateDto;
+import com.mealmap.userservice.kafka.mapper.UserContactsKafkaMapper;
 import com.mealmap.userservice.kafka.mapper.UserKafkaMapper;
 import com.mealmap.userservice.repository.UserRepository;
+import com.mealmap.userservice.service.UserContactsKafkaService;
 import com.mealmap.userservice.service.UserKafkaService;
 import com.mealmap.userservice.service.UserService;
 import com.mealmap.userservice.service.UserStatusHistoryService;
@@ -52,6 +54,10 @@ import static com.mealmap.userservice.entity.specification.UserSpecification.isT
 @RequiredArgsConstructor
 @CacheConfig(cacheResolver = "userProfileCacheResolver")
 public class UserServiceImpl implements UserService {
+    private final UserContactsKafkaService userContactsKafkaService;
+
+    private final UserContactsKafkaMapper userContactsKafkaMapper;
+
     private final UserKafkaService userKafkaService;
 
     private final UserKafkaMapper userKafkaMapper;
@@ -101,7 +107,8 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UUID id, UserUpdatingDto userDto) {
         User userToUpdate = getUserEntity(id);
 
-        if (!userToUpdate.getEmail().equals(userDto.getEmail())) {
+        boolean isUpdatingEmail = !userToUpdate.getEmail().equals(userDto.getEmail());
+        if (isUpdatingEmail) {
             userValidator.validateEmailUniqueness(userDto.getEmail());
         }
 
@@ -111,6 +118,11 @@ public class UserServiceImpl implements UserService {
 
         userKafkaService.updateUser(
                 userKafkaMapper.entityToUpdateDto(userToUpdate));
+
+        if (isUpdatingEmail) {
+            userContactsKafkaService.updateUserContacts(
+                    userContactsKafkaMapper.userToContactsUpdateDto(userToUpdate));
+        }
 
         return userMapper.entityToDto(userToUpdate);
     }

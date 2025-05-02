@@ -24,6 +24,7 @@ public class DeliveryOrderHandler implements OrderLifecycleHandler {
     public void handle(Order order) {
         order.setStatus(OrderStatus.ON_THE_WAY);
 
+        // TODO: send notification via AOP / Events
         notificationClient.sendNotification(new Notification(
                 UUID.fromString(order.getUserId()),
                 Channel.EMAIL,

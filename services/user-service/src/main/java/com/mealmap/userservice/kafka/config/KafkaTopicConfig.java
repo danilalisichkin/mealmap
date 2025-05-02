@@ -13,6 +13,7 @@ public class KafkaTopicConfig {
     private final Topic userStatusUpdate;
     private final Topic userPreferencesCreation;
     private final Topic userContactsCreation;
+    private final Topic userContactsUpdate;
     private final Topic cartCreation;
 
     @Getter

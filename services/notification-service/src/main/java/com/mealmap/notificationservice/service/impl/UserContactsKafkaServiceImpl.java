@@ -2,6 +2,7 @@ package com.mealmap.notificationservice.service.impl;
 
 import com.mealmap.notificationservice.doc.UserContacts;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsCreationDto;
+import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateDto;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateTgChatDto;
 import com.mealmap.notificationservice.kafka.mapper.UserContactsKafkaMapper;
 import com.mealmap.notificationservice.repository.UserContactsRepository;
@@ -34,6 +35,16 @@ public class UserContactsKafkaServiceImpl implements UserContactsKafkaService {
         } catch (Exception e) {
             throw new InternalErrorException(e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateUserContacts(KafkaUserContactsUpdateDto dto) {
+        UserContacts contactsToUpdate = getUserContactsDoc(dto.getUserId().toString());
+
+        userContactsKafkaMapper.updateDocFromDto(contactsToUpdate, dto);
+
+        userContactsRepository.save(contactsToUpdate);
     }
 
     @Override

@@ -29,6 +29,7 @@ public class CancellingOrderHandler implements OrderLifecycleHandler {
 
         order.setStatus(OrderStatus.CANCELED);
 
+        // TODO: send notification via AOP / Events
         notificationClient.sendNotification(new Notification(
                 UUID.fromString(order.getUserId()),
                 Channel.EMAIL,

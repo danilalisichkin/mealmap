@@ -2,6 +2,7 @@ package com.mealmap.notificationservice.kafka.mapper;
 
 import com.mealmap.notificationservice.doc.UserContacts;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsCreationDto;
+import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateDto;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateTgChatDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,4 +21,10 @@ public interface UserContactsKafkaMapper {
     @Mapping(target = "phoneNumber", ignore = true)
     @Mapping(target = "tgChatId", source = "chatId")
     void updateDocFromDto(@MappingTarget UserContacts doc, final KafkaUserContactsUpdateTgChatDto dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "phoneNumber", ignore = true)
+    @Mapping(target = "tgChatId", ignore = true)
+    void updateDocFromDto(@MappingTarget UserContacts doc, final KafkaUserContactsUpdateDto dto);
 }

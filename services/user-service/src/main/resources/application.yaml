@@ -65,6 +65,10 @@ business:
         name: user-contacts.creation.v1
         partitions: 1
         replicas: 1
+      user-contacts-update:
+        name: user-contacts.update.v1
+        partitions: 1
+        replicas: 1
       cart-creation:
         name: cart.creation.v1
         partitions: 1
