@@ -1,5 +1,5 @@
 export enum OrderSortField {
-  ID = "id",
+  ID = "ID",
   USER_ID = "USER_ID",
   DELIVERY_ADDRESS = "DELIVERY_ADDRESS",
   ORDER_STATUS = "ORDER_STATUS",

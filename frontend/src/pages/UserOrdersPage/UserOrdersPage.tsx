@@ -1,21 +1,68 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import OrderCard from "../../components/features/OrderCard/OrderCard";
 import Pagination from "../../components/commons/Pagination/Pagination";
-import { mockOrderPage } from "../../mock/orders";
+import { OrderDto } from "../../api/order/dto/OrderDto";
+import { PageDto } from "../../api/common/dto/PageDto";
+import { UserOrderApi } from "../../api/order/UserOrderApi";
+import { useLocation } from "react-router-dom";
 
 interface UserOrdersPageProps {}
 
+const DEFAULT_PAGINATION_OPTIONS = {
+  PAGE_NUMBER: 1,
+  PAGE_SIZE: 4,
+};
+
 const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
-  // TODO: API CALL
-  const orders = mockOrderPage;
+  // TODO: добавить фильтрацию и сортировку
+
+  //const [filter, setFilter] = useState<OrderFilter>(DEFAULT_FILTER);
+  // const [isFilterOpened, setFilterOpened] = useState(false);
+  // const [sortField, setSortField] = useState<OrderSortField>(
+  //   OrderSortField.ID
+  // );
+  //const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const location = useLocation();
+  const userId = location.state?.userId ?? null;
+
+  const [orderPage, setOrderPage] = useState<PageDto<OrderDto> | null>(null);
+  const [currentPage, setCurrentPage] = useState(
+    DEFAULT_PAGINATION_OPTIONS.PAGE_NUMBER
+  );
+
+  const fetchOrders = useCallback(async () => {
+    if (!userId) {
+      return;
+    }
+
+    try {
+      const response = await UserOrderApi.getUserOrders(
+        userId,
+        currentPage - 1,
+        DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE
+      );
+      setOrderPage(response);
+    } catch (err) {
+      console.error("Ошибка при загрузке заказов:", err);
+    }
+  }, [userId, currentPage]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Мои заказы</h1>
-        <p className="text-gray-600 mt-2">
-          Здесь вы можете просмотреть историю ваших заказов
-        </p>
+        <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
+          {/* //TODO: фильтры, сортировка */}
+        </div>
       </div>
 
       <div className="mb-6 bg-white rounded-lg shadow p-4">
@@ -65,18 +112,27 @@ const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
       </div>
 
       <div className="space-y-4">
-        {orders.items.map((order) => (
-          <OrderCard key={order.id} order={order} />
-        ))}
+        {orderPage &&
+        Array.isArray(orderPage.items) &&
+        orderPage.items.length > 0 ? (
+          <>
+            {orderPage.items.map((order) => (
+              <OrderCard key={order.id} order={order} />
+            ))}
+            <Pagination
+              page={currentPage}
+              pageSize={
+                orderPage.pageSize ?? DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE
+              }
+              totalPages={orderPage.totalPages || 1}
+              totalElements={orderPage.totalElements || 0}
+              onPageChange={handlePageChange}
+            />
+          </>
+        ) : (
+          <p>У вас пока нет заказов.</p>
+        )}
       </div>
-
-      <Pagination
-        page={1}
-        pageSize={5}
-        totalPages={1}
-        totalElements={2}
-        onPageChange={() => console.log("DEBUG")}
-      />
     </main>
   );
 };
