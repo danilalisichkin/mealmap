@@ -40,6 +40,26 @@ export const PreferenceApi = {
     return response.data;
   },
 
+  getProductPreference: async (
+    userId: string,
+    productId: number
+  ): Promise<ProductPreferenceDto> => {
+    const response = await ApiClient.get<ProductPreferenceDto>(
+      `/users/${userId}/preferences/products/${productId}`
+    );
+    return response.data;
+  },
+
+  getCategoryPreference: async (
+    userId: string,
+    categoryId: number
+  ): Promise<CategoryPreferenceDto> => {
+    const response = await ApiClient.get<CategoryPreferenceDto>(
+      `/users/${userId}/preferences/categories/${categoryId}`
+    );
+    return response.data;
+  },
+
   addProductPreference: async (
     userId: string,
     productPreference: ProductPreferenceCreationDto
