@@ -13,13 +13,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order }) => (
         {order.paymentInfo.totalAmount + order.paymentInfo.discountAmount}₽
       </span>
     </div>
-    <div className="flex justify-between mt-2">
-      <span className="text-gray-700">Доставка:</span>
-      <span className="font-medium">НЕТ₽</span>
-    </div>
     {order.paymentInfo.discountAmount > 0 && (
       <div className="flex justify-between mt-2">
-        <span className="text-gray-700">Промокод:</span>
+        <span className="text-gray-700">Скидка по промокоду:</span>
         <span className="font-medium text-green-600">
           -{order.paymentInfo.discountAmount}₽
         </span>
