@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.mealmap.preferenceservice.core.message.ApplicationMessages.CATEGORY_PREFERENCE_NOT_FOUND;
 import static com.mealmap.preferenceservice.core.message.ApplicationMessages.PREFERENCES_FOR_USER_NOT_FOUND;
+import static com.mealmap.preferenceservice.core.message.ApplicationMessages.PRODUCT_PREFERENCE_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +81,28 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
     }
 
     @Override
+    @Cacheable(key = "#userId + '_' + T(com.mealmap.preferenceservice.cache.constant.CachePrefixes).PRODUCTS" +
+            "+ '_product:' + #productId")
+    public ProductPreferenceDto getProductPreference(UUID userId, Long productId) {
+        ProductPreference productPreference = userPreferencesRepository
+                .findProductPreferenceByUserIdAndProductId(userId, productId)
+                .orElseThrow(() -> new ResourceNotFoundException(PRODUCT_PREFERENCE_NOT_FOUND.formatted(productId)));
+
+        return productPreferenceMapper.entityToDto(productPreference);
+    }
+
+    @Override
+    @Cacheable(key = "#userId + '_' + T(com.mealmap.preferenceservice.cache.constant.CachePrefixes).CATEGORIES" +
+            "+ '_category:' + #categoryId")
+    public CategoryPreferenceDto getCategoryPreference(UUID userId, Long categoryId) {
+        CategoryPreference categoryPreference = userPreferencesRepository
+                .findCategoryPreferenceByUserIdAndCategoryId(userId, categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY_PREFERENCE_NOT_FOUND.formatted(categoryId)));
+
+        return categoryPreferenceMapper.entityToDto(categoryPreference);
+    }
+
+    @Override
     @Transactional
     public ProductPreferenceDto addProductPreference(UUID userId, ProductPreferenceCreationDto productPreferenceDto) {
         UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
@@ -122,13 +146,13 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
 
     @Override
     @Transactional
-    public void removeProductPreference(UUID userId, Long id) {
+    public void removeProductPreference(UUID userId, Long productId) {
         UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
         List<ProductPreference> productPreferences = userPreferencesToUpdate.getProductPreferences();
 
-        userPreferencesValidator.validateProductPreferenceExistence(productPreferences, id);
+        userPreferencesValidator.validateProductPreferenceExistence(productPreferences, productId);
 
-        productPreferences.removeIf(pp -> pp.getId().equals(id));
+        productPreferences.removeIf(pp -> pp.getProductId().equals(productId));
 
         userPreferencesRepository.save(userPreferencesToUpdate);
 
@@ -137,13 +161,13 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
 
     @Override
     @Transactional
-    public void removeCategoryPreference(UUID userId, Long id) {
+    public void removeCategoryPreference(UUID userId, Long categoryId) {
         UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
         List<CategoryPreference> categoryPreferences = userPreferencesToUpdate.getCategoryPreferences();
 
-        userPreferencesValidator.validateCategoryPreferenceExistence(categoryPreferences, id);
+        userPreferencesValidator.validateCategoryPreferenceExistence(categoryPreferences, categoryId);
 
-        categoryPreferences.removeIf(cp -> cp.getId().equals(id));
+        categoryPreferences.removeIf(cp -> cp.getCategoryId().equals(categoryId));
 
         userPreferencesRedisService.updatePreferenceWithCategoryPreferences(userId, userPreferencesToUpdate);
     }

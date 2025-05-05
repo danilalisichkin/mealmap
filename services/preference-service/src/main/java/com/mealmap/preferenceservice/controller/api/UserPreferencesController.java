@@ -64,6 +64,22 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.OK).body(categoryPreferences);
     }
 
+    @GetMapping("/{userId}/preferences/products/{productId}")
+    @PreAuthorize("hasUserId(#userId)")
+    public ResponseEntity<ProductPreferenceDto> getProductPreference(@PathVariable UUID userId, @PathVariable Long productId) {
+        ProductPreferenceDto productPreference = userPreferencesService.getProductPreference(userId, productId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(productPreference);
+    }
+
+    @GetMapping("/{userId}/preferences/categories/{categoryId}")
+    @PreAuthorize("hasUserId(#userId)")
+    public ResponseEntity<CategoryPreferenceDto> getCategoryPreference(@PathVariable UUID userId, @PathVariable Long categoryId) {
+        CategoryPreferenceDto categoryPreference = userPreferencesService.getCategoryPreference(userId, categoryId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(categoryPreference);
+    }
+
     @PostMapping("/{userId}/preferences/products")
     @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<ProductPreferenceDto> addProductPreference(
@@ -88,18 +104,18 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryPreference);
     }
 
-    @DeleteMapping("/{userId}/preferences/products/{id}")
+    @DeleteMapping("/{userId}/preferences/products/{productId}")
     @PreAuthorize("hasUserId(#userId)")
-    public ResponseEntity<Void> removeProductPreference(@PathVariable UUID userId, @PathVariable Long id) {
-        userPreferencesService.removeProductPreference(userId, id);
+    public ResponseEntity<Void> removeProductPreference(@PathVariable UUID userId, @PathVariable Long productId) {
+        userPreferencesService.removeProductPreference(userId, productId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/{userId}/preferences/categories/{id}")
+    @DeleteMapping("/{userId}/preferences/categories/{categoryId}")
     @PreAuthorize("hasUserId(#userId)")
-    public ResponseEntity<Void> removeCategoryPreference(@PathVariable UUID userId, @PathVariable Long id) {
-        userPreferencesService.removeCategoryPreference(userId, id);
+    public ResponseEntity<Void> removeCategoryPreference(@PathVariable UUID userId, @PathVariable Long categoryId) {
+        userPreferencesService.removeCategoryPreference(userId, categoryId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

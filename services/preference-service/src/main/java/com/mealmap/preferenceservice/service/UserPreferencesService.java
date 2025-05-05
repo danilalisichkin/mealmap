@@ -17,11 +17,15 @@ public interface UserPreferencesService {
 
     List<CategoryPreferenceDto> getCategoryPreferences(UUID userId, PreferenceType preferenceType);
 
+    ProductPreferenceDto getProductPreference(UUID userId, Long productId);
+
+    CategoryPreferenceDto getCategoryPreference(UUID userId, Long categoryId);
+
     ProductPreferenceDto addProductPreference(UUID userId, ProductPreferenceCreationDto productPreferenceDto);
 
     CategoryPreferenceDto addCategoryPreference(UUID userId, CategoryPreferenceCreationDto categoryPreferenceDto);
 
-    void removeProductPreference(UUID userId, Long id);
+    void removeProductPreference(UUID userId, Long productId);
 
-    void removeCategoryPreference(UUID userId, Long id);
+    void removeCategoryPreference(UUID userId, Long categoryId);
 }

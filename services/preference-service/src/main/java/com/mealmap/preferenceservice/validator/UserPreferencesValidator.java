@@ -28,12 +28,12 @@ public class UserPreferencesValidator {
     }
 
     public void validateProductPreferenceExistence(List<ProductPreference> productPreferences, Long id) {
-        validateExistence(productPreferences, pp -> pp.getId().equals(id),
+        validateExistence(productPreferences, pp -> pp.getProductId().equals(id),
                 PRODUCT_PREFERENCE_NOT_FOUND.formatted(id));
     }
 
     public void validateCategoryPreferenceExistence(List<CategoryPreference> categoryPreferences, Long id) {
-        validateExistence(categoryPreferences, cp -> cp.getId().equals(id),
+        validateExistence(categoryPreferences, cp -> cp.getCategoryId().equals(id),
                 CATEGORY_PREFERENCE_NOT_FOUND.formatted(id));
     }
 
