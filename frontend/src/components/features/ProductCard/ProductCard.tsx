@@ -1,56 +1,100 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ProductDto } from "../../../api/product/dto/ProductDto";
 import "./ProductCard.css";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../contexts/AuthContext";
-import { CartApi } from "../../../api/cart/UserCartApi";
+import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 
 interface ProductCardProps {
   product: ProductDto;
+  preferenceType: PreferenceType | null;
+  onAddToCart: () => void;
+  onNavigateToProductPage: () => void;
+  onAddToPreference: (preferenceType: PreferenceType) => void;
+  onRemoveFromPreference: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const navigate = useNavigate();
-  const { userId } = useAuth();
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  preferenceType,
+  onAddToCart,
+  onNavigateToProductPage,
+  onAddToPreference,
+  onRemoveFromPreference,
+}) => {
+  const [currentPreferenceType, setCurrentPreferenceType] =
+    useState<PreferenceType | null>(preferenceType);
 
-  const navigateToProductPage = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-    navigate(`/product/${product.id}`, { state: { product } });
-  };
+  const [isMounted, setIsMounted] = useState(false);
 
-  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
+  useEffect(() => {
+    setCurrentPreferenceType(preferenceType);
+  }, [preferenceType]);
 
-    if (!userId) {
-      console.error("Пользователь не авторизован");
-      return;
-    }
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsMounted(true), 50);
+    return () => clearTimeout(timeout);
+  }, []);
 
-    try {
-      await CartApi.addItemToCart(userId, {
-        productId: product.id,
-        quantity: 1,
-      });
-      console.log(`Товар с ID ${product.id} добавлен в корзину`);
-    } catch (error) {
-      console.error("Ошибка при добавлении товара в корзину:", error);
+  const handleAddToPreference = (type: PreferenceType) => {
+    if (currentPreferenceType === type) {
+      onRemoveFromPreference();
+      setCurrentPreferenceType(null);
+    } else {
+      setCurrentPreferenceType(type);
+      onAddToPreference(type);
     }
   };
 
   return (
     <a
-      className="dish-card bg-white rounded-lg shadow-sm overflow-hidden transition duration-300 cursor-pointer z-100"
+      className={`dish-card bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer z-100
+      ${
+        isMounted
+          ? "transition-transform duration-700 ease-out translate-y-0 scale-100"
+          : "translate-y-4 scale-95"
+      }`}
       href={`/product/${product.id}`}
-      onClick={navigateToProductPage}
+      onClick={(e) => {
+        e.preventDefault();
+        onNavigateToProductPage();
+      }}
     >
       <div className="relative">
+        <div className="action-buttons">
+          {currentPreferenceType !== PreferenceType.DISLIKED && (
+            <button
+              className={`like-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
+                currentPreferenceType === PreferenceType.LIKED ? "active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAddToPreference(PreferenceType.LIKED);
+              }}
+            >
+              <i className="far fa-thumbs-up"></i>
+            </button>
+          )}
+          {currentPreferenceType !== PreferenceType.LIKED && (
+            <button
+              className={`dislike-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
+                currentPreferenceType === PreferenceType.DISLIKED
+                  ? "active"
+                  : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAddToPreference(PreferenceType.DISLIKED);
+              }}
+            >
+              <i className="far fa-thumbs-down"></i>
+            </button>
+          )}
+        </div>
         <div className="dish-image bg-gray-200 flex items-center justify-center">
           <img
             src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            alt="Салат Цезарь"
+            alt={product.name}
             className="w-full h-full object-cover"
           />
         </div>
@@ -101,8 +145,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <button
-          className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md font-medium transition flex items-center justify-center text-sm z-50"
-          onClick={handleAddToCart}
+          className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md font-medium transition flex items-center justify-center text-sm"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onAddToCart();
+          }}
         >
           <i className="fas fa-plus mr-1"></i> В корзину
         </button>

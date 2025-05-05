@@ -17,3 +17,19 @@
   border-radius: 50%;
   margin-right: 4px;
 }
+
+.like-btn.active {
+  color: #3b82f6;
+}
+
+.dislike-btn.active {
+  color: #ef4444;
+}
+
+.action-buttons {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  display: flex;
+  gap: 5px;
+}
