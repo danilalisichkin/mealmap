@@ -8,9 +8,14 @@ import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.springframework.data.domain.Sort;
 
+import java.util.List;
+import java.util.Set;
+
 public interface CategoryService {
     PageDto<CategoryDto> getPageOfCategories(
             Integer offset, Integer limit, CategorySortField sortBy, Sort.Direction sortOrder, String search);
+
+    List<CategoryDto> getCategories(Set<Long> ids);
 
     CategoryDto getCategory(Long id);
 

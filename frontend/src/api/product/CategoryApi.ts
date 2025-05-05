@@ -26,6 +26,17 @@ export const CategoryApi = {
     return response.data;
   },
 
+  
+  bulkGetCategories: async (ids: number[]): Promise<CategoryDto[]> => {
+    const response = await ApiClient.get<CategoryDto[]>("/categories/bulk", {
+      params: { ids },
+      paramsSerializer: (params) => {
+        return `ids=${params.ids.join(",")}`;
+      },
+    });
+    return response.data;
+  },
+
   getCategoryById: async (id: number): Promise<CategoryDto> => {
     const response = await ApiClient.get<CategoryDto>(`/categories/${id}`);
     return response.data;

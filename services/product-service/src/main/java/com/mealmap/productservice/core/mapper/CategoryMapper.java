@@ -47,6 +47,8 @@ public interface CategoryMapper {
 
     List<CategoryDto> docListToDtoList(List<CategoryDoc> docList);
 
+    List<CategoryDto> entityListToDtoList(List<Category> entityList);
+
     default Page<CategoryDto> docPageToDtoPage(Page<CategoryDoc> docPage) {
         return new PageImpl<>(
                 docListToDtoList(docPage.getContent()),

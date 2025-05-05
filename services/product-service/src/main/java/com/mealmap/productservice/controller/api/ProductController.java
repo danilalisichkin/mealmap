@@ -65,7 +65,7 @@ public class ProductController {
     @GetMapping("/bulk")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
-            @RequestParam @Size(min = 2, max = 20) Set<@NotNull Long> ids) {
+            @RequestParam @Size(min = 1, max = 20) Set<@NotNull Long> ids) {
 
         List<ProductDto> products = productService.getProducts(ids);
 

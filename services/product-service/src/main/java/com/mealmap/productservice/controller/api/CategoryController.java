@@ -9,8 +9,10 @@ import com.mealmap.productservice.service.CategoryService;
 import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
 
 @Validated
 @RestController
@@ -45,6 +50,16 @@ public class CategoryController {
         PageDto<CategoryDto> page = categoryService.getPageOfCategories(offset, limit, sortBy, sortOrder, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(page);
+    }
+
+    @GetMapping("/bulk")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<CategoryDto>> bulkGetCategories(
+            @RequestParam @Size(min = 1, max = 20) Set<@NotNull Long> ids) {
+
+        List<CategoryDto> categories = categoryService.getCategories(ids);
+
+        return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 
     @GetMapping("/{id}")
