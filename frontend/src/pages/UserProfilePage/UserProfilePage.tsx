@@ -3,12 +3,13 @@ import UserProfileSidebar from "../../components/features/UserProfileSidebar/Use
 import UserProfileStats from "../../components/features/UserProfileStats/UserProfileStats";
 import UserProfileHistory from "../../components/features/UserProfileHistory/UserProfileHistory";
 import UserPreferences from "../../components/features/UserPreferences/UserPreferences";
-import { mockPreferences } from "../../mock/preferences";
 import { useAuth } from "../../contexts/AuthContext";
 import { UserApi } from "../../api/user/UserApi";
 import { UserDto } from "../../api/user/dto/UserDto";
 import NotFoundError from "../../components/commons/NotFoundError/NotFoundError";
 import { StatusHistoryDto } from "../../api/user/dto/StatusHistoryDto";
+import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
+import { UserPreferencesDto } from "../../api/preference/dto/UserPreferencesDto";
 
 interface UserProfilePageProps {}
 
@@ -19,7 +20,9 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   const [userStatusHistory, setUserStatusHistory] = useState<
     StatusHistoryDto[] | null
   >(null);
-  const [userPreferences, setUserPreferences] = useState(mockPreferences);
+  const [userPreferences, setUserPreferences] =
+    useState<UserPreferencesDto | null>(null);
+
   const tgChatId = 2;
   const totalOrders = 20;
   const totalDiscounted = 1000;
@@ -63,32 +66,27 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
     }
   }, [userId]);
 
+  const fetchUserPreferences = useCallback(async () => {
+    if (!userId) {
+      setError("Пользователь не авторизован");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const fetchedPreferences = await PreferenceApi.getAllPreferences(userId);
+      setUserPreferences(fetchedPreferences);
+    } catch (err) {
+      console.error("Ошибка при загрузке предпочтений пользователя:", err);
+      setError("Не удалось загрузить предпочтения пользователя.");
+    }
+  }, [userId]);
+
   useEffect(() => {
     fetchUser();
     fetchUserStatusHistory();
-  }, [fetchUser, fetchUserStatusHistory]);
-
-  const handleProductPreferenceRemove = (id: number) => {
-    // TODO: послать запрос на API
-    console.log("Убираем product preference");
-    setUserPreferences((prev) => ({
-      ...prev,
-      productPreferences: prev.productPreferences.filter(
-        (pref) => pref.productId !== id
-      ),
-    }));
-  };
-
-  const handleCategoryPreferenceRemove = (id: number) => {
-    // TODO: послать запрос на API
-    console.log("Убираем category preference");
-    setUserPreferences((prev) => ({
-      ...prev,
-      categoryPreferences: prev.categoryPreferences.filter(
-        (pref) => pref.categoryId !== id
-      ),
-    }));
-  };
+    fetchUserPreferences();
+  }, [fetchUser, fetchUserStatusHistory, fetchUserPreferences]);
 
   if (loading) {
     return <div className="text-center py-12">Загрузка...</div>;
@@ -114,11 +112,9 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
             totalOrders={totalOrders}
             totalDiscounted={totalDiscounted}
           />
-          <UserPreferences
-            userPreferences={userPreferences}
-            onProductPreferencesRemove={handleProductPreferenceRemove}
-            onCategoryPreferencesRemove={handleCategoryPreferenceRemove}
-          />
+          {userPreferences && (
+            <UserPreferences userPreferences={userPreferences} />
+          )}
           {userStatusHistory && (
             <UserProfileHistory history={userStatusHistory} />
           )}

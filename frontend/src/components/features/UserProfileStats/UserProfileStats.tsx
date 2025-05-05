@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 
 interface UserProfileStatsProps {
   totalOrders: number;
@@ -11,29 +12,39 @@ const UserProfileStats: React.FC<UserProfileStatsProps> = ({
   totalDiscounted,
 }) => {
   const navigate = useNavigate();
-  
-  //TODO: API CALL
-  const isHealthSet = true;
+  const { userId } = useAuth();
+
+  const navigateToHealth = () => {
+    if (userId) {
+      navigate(`/user/${userId}/health`, { state: { userId } });
+    }
+  };
+
+  const navigateToOrders = () => {
+    if (userId) {
+      navigate(`/user/${userId}/orders`, { state: { userId } });
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
       <button
         type="button"
         className="bg-white rounded-lg shadow-sm p-6 hover-scale flex items-center w-full transition hover:bg-green-50 "
-        onClick={() => navigate("/user/health")}
+        onClick={() => navigateToHealth()}
       >
         <div className="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
           <i className="fas fa-heartbeat"></i>
         </div>
         <div className="text-left">
           <p className="text-gray-500 text-sm">Здоровье</p>
-          <p className="text-xl font-bold text-gray-800">{isHealthSet ? "Просмотреть" : "Указать"}</p>
+          <p className="text-xl font-bold text-gray-800">Просмотреть</p>
         </div>
       </button>
       <button
         type="button"
         className="bg-white rounded-lg shadow-sm p-6 hover-scale flex items-center w-full transition hover:bg-blue-50"
-        onClick={() => navigate("/orders")}
+        onClick={() => navigateToOrders()}
       >
         <div className="p-3 rounded-full bg-green-100 text-green-500 mr-4">
           <i className="fas fa-utensils"></i>
