@@ -12,6 +12,24 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ElasticsearchQueryBuilder {
+    public static void addMultiMatchQuery(BoolQuery.Builder query, String search, String... fields) {
+        if (search != null && !search.isBlank()) {
+            BoolQuery.Builder shouldQuery = new BoolQuery.Builder();
+
+            shouldQuery.should(Query.of(q -> q
+                    .multiMatch(w -> w
+                            .query(search)
+                            .fields(List.of(fields))
+                            .fuzziness("1")
+                            .analyzer("russian_morphology")
+                    )));
+
+            query.must(Query.of(q -> q
+                    .bool(shouldQuery.minimumShouldMatch("1")
+                            .build())));
+        }
+    }
+
     public static void addWildcardQuery(BoolQuery.Builder query, String search, String... fields) {
         if (search != null && !search.isBlank()) {
             BoolQuery.Builder shouldQuery = new BoolQuery.Builder();

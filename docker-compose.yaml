@@ -152,7 +152,7 @@ services:
   order-mongo-database1:
     container_name: mealmap-order-mongo-database1
     image: mongo:7.0
-    command: ["--replSet", "rs0", "--bind_ip", "0.0.0.0", "--port", "27017"]
+    command: [ "--replSet", "rs0", "--bind_ip", "0.0.0.0", "--port", "27017" ]
     ports:
       - "27020:27017"
     volumes:
@@ -171,7 +171,7 @@ services:
   order-mongo-database2:
     container_name: mealmap-order-mongo-database2
     image: mongo:7.0
-    command: ["--replSet", "rs0", "--bind_ip", "0.0.0.0", "--port", "27017"]
+    command: [ "--replSet", "rs0", "--bind_ip", "0.0.0.0", "--port", "27017" ]
     ports:
       - "27021:27017"
     volumes:
@@ -454,16 +454,21 @@ services:
       - zookeeper
 
   elasticsearch:
-    image: elasticsearch:7.14.2
+    build:
+      context: ./system-services/elasticsearch
+      dockerfile: Dockerfile
     container_name: mealmap-product-elasticsearch
     restart: on-failure
     ports:
       - "9200:9200"
       - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data:Z
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       discovery.type: single-node
-      ELASTIC_PASSWORD: elastic
+      xpack.security.enabled: "false"
+      xpack.security.http.ssl.enabled: "false"
     healthcheck:
       test: curl --silent --fail http://localhost:9200/_cluster/health || exit 1
       interval: 10s
@@ -493,6 +498,7 @@ volumes:
   user-redis_data:
   organization-redis_data:
   preference-redis_data:
+  elasticsearch_data:
 
 networks:
   mealmap-network:

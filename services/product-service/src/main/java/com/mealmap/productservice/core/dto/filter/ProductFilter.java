@@ -61,7 +61,7 @@ public class ProductFilter {
     @Positive
     private Integer maxSugars;
 
-    private Integer supplierId;
+    private Set<Integer> suppliers;
 
     private Set<Long> categories;
 

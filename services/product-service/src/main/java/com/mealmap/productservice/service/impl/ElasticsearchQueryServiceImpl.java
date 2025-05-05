@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.stereotype.Service;
 
+import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addMultiMatchQuery;
 import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addRangeFilter;
 import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addTermsFilter;
-import static com.mealmap.productservice.util.ElasticsearchQueryBuilder.addWildcardQuery;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +26,7 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
         applyQueryByWeight(boolQuery, filter);
         applyQueryByNutrients(boolQuery, filter);
         applyQueryByCategories(boolQuery, filter);
+        applyQueryBySuppliers(boolQuery, filter);
 
         return NativeQuery.builder()
                 .withQuery(Query.of(q -> q
@@ -50,11 +51,11 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
     }
 
     private void applyQueryByProductSearch(BoolQuery.Builder query, String search) {
-        addWildcardQuery(query, search, "name", "description", "categories.name", "categories.parent.name");
+        addMultiMatchQuery(query, search, "name", "description", "categories.name", "categories.parent.name");
     }
 
     private void applyQueryByCategorySearch(BoolQuery.Builder query, String search) {
-        addWildcardQuery(query, search, "name", "children.name", "parent.name");
+        addMultiMatchQuery(query, search, "name", "children.name", "parent.name");
     }
 
     private void applyQueryByPrice(BoolQuery.Builder query, ProductFilter filter) {
@@ -76,5 +77,9 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
 
     private void applyQueryByCategories(BoolQuery.Builder query, ProductFilter filter) {
         addTermsFilter(query, "categories.id", filter.getCategories());
+    }
+
+    private void applyQueryBySuppliers(BoolQuery.Builder query, ProductFilter filter) {
+        addTermsFilter(query, "supplierId", filter.getSuppliers());
     }
 }
