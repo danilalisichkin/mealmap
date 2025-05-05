@@ -80,7 +80,7 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
 
   const handleCartSubmit = () => {
     onClose();
-    navigate("/cart/checkout");
+    navigate("cart/checkout", { state: { cart } });
   };
 
   const handleQuantityChange = async (itemId: number, newQuantity: number) => {
