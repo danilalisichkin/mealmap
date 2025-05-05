@@ -19,7 +19,7 @@ const App: React.FC = () => {
           <Header title="Meal Map" />
           <Routes>
             <Route path="/catalog" element={<CatalogPage />} />
-            <Route path="/catalog/product/:id" element={<ProductPage />} />
+            <Route path="/catalog/products/:id" element={<ProductPage />} />
             <Route path="/user/:userId/profile" element={<UserProfilePage />} />
             <Route path="/user/:userId/health" element={<UserHealthPage />} />
             <Route path="/user/:userId/orders" element={<UserOrdersPage />} />
