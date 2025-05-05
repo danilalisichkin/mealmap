@@ -1,10 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import "./RecommendationSection.css";
-import { mockRecommendation } from "../../../mock/recommendations";
+import React, { useEffect, useRef, useState } from "react";
+import { useAuth } from "../../../contexts/AuthContext";
 import { mockProducts } from "../../../mock/products";
+import { mockRecommendation } from "../../../mock/recommendations";
+import RecommendationPrompt from "../RecommendationPrompt/RecommendationPrompt";
 import RecommendationsResult from "../RecommendationResult/RecommendationResult";
 import RecommendationsShuffling from "../RecommendationShuffling/RecommendationShuffling";
-import RecommendationPrompt from "../RecommendationPrompt/RecommendationPrompt";
+import "./RecommendationSection.css";
+import { PreferenceApi } from "../../../api/preference/UserPreferenceApi";
+import { ProductPreferenceDto } from "../../../api/preference/dto/ProductPreferenceDto";
 
 interface RecommendationSectionProps {}
 
@@ -19,9 +22,16 @@ const AI_MESSAGES = [
 ];
 
 const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
-  const recommendations = mockRecommendation;
-  const products = mockProducts;
+  const { userId } = useAuth();
+  const [productPreferences, setProductPreferences] = useState<
+    ProductPreferenceDto[]
+  >([]);
 
+  //TODO: API CALL
+  const recommendations = mockRecommendation;
+
+  //TODO: API CALL
+  const products = mockProducts;
   const recommendedProducts = products.filter((product) =>
     recommendations.items.some(
       (item: { productId: number }) => item.productId === product.id
@@ -53,13 +63,11 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
     typeNext();
   };
 
-  // Запуск процесса подбора рекомендаций
   const handleGenerate = () => {
     setStage("shuffling");
     setAiMessageIndex(0);
     typeMessage(AI_MESSAGES[0]);
 
-    // Меняем фразу каждые 3 секунды
     aiIntervalRef.current = setInterval(() => {
       setAiMessageIndex((prev) => {
         const next = (prev + 1) % AI_MESSAGES.length;
@@ -68,7 +76,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
       });
     }, 3000);
 
-    // Через 5 секунд показываем результат
     aiTimeoutRef.current = setTimeout(() => {
       setStage("result");
       if (aiIntervalRef.current) clearInterval(aiIntervalRef.current);
@@ -76,13 +83,26 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
         clearInterval(foodAnimIntervalRef.current);
     }, 5000);
   };
-  
+
   const handleAddToCart = () => {
     // Здесь будет логика добавления всех рекомендованных продуктов в корзину
     console.log("Добавить все рекомендованные продукты в корзину");
-  }
+  };
 
-  // При смене aiMessageIndex печатаем новый текст
+  const fetchProductPreferences = async () => {
+    if (!userId) {
+      console.error("Пользователь не авторизован");
+      return;
+    }
+
+    try {
+      const response = await PreferenceApi.getProductPreferences(userId);
+      setProductPreferences(response);
+    } catch (error) {
+      console.error("Ошибка при загрузке продуктов:", error);
+    }
+  };
+
   useEffect(() => {
     if (stage === "shuffling") {
       typeMessage(AI_MESSAGES[aiMessageIndex]);
@@ -90,7 +110,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
     // eslint-disable-next-line
   }, [aiMessageIndex]);
 
-  // Очищаем таймеры при размонтировании
   useEffect(() => {
     return () => {
       if (aiIntervalRef.current) clearInterval(aiIntervalRef.current);
@@ -101,13 +120,18 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (userId) {
+      fetchProductPreferences();
+    }
+  }, [userId]);
+
   function animateFoodItemsSequence() {
     const foodItems = Array.from(
       document.querySelectorAll<HTMLDivElement>(".food-item")
     );
 
     foodItems.forEach((item, index) => {
-      // Позиционирование
       const angle = index * 90 - 45; // -45 чтобы начать сверху-слева
       const radius = 70;
       const x = radius * Math.cos((angle * Math.PI) / 180);
@@ -120,14 +144,12 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
     });
 
     foodItems.forEach((item) => {
-      // Сбросим стили
       item.style.opacity = "0";
       item.style.transform = "scale(0)";
       item.style.transition = "none";
       item.style.animation = "none";
     });
 
-    // Плавное появление друг за другом
     foodItems.forEach((item, index) => {
       setTimeout(() => {
         item.style.transition = "opacity 0.5s, transform 0.5s";
@@ -136,7 +158,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
       }, index * 400); // 1200
     });
 
-    // Плавное исчезновение друг за другом через 1 сек после появления последнего
     const disappearDelay = 2 * 400 + 200;
     foodItems.forEach((item, index) => {
       setTimeout(() => {
@@ -147,7 +168,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
     });
   }
 
-  // Анимация foodItems проигрывается всё время, пока stage === "shuffling"
   useEffect(() => {
     if (stage === "shuffling") {
       animateFoodItemsSequence();
@@ -158,7 +178,6 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
     } else {
       if (foodAnimIntervalRef.current)
         clearInterval(foodAnimIntervalRef.current);
-      // Сбросить стили при выходе из shuffling
       const foodItems = Array.from(
         document.querySelectorAll<HTMLDivElement>(".food-item")
       );
@@ -201,6 +220,7 @@ const RecommendationSection: React.FC<RecommendationSectionProps> = () => {
             <RecommendationsResult
               recommendations={recommendations}
               recommendedProducts={recommendedProducts}
+              preferredProducts={productPreferences}
               onRegenerate={handleGenerate}
               onAddToCart={handleAddToCart}
             />
