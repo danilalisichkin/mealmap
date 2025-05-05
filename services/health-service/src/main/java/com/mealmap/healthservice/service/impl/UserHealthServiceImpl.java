@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_DIET_NOT_FOUND;
 import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_PHYSICAL_HEALTH_NOT_FOUND;
 
 @Service
@@ -66,6 +67,9 @@ public class UserHealthServiceImpl implements UserHealthService {
         PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
 
         Diet diet = physicHealth.getDiet();
+        if (diet == null) {
+            throw new ResourceNotFoundException(USER_DIET_NOT_FOUND.formatted(userId));
+        }
 
         return dietMapper.entityToDto(diet);
     }

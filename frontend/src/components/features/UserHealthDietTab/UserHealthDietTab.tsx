@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { DietDto } from "../../../api/health/dto/DietDto";
+import { DietType } from "../../../api/health/enums/DietType";
 
 interface UserHealthDietTabProps {
-  diet: DietDto;
-  formattedCurrentWeight: number;
-  formattedDietGoalWeight: number;
+  diet: DietDto | null;
+  currentWeight: number;
+  onDeleteDiet: () => void;
+  onCreateDiet: (dietType: DietType, goalWeight: number) => void;
 }
 
 const DIET_LABELS: Record<string, string> = {
@@ -15,53 +17,82 @@ const DIET_LABELS: Record<string, string> = {
 
 const UserHealthDietTab: React.FC<UserHealthDietTabProps> = ({
   diet,
-  formattedCurrentWeight,
-  formattedDietGoalWeight,
+  currentWeight,
+  onDeleteDiet,
+  onCreateDiet,
 }) => {
+  const [newDietType, setNewDietType] = useState<DietType>(
+    diet?.type ?? DietType.MAINTENANCE
+  );
+  
+  const formattedCurrentWeight = currentWeight / 1000;
+  const formattedDietGoalWeight = diet ? diet.goalWeight / 1000 : 0;
+
+  const [newGoalWeight, setNewGoalWeight] = useState<number>(
+    formattedDietGoalWeight || formattedCurrentWeight
+  );
+
+  const handleCreateDiet = () => {
+    onCreateDiet(newDietType, newGoalWeight);
+  };
+
   return (
     <div id="diet-tab" className="tab-panel active">
-      <div className="health-card bg-white rounded-lg shadow-sm p-4 mb-4">
-        <h3 className="font-medium text-gray-800 mb-4">Текущий план диеты</h3>
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-600">Тип диеты</span>
-            <span className="font-medium" id="current-diet-type">
-              {DIET_LABELS[diet.dietType]}
-            </span>
+      {!diet ? (
+        <div className="health-card bg-white rounded-lg shadow-sm p-4 mb-4">
+          <h3 className="font-medium text-gray-800">Текущий план диеты</h3>
+          <p className="text-gray-600 mb-2">не найден</p>
+          <p className="text-gray-600">Вы еще не выбрали диету</p>
+        </div>
+      ) : (
+        <div className="health-card bg-white rounded-lg shadow-sm p-4 mb-4">
+          <h3 className="font-medium text-gray-800 mb-4">Текущий план диеты</h3>
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-gray-600">Тип диеты</span>
+              <span className="font-medium" id="current-diet-type">
+                {DIET_LABELS[diet.type]}
+              </span>
+            </div>
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-gray-600">Желаемый вес</span>
+              <span className="font-medium" id="current-goal-weight">
+                {formattedDietGoalWeight} кг
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Начало</span>
+              <span className="font-medium" id="current-diet-start">
+                {new Date(diet.startDate).toLocaleDateString()}
+              </span>
+            </div>
           </div>
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-600">Желаемый вес</span>
-            <span className="font-medium" id="current-goal-weight">
-              {formattedCurrentWeight} кг
-            </span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Начало</span>
-            <span className="font-medium" id="current-diet-start">
-              {new Date(diet.startDate).toLocaleDateString()}
-            </span>
+          <div className="flex space-x-3">
+            <button
+              className="flex-1 py-2 bg-red-100 text-red-600 rounded-lg font-medium"
+              id="cancel-diet-btn"
+              onClick={(e) => {
+                e.preventDefault();
+                onDeleteDiet();
+              }}
+            >
+              Завершить диету
+            </button>
           </div>
         </div>
-        <div className="flex space-x-3">
-          <button
-            className="flex-1 py-2 bg-gray-100 text-gray-800 rounded-lg font-medium"
-            id="edit-diet-btn"
-          >
-            Изменить план
-          </button>
-          <button
-            className="flex-1 py-2 bg-red-100 text-red-600 rounded-lg font-medium"
-            id="cancel-diet-btn"
-          >
-            Завершить диету
-          </button>
-        </div>
-      </div>
+      )}
+
       <div className="health-card bg-white rounded-lg shadow-sm p-4">
         <h3 className="font-medium text-gray-800 mb-4">
           Создать новый план диеты
         </h3>
-        <form id="new-diet-form">
+        <form
+          id="new-diet-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleCreateDiet();
+          }}
+        >
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-medium mb-2"
@@ -72,7 +103,8 @@ const UserHealthDietTab: React.FC<UserHealthDietTabProps> = ({
             <select
               id="diet-type-select"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-              defaultValue={diet.dietType}
+              value={newDietType}
+              onChange={(e) => setNewDietType(e.target.value as DietType)}
             >
               <option value="MAINTENANCE">{DIET_LABELS["MAINTENANCE"]}</option>
               <option value="WEIGHT_LOSS">{DIET_LABELS["WEIGHT_LOSS"]}</option>
@@ -92,7 +124,9 @@ const UserHealthDietTab: React.FC<UserHealthDietTabProps> = ({
               min="30"
               max="200"
               step="0.1"
-              defaultValue={formattedDietGoalWeight}
+              defaultValue={newGoalWeight}
+              value={newGoalWeight}
+              onChange={(e) => setNewGoalWeight(parseFloat(e.target.value))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
             />
           </div>

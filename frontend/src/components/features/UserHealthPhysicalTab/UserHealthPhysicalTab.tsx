@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { PhysicHealthDto } from "../../../api/health/dto/PhysicHealthDto";
 
 interface UserHealthPhysicalTabProps {
   physicHealth: PhysicHealthDto;
-  formattedCurrentWeight: number;
   age: number | string;
+  successMessage: string | null;
+  onSaveWeight: (newWeight: number) => void;
 }
 
 const GENDER_LABELS: Record<string, string> = {
@@ -14,9 +15,24 @@ const GENDER_LABELS: Record<string, string> = {
 
 const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
   physicHealth,
-  formattedCurrentWeight,
   age,
+  onSaveWeight,
+  successMessage,
 }) => {
+  const formattedCurrentWeight = physicHealth.weight / 1000;
+
+  const [currentWeight, setCurrentWeight] = useState<number>(
+    formattedCurrentWeight
+  );
+
+  const handleWeightChange = (newWeight: number) => {
+    setCurrentWeight(newWeight);
+  };
+
+  const handleWeightChangeSubmit = () => {
+    onSaveWeight(currentWeight);
+  };
+
   return (
     <div id="physical-tab" className="tab-panel active">
       <div className="health-card bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -53,7 +69,14 @@ const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
       <div className="health-card bg-white rounded-lg shadow-sm p-4">
         <h3 className="font-medium text-gray-800 mb-2">Зафиксировать вес</h3>
         <p className="text-sm text-gray-500 mb-4">Отслеживайте свой прогресс</p>
-        <form id="new-weight-form" className="flex items-end">
+        <form
+          id="new-weight-form"
+          className="flex items-end"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleWeightChangeSubmit();
+          }}
+        >
           <div className="flex-1 mr-2">
             <label
               className="block text-gray-700 text-sm font-medium mb-1"
@@ -67,7 +90,8 @@ const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
               min="30"
               max="200"
               step="0.1"
-              defaultValue={physicHealth.weight}
+              defaultValue={formattedCurrentWeight.toFixed(1)}
+              onChange={(e) => handleWeightChange(parseFloat(e.target.value) * 1000)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
             />
           </div>
@@ -78,6 +102,9 @@ const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
             Сохранить
           </button>
         </form>
+        {successMessage && (
+          <p className="text-green-500 text-sm mt-2">{successMessage}</p>
+        )}
       </div>
     </div>
   );
