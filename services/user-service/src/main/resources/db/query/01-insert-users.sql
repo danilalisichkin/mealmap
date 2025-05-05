@@ -3,7 +3,7 @@ INSERT INTO users(
     is_active, is_blocked, is_temporary_blocked)
 VALUES
     ('ef38cc33-c3df-4b76-aa8c-de6be555f45c', '375296666666', 'operator-admin@admin.com', 'Админов',
-     'Администратор', 1, '2024-10-20T15:30:00', true, false, false, 5),
+     'Администратор', 1, '2024-10-20T15:30:00', true, false, false),
     ('c7f7e1b5-9f4e-4e6a-9d2d-2e5d562b1f04', '375293333333', 'suplier-admin@food.com', 'Пупкин',
      'Василий', 2, '2025-1-10T10:00:00', true, false, false),
     ('0e3901b5-fb3f-44e4-b691-adac0a735789', '375291234567', 'client@company.com', 'Иванов',

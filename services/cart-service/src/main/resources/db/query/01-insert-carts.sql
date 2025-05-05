@@ -4,4 +4,3 @@ VALUES
     (2, 'ef38cc33-c3df-4b76-aa8c-de6be555f45c', '2025-01-28T09:13:22Z', '2025-01-29T11:22:00Z');
 
 ALTER SEQUENCE carts_id_seq RESTART WITH 3;
-
