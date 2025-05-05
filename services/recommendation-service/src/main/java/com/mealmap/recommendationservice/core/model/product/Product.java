@@ -1,6 +1,5 @@
-package com.mealmap.recommendationservice.client.dto.product;
+package com.mealmap.recommendationservice.core.model.product;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ProductDto {
+public class Product {
     private Long id;
 
     private String name;
@@ -22,7 +20,7 @@ public class ProductDto {
 
     private Integer weight;
 
-    private NutrientDto nutrients;
+    private Nutrient nutrients;
 
     private String description;
 
@@ -30,5 +28,5 @@ public class ProductDto {
 
     private Integer supplierId;
 
-    private List<CategorySimpleDto> categories;
+    private List<CategorySimple> categories;
 }

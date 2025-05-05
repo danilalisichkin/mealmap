@@ -1,6 +1,5 @@
-package com.mealmap.recommendationservice.client.dto.product;
+package com.mealmap.recommendationservice.core.model.product;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CategoryShortInfo {
     private Long id;
 

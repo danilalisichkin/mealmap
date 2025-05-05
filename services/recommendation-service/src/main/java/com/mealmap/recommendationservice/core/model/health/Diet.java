@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class Diet {
     private String dietType;
 
-    private String goalWeight;
+    private Integer goalWeight;
 
     private LocalDate startDate;
 }

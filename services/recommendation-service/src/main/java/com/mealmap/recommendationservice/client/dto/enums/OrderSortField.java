@@ -1,4 +1,4 @@
-package com.mealmap.recommendationservice.client.dto.order;
+package com.mealmap.recommendationservice.client.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

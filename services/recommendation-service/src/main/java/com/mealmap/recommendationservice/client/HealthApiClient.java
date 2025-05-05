@@ -1,5 +1,6 @@
 package com.mealmap.recommendationservice.client;
 
+import com.mealmap.recommendationservice.client.config.FeignJacksonMappingConfig;
 import com.mealmap.recommendationservice.client.config.FeignOAuth2Config;
 import com.mealmap.recommendationservice.client.config.HealthApiClientConfig;
 import com.mealmap.recommendationservice.core.model.health.Diet;
@@ -14,7 +15,7 @@ import java.util.UUID;
         name = "${business.services.health.name}",
         path = "${business.services.health.path}",
         contextId = "healthClient",
-        configuration = {HealthApiClientConfig.class, FeignOAuth2Config.class})
+        configuration = {HealthApiClientConfig.class, FeignOAuth2Config.class, FeignJacksonMappingConfig.class})
 public interface HealthApiClient {
     @GetMapping("/{userId}/physic-health")
     PhysicHealth getUserPhysicHealth(@PathVariable UUID userId);

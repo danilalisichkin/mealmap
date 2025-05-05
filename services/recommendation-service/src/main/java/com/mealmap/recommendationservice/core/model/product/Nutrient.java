@@ -1,6 +1,5 @@
-package com.mealmap.recommendationservice.client.dto.product;
+package com.mealmap.recommendationservice.core.model.product;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class NutrientDto {
+public class Nutrient {
     @NotNull
     private Integer calories;
 

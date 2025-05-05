@@ -1,7 +1,7 @@
 package com.mealmap.recommendationservice.service.impl;
 
 import com.mealmap.recommendationservice.client.OrderApiClient;
-import com.mealmap.recommendationservice.client.dto.order.OrderSortField;
+import com.mealmap.recommendationservice.client.dto.enums.OrderSortField;
 import com.mealmap.recommendationservice.core.model.order.Order;
 import com.mealmap.recommendationservice.service.OrderService;
 import lombok.RequiredArgsConstructor;

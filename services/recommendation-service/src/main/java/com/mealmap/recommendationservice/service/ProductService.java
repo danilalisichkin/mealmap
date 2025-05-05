@@ -1,9 +1,9 @@
 package com.mealmap.recommendationservice.service;
 
-import com.mealmap.recommendationservice.client.dto.product.ProductDto;
+import com.mealmap.recommendationservice.core.model.product.Product;
 
 import java.util.List;
 
 public interface ProductService {
-    List<ProductDto> getAllProducts();
+    List<Product> getAllProducts();
 }

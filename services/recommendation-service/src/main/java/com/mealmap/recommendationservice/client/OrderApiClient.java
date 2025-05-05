@@ -1,8 +1,9 @@
 package com.mealmap.recommendationservice.client;
 
+import com.mealmap.recommendationservice.client.config.FeignJacksonMappingConfig;
 import com.mealmap.recommendationservice.client.config.FeignOAuth2Config;
 import com.mealmap.recommendationservice.client.config.OrderApiClientConfig;
-import com.mealmap.recommendationservice.client.dto.order.OrderSortField;
+import com.mealmap.recommendationservice.client.dto.enums.OrderSortField;
 import com.mealmap.recommendationservice.core.model.order.Order;
 import com.mealmap.starters.paginationstarter.dto.PageDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
         name = "${business.services.order.name}",
         path = "${business.services.order.path}",
         contextId = "orderClient",
-        configuration = {OrderApiClientConfig.class, FeignOAuth2Config.class})
+        configuration = {OrderApiClientConfig.class, FeignOAuth2Config.class, FeignJacksonMappingConfig.class})
 public interface OrderApiClient {
     @GetMapping("/{userId}/orders")
     PageDto<Order> getPageOfUserOrders(

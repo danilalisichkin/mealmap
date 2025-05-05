@@ -1,5 +1,6 @@
 package com.mealmap.recommendationservice.client;
 
+import com.mealmap.recommendationservice.client.config.FeignJacksonMappingConfig;
 import com.mealmap.recommendationservice.client.config.FeignOAuth2Config;
 import com.mealmap.recommendationservice.client.config.PreferenceApiClientConfig;
 import com.mealmap.recommendationservice.core.model.preference.Preferences;
@@ -13,7 +14,7 @@ import java.util.UUID;
         name = "${business.services.preference.name}",
         path = "${business.services.preference.path}",
         contextId = "preferenceClient",
-        configuration = {PreferenceApiClientConfig.class, FeignOAuth2Config.class})
+        configuration = {PreferenceApiClientConfig.class, FeignOAuth2Config.class, FeignJacksonMappingConfig.class})
 public interface PreferenceApiClient {
     @GetMapping("/{userId}/preferences")
     Preferences getUserPreferences(@PathVariable UUID userId);

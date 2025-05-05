@@ -43,6 +43,12 @@
             <artifactId>security-starter</artifactId>
         </dependency>
 
+        <!-- Other Dependencies -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+        </dependency>
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
