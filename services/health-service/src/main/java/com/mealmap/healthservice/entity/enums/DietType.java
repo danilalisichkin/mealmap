@@ -17,7 +17,7 @@ public enum DietType {
     public static DietType fromId(final Integer id) {
         return id == null ? null :
                 Arrays.stream(DietType.values())
-                        .filter(event -> event.getId().equals(id))
+                        .filter(type -> type.getId().equals(id))
                         .findFirst()
                         .orElse(null);
     }

@@ -8,6 +8,7 @@ import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
+import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import com.mealmap.productservice.core.mapper.CategoryMapper;
 import com.mealmap.productservice.document.CategoryDoc;
@@ -31,6 +32,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
 
 import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGORY_NOT_FOUND;
 
@@ -69,6 +73,13 @@ public class CategoryServiceImpl implements CategoryService {
         return pageMapper.pageToPageDto(
                 categoryMapper.docPageToDtoPage(
                         ElasticsearchPageBuilder.buildPage(response, pageRequest)));
+    }
+
+    @Override
+    @Cacheable(key = "#ids.stream().sorted().toList().toString()")
+    public List<CategoryDto> getCategories(Set<Long> ids) {
+        return categoryMapper.entityListToDtoList(
+                categoryRepository.findAllById(ids));
     }
 
     @Override

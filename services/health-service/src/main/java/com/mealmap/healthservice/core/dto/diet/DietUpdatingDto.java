@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DietUpdatingDto {
     @NotNull
-    private DietType dietType;
+    private DietType type;
 
     @NotNull
     @Positive

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class DietDto {
     private Long id;
 
-    private DietType dietType;
+    private DietType type;
 
     private Integer goalWeight;
 

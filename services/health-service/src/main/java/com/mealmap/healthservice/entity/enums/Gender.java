@@ -16,7 +16,7 @@ public enum Gender {
     public static Gender fromId(final Integer id) {
         return id == null ? null :
                 Arrays.stream(Gender.values())
-                        .filter(event -> event.getId().equals(id))
+                        .filter(gender -> gender.getId().equals(id))
                         .findFirst()
                         .orElse(null);
     }

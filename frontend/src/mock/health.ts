@@ -14,7 +14,7 @@ export const mockPhysicHealth: PhysicHealthDto = {
 
 export const mockDiet: DietDto = {
   id: 1,
-  dietType: DietType.WEIGHT_LOSS,
+  type: DietType.WEIGHT_LOSS,
   goalWeight: 70000,
   startDate: "2024-04-01T00:00:00.000Z",
 };

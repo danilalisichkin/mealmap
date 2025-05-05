@@ -1,4 +1,4 @@
-INSERT INTO user_physic_health_history(id, weight, physic_health_id, created_at)
+INSERT INTO physic_health_history(id, weight, physic_health_id, created_at)
 VALUES
     (1, 54000, 1, '2025-01-10T10:00:00'),
     (2, 60000, 1, '2025-02-10T11:10:00'),

@@ -6,7 +6,6 @@ import { PhysicHealthHistoryDto } from "./dto/PhysicHealthHistoryDto";
 import { DietDto } from "./dto/DietDto";
 import { DietCreationDto } from "./dto/DietCreationDto";
 import { DietUpdatingDto } from "./dto/DietUpdatingDto";
-import { PageDto } from "../common/dto/PageDto";
 
 export const HealthApi = {
   getUserPhysicHealth: async (userId: string): Promise<PhysicHealthDto> => {
@@ -18,8 +17,8 @@ export const HealthApi = {
 
   getUserPhysicHealthHistory: async (
     userId: string
-  ): Promise<PageDto<PhysicHealthHistoryDto>> => {
-    const response = await ApiClient.get<PageDto<PhysicHealthHistoryDto>>(
+  ): Promise<PhysicHealthHistoryDto[]> => {
+    const response = await ApiClient.get<PhysicHealthHistoryDto[]>(
       `/users/${userId}/physic-health/history`
     );
     return response.data;
