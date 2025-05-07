@@ -19,6 +19,7 @@
         <module>auth-service</module>
         <module>cart-service</module>
         <module>eureka-server</module>
+        <module>file-service</module>
         <module>health-service</module>
         <module>notification-service</module>
         <module>order-service</module>
