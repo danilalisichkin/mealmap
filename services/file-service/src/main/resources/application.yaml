@@ -1,5 +1,11 @@
 spring:
   application:
     name: file-service
+minio:
+  url: ${MINIO_URL:http://localhost:9001}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  buckets:
+    - ${MINIO_BUCKETS_IMAGES:images}
 server:
   port: ${SERVER_PORT:8093}

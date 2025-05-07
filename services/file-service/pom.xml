@@ -19,6 +19,12 @@
     </properties>
 
     <dependencies>
+        <!-- Main Dependencies -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
+
         <!-- Spring Boot Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

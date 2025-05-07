@@ -411,6 +411,19 @@ services:
     depends_on:
       - keycloak-pg-database
 
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: mealmap-minio
+    ports:
+      - "9002:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server --console-address ":9001" /data
+
   zookeeper:
     image: zookeeper:3.7.0
     container_name: mealmap-zookeeper
@@ -499,6 +512,7 @@ volumes:
   organization-redis_data:
   preference-redis_data:
   elasticsearch_data:
+  minio_data:
 
 networks:
   mealmap-network:
