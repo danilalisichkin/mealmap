@@ -5,10 +5,14 @@ import CategoryPreferencesTab from "../CategoryPreferencesTab/CategoryPreference
 
 interface UserPreferencesProps {
   userPreferences: UserPreferencesDto;
+  onProductPreferenceRemove: (productId: number) => void;
+  onCategoryPreferenceRemove: (productId: number) => void;
 }
 
 const UserPreferences: React.FC<UserPreferencesProps> = ({
   userPreferences,
+  onProductPreferenceRemove,
+  onCategoryPreferenceRemove,
 }) => {
   const [activeTab, setActiveTab] = useState<"products" | "categories">(
     "products"
@@ -52,14 +56,14 @@ const UserPreferences: React.FC<UserPreferencesProps> = ({
       {activeTab === "products" && (
         <ProductPreferencesTab
           productPreferences={userPreferences.productPreferences}
-          userId={userPreferences.userId}
+          onRemovePreference={onProductPreferenceRemove}
         />
       )}
 
       {activeTab === "categories" && (
         <CategoryPreferencesTab
           categoryPreferences={userPreferences.categoryPreferences}
-          userId={userPreferences.userId}
+          onRemovePreference={onCategoryPreferenceRemove}
         />
       )}
     </div>

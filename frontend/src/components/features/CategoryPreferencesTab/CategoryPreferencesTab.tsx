@@ -4,16 +4,15 @@ import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 import PreferenceChip from "../PreferenceChip/PreferenceChip";
 import { CategoryDto } from "../../../api/product/dto/CategoryDto";
 import { CategoryApi } from "../../../api/product/CategoryApi";
-import { PreferenceApi } from "../../../api/preference/UserPreferenceApi";
 
 interface CategoryPreferencesTabProps {
   categoryPreferences: CategoryPreferenceDto[];
-  userId: string;
+  onRemovePreference: (preferenceId: number) => void;
 }
 
 const CategoryPreferencesTab: React.FC<CategoryPreferencesTabProps> = ({
   categoryPreferences,
-  userId,
+  onRemovePreference,
 }) => {
   const [preferences, setPreferences] =
     useState<CategoryPreferenceDto[]>(categoryPreferences);
@@ -24,6 +23,11 @@ const CategoryPreferencesTab: React.FC<CategoryPreferencesTabProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = useCallback(async () => {
+    if (preferences.length === 0) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
 
@@ -45,12 +49,13 @@ const CategoryPreferencesTab: React.FC<CategoryPreferencesTabProps> = ({
   }, [categoryPreferences]);
 
   const handleRemovePreference = async (id: number) => {
-    try {
-      await PreferenceApi.removeCategoryPreference(userId, id);
-      setPreferences((prev) => prev.filter((pref) => pref.id !== id));
-    } catch (err) {
-      console.error("Ошибка при удалении предпочтения категории:", err);
-    }
+    setPreferences((prev) => prev.filter((pref) => pref.categoryId !== id));
+    setCategoriesMap((prev) => {
+      const updatedMap = { ...prev };
+      delete updatedMap[id];
+      return updatedMap;
+    });
+    onRemovePreference(id);
   };
 
   useEffect(() => {

@@ -4,16 +4,15 @@ import { ProductApi } from "../../../api/product/ProductApi";
 import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 import { ProductPreferenceDto } from "../../../api/preference/dto/ProductPreferenceDto";
 import PreferenceChip from "../PreferenceChip/PreferenceChip";
-import { PreferenceApi } from "../../../api/preference/UserPreferenceApi";
 
 interface ProductPreferencesTabProps {
   productPreferences: ProductPreferenceDto[];
-  userId: string;
+  onRemovePreference: (preferenceId: number) => void;
 }
 
 const ProductPreferencesTab: React.FC<ProductPreferencesTabProps> = ({
   productPreferences,
-  userId,
+  onRemovePreference,
 }) => {
   const [preferences, setPreferences] =
     useState<ProductPreferenceDto[]>(productPreferences);
@@ -21,9 +20,13 @@ const ProductPreferencesTab: React.FC<ProductPreferencesTabProps> = ({
     {}
   );
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = useCallback(async () => {
+    if (preferences.length === 0) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
 
@@ -38,19 +41,19 @@ const ProductPreferencesTab: React.FC<ProductPreferencesTabProps> = ({
       setProductsMap(productMap);
     } catch (err) {
       console.error("Ошибка при загрузке продуктов:", err);
-      setError("Не удалось загрузить продукты.");
     } finally {
       setLoading(false);
     }
-  }, [productPreferences]);
+  }, []);
 
   const handleRemovePreference = async (id: number) => {
-    try {
-      await PreferenceApi.removeProductPreference(userId, id);
-      setPreferences((prev) => prev.filter((pref) => pref.id !== id));
-    } catch (err) {
-      console.error("Ошибка при удалении предпочтения продукта:", err);
-    }
+    setPreferences((prev) => prev.filter((pref) => pref.productId !== id));
+    setProductsMap((prev) => {
+      const updatedMap = { ...prev };
+      delete updatedMap[id];
+      return updatedMap;
+    });
+    onRemovePreference(id);
   };
 
   useEffect(() => {
@@ -59,10 +62,6 @@ const ProductPreferencesTab: React.FC<ProductPreferencesTabProps> = ({
 
   if (loading) {
     return <div className="text-center py-12">Загрузка...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-12 text-red-500">{error}</div>;
   }
 
   const likedProducts = preferences

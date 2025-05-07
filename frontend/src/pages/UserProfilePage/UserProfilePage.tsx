@@ -6,10 +6,13 @@ import UserPreferences from "../../components/features/UserPreferences/UserPrefe
 import { useAuth } from "../../contexts/AuthContext";
 import { UserApi } from "../../api/user/UserApi";
 import { UserDto } from "../../api/user/dto/UserDto";
-import NotFoundError from "../../components/commons/NotFoundError/NotFoundError";
 import { StatusHistoryDto } from "../../api/user/dto/StatusHistoryDto";
 import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
 import { UserPreferencesDto } from "../../api/preference/dto/UserPreferencesDto";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import PopupNotification from "../../components/features/PopupNotification/PopupNotification";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
 interface UserProfilePageProps {}
 
@@ -28,11 +31,39 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   const totalDiscounted = 1000;
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorDetail | null>(null);
+
+  const [notification, setNotification] = useState<{
+    id: number;
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    id: 0,
+    message: "",
+    type: "success",
+    isVisible: false,
+  });
+
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info"
+  ) => {
+    setNotification({
+      id: Date.now(),
+      message,
+      type,
+      isVisible: true,
+    });
+  };
 
   const fetchUser = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -40,9 +71,22 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
     try {
       const fetchedUser = await UserApi.getUserById(userId);
       setUser(fetchedUser);
-    } catch (err) {
-      console.error("Ошибка при загрузке пользователя:", err);
-      setError("Не удалось загрузить данные пользователя.");
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.error("Ошибка при загрузке пользователя:", err);
+        setError({
+          title: "Упс! Кажется, пользователь не найден",
+          detail: err.response?.data.detail,
+          status: "404",
+        });
+      } else if (err.response?.status === 500) {
+        console.error("Ошибка при загрузке пользователя:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -50,7 +94,11 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
 
   const fetchUserStatusHistory = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -60,7 +108,6 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
       setUserStatusHistory(fetchedHistory.items);
     } catch (err) {
       console.error("Ошибка при загрузке пользователя:", err);
-      setError("Не удалось загрузить данные пользователя.");
     } finally {
       setLoading(false);
     }
@@ -68,7 +115,11 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
 
   const fetchUserPreferences = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -78,7 +129,6 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
       setUserPreferences(fetchedPreferences);
     } catch (err) {
       console.error("Ошибка при загрузке предпочтений пользователя:", err);
-      setError("Не удалось загрузить предпочтения пользователя.");
     }
   }, [userId]);
 
@@ -89,23 +139,67 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   }, [fetchUser, fetchUserStatusHistory, fetchUserPreferences]);
 
   if (loading) {
-    return <div className="text-center py-12">Загрузка...</div>;
-  }
-
-  if (error || !user) {
     return (
-      <NotFoundError
-        title="Упс! Кажется, профиль пользователя не найден"
-        message="Возможно, данного пользователя на существует"
-      />
+      <div className="h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
     );
   }
+
+  if (error) {
+    return <ErrorBanner error={error} />;
+  }
+
+  const handleRemoveProductPreference = async (id: number) => {
+    if (userPreferences) {
+      try {
+        await PreferenceApi.removeProductPreference(userPreferences.userId, id);
+        setUserPreferences((prev) =>
+          prev
+            ? {
+                ...prev,
+                productPreferences: prev.productPreferences.filter(
+                  (pref) => pref.productId !== id
+                ),
+              }
+            : null
+        );
+        showNotification("Блюдо убрано из предпочтений!", "success");
+      } catch (err) {
+        console.error("Ошибка при удалении предпочтения продукта:", err);
+      }
+    }
+  };
+
+  const handleRemoveCategoryPreference = async (id: number) => {
+    if (userPreferences) {
+      try {
+        await PreferenceApi.removeCategoryPreference(
+          userPreferences.userId,
+          id
+        );
+        setUserPreferences((prev) =>
+          prev
+            ? {
+                ...prev,
+                categoryPreferences: prev.categoryPreferences.filter(
+                  (pref) => pref.categoryId !== id
+                ),
+              }
+            : null
+        );
+        showNotification("Категория убрана из предпочтений!", "success");
+      } catch (err) {
+        console.error("Ошибка при удалении предпочтения категории:", err);
+      }
+    }
+  };
 
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3 lg:w-1/4">
-          <UserProfileSidebar user={user} tgChatId={tgChatId} />
+          {user && <UserProfileSidebar user={user} tgChatId={tgChatId} />}
         </div>
         <div className="w-full md:w-2/3 lg:w-3/4">
           <UserProfileStats
@@ -113,13 +207,24 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
             totalDiscounted={totalDiscounted}
           />
           {userPreferences && (
-            <UserPreferences userPreferences={userPreferences} />
+            <UserPreferences
+              userPreferences={userPreferences}
+              onProductPreferenceRemove={handleRemoveProductPreference}
+              onCategoryPreferenceRemove={handleRemoveCategoryPreference}
+            />
           )}
           {userStatusHistory && (
             <UserProfileHistory history={userStatusHistory} />
           )}
         </div>
       </div>
+      <PopupNotification
+        key={notification.id}
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={() => setNotification({ ...notification, isVisible: false })}
+      />
     </main>
   );
 };
