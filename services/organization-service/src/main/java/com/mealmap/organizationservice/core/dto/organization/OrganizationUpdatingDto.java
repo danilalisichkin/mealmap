@@ -19,6 +19,9 @@ public class OrganizationUpdatingDto {
     @Size(min = 2, max = 100)
     private String name;
 
+    @Size(max = 255)
+    private String imageUrl;
+
     @NotEmpty
     @Size(min = 2, max = 150)
     private String legalAddress;

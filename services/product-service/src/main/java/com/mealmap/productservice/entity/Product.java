@@ -40,6 +40,9 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
+    private String imageUrl;
+
+    @Column(nullable = false)
     private Integer price;
 
     @Column(nullable = false)

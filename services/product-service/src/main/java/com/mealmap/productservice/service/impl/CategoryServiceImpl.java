@@ -8,7 +8,6 @@ import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
-import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import com.mealmap.productservice.core.mapper.CategoryMapper;
 import com.mealmap.productservice.document.CategoryDoc;
@@ -66,6 +65,8 @@ public class CategoryServiceImpl implements CategoryService {
         Query searchQuery = esQueryService.buildQueryForCategories(pageRequest, search);
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
                 .query(searchQuery)
+                .from(offset * limit)
+                .size(limit)
                 .index("categories"));
 
         SearchResponse<CategoryDoc> response = esClient.search(searchRequest, CategoryDoc.class);

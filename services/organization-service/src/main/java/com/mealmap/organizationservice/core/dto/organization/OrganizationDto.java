@@ -15,6 +15,8 @@ public class OrganizationDto {
 
     private String name;
 
+    private String imageUrl;
+
     private String legalAddress;
 
     private String phoneNumber;

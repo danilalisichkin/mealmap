@@ -38,6 +38,9 @@ public class Organization {
     @Column(nullable = false)
     private String name;
 
+    @Column
+    private String imageUrl;
+
     @Column(nullable = false)
     private String legalAddress;
 

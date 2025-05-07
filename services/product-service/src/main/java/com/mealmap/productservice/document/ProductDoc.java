@@ -29,6 +29,9 @@ public class ProductDoc {
     @Field(type = FieldType.Text, analyzer = "russian_morphology", fielddata = true)
     private String name;
 
+    @Field(type = FieldType.Keyword)
+    private String imageUrl;
+
     @Field(type = FieldType.Integer)
     private Integer price;
 

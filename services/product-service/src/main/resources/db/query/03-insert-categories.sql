@@ -23,6 +23,8 @@ VALUES
     (21, 'Востоные пасты', 7),
     (22, 'Острые блюда', NULL),
     (23, 'Итальянские пасты', 7),
-    (24, 'Гарниры', null);
+    (24, 'Гарниры', null),
+    (25, 'Пиццы', 4),
+    (26, 'Итальянская кухня', NULL);
 
-ALTER SEQUENCE categories_id_seq RESTART WITH 25;
+ALTER SEQUENCE categories_id_seq RESTART WITH 27;

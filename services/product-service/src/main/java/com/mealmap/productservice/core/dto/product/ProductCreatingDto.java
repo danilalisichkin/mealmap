@@ -18,6 +18,10 @@ public class ProductCreatingDto {
     @Size(max = 40)
     String name;
 
+    @NotEmpty
+    @Size(min = 3, max = 255)
+    String imageUrl;
+
     @NotNull
     @Positive
     Integer price;
