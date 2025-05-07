@@ -7,6 +7,10 @@ import CartItem from "../CartItem/CartItem";
 import { CartApi } from "../../../api/cart/UserCartApi";
 import { ProductApi } from "../../../api/product/ProductApi";
 import { useAuth } from "../../../contexts/AuthContext";
+import { ErrorDetail } from "../../../api/common/dto/ErrorDetail";
+import PopupNotification from "../PopupNotification/PopupNotification";
+import ErrorBanner from "../../commons/ErrorBanner/ErrorBanner";
+import LoadingSpinner from "../../commons/LoadingSpinner/LoadingSpinner";
 
 interface CartProps {
   isOpened: boolean;
@@ -14,35 +18,80 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
+  const navigate = useNavigate();
+  const { userId } = useAuth();
+
   const [cart, setCart] = useState<CartDto | null>(null);
   const [productsMap, setProductsMap] = useState<Record<number, ProductDto>>(
     {}
   );
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorDetail | null>(null);
 
-  const navigate = useNavigate();
-  const { userId } = useAuth();
+  const [notification, setNotification] = useState<{
+    id: number;
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    id: 0,
+    message: "",
+    type: "success",
+    isVisible: false,
+  });
 
-  const fetchCart = async (userId: string): Promise<CartDto> => {
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info"
+  ) => {
+    setNotification({
+      id: Date.now(),
+      message,
+      type,
+      isVisible: true,
+    });
+  };
+
+  const fetchCart = async () => {
+    if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
-      return await CartApi.getCart(userId);
-    } catch (err) {
-      console.error("Ошибка при загрузке корзины:", err);
-      throw new Error("Не удалось загрузить корзину.");
+      const response = await CartApi.getCart(userId);
+      setCart(response);
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setError({
+          title: "Ваша корзина не найдена",
+          detail: err.response?.data.detail,
+          status: "404",
+        });
+      }
     }
   };
 
-  const fetchProducts = async (
-    productIds: number[]
-  ): Promise<Record<number, ProductDto>> => {
+  const fetchProducts = async () => {
+    const products = await ProductApi.bulkGetProducts(
+      cart?.items.map((item) => item.productId) || []
+    );
+
+    if (products.length === 0) {
+      return;
+    }
+
     try {
-      const products = await ProductApi.bulkGetProducts(productIds);
       const productMap: Record<number, ProductDto> = {};
       products.forEach((product: ProductDto) => {
         productMap[product.id] = product;
       });
-      return productMap;
+      setProductsMap(productMap);
     } catch (err) {
       console.error("Ошибка при загрузке продуктов:", err);
       throw new Error("Не удалось загрузить продукты.");
@@ -51,25 +100,20 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
 
   const initializeCart = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
 
-    try {
-      setLoading(true);
-
-      const fetchedCart = await fetchCart(userId);
-      setCart(fetchedCart);
-
-      const productIds = fetchedCart.items.map((item) => item.productId);
-      const productMap = await fetchProducts(productIds);
-      setProductsMap(productMap);
-    } catch (err: any) {
-      setError(err.message ?? "Не удалось загрузить данные корзины.");
-    } finally {
-      setLoading(false);
+    fetchCart();
+    if (cart && cart.items.length > 0) {
+      fetchProducts();
     }
+    setLoading(false);
   }, [userId]);
 
   useEffect(() => {
@@ -105,7 +149,10 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
       }));
     } catch (err) {
       console.error("Ошибка при изменении количества товара:", err);
-      setError("Не удалось изменить количество товара.");
+      showNotification(
+        "В корзине максимальное количество данных блюд!",
+        "error"
+      );
     }
   };
 
@@ -120,7 +167,7 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
       }));
     } catch (err) {
       console.error("Ошибка при удалении товара из корзины:", err);
-      setError("Не удалось удалить товар из корзины.");
+      showNotification("Не удалось убрать товар из корзины", "error");
     }
   };
 
@@ -129,11 +176,43 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
   }
 
   if (loading) {
-    return <div className="text-center py-12">Загрузка...</div>;
+    return (
+      <div
+        id="cart-panel"
+        className={`cart-panel fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-lg z-50 overflow-y-auto ${
+          isOpened ? "open" : "hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+        }`}
+      >
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center py-12 text-red-500">{error}</div>;
+    return (
+      <div
+        id="cart-panel"
+        className={`cart-panel fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-lg z-50 overflow-y-auto ${
+          isOpened ? "open" : "hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+        }`}
+      >
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Ваша корзина покупок
+          </h2>
+          <button
+            id="cart-close"
+            className="text-gray-500 hover:text-gray-700"
+            onClick={onClose}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+        <div className="flex flex-col items-center justify-center h-full">
+          <ErrorBanner error={error} />
+        </div>
+      </div>
+    );
   }
 
   if (!cart || cart.items.length === 0) {
@@ -144,18 +223,49 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
           isOpened ? "open" : "hidden fixed inset-0 bg-black bg-opacity-50 z-40"
         }`}
       >
-        <i className="fas fa-shopping-cart text-4xl mb-3 opacity-30"></i>
-        <p>Ваша корзина пуста</p>
+        <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Ваша корзина покупок
+          </h2>
+          <button
+            id="cart-close"
+            className="text-gray-500 hover:text-gray-700"
+            onClick={onClose}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+        <div className="flex flex-col items-center justify-center h-full">
+          <div className="h-screen flex items-center justify-center">
+            <div
+              id="empty-state"
+              className="flex flex-col items-center justify-center"
+            >
+              <div className="w-20 h-20 flex items-center justify-center mb-4">
+                <i className="fas fa-shopping-cart text-gray-400 text-2xl"></i>
+              </div>
+              <h3 className="text-lg font-medium text-gray-700 mb-1">
+                Корзина пуста
+              </h3>
+              <p className="text-gray-500 text-center max-w-xs">
+                У вас пока нет товаров в корзине
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const subtotal = cart.items.reduce((sum, item) => {
+  const totalItems = cart.items.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
+  const totalPrice = cart.items.reduce((sum, item) => {
     const product = productsMap[item.productId];
     return sum + (product ? (product.price * item.quantity) / 100 : 0);
   }, 0);
-
-  const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div
@@ -199,13 +309,13 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
         <div className="flex justify-between mb-2">
           <span className="font-medium text-gray-700">Итого:</span>
           <span id="cart-subtotal" className="font-medium">
-            ₽{subtotal.toFixed(2)}
+            ₽{totalPrice.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between mb-4">
           <span className="font-medium text-gray-700">Товаров:</span>
           <span id="cart-total-items" className="font-medium">
-            {totalItems}
+            {totalItems} шт.
           </span>
         </div>
         <button
@@ -217,6 +327,12 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
           <span>Оформить заказ</span>
         </button>
       </div>
+      <PopupNotification
+        key={notification.id}
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+      />
     </div>
   );
 };
