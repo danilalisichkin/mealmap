@@ -1,5 +1,7 @@
 package com.example.fileservice.controller.api;
 
+import com.example.fileservice.service.FileService;
+import com.example.fileservice.util.FileUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +18,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/files")
+@RequestMapping("/api/v1/files")
 public class FileController {
-    @PostMapping("/upload")
-    public ResponseEntity<String> upload(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("filename") @NotBlank @Size(min = 3, max = 200) String fileName) {
+    private final FileService fileService;
+
+    @PostMapping("/{filename}")
+    public ResponseEntity<Void> upload(
+            @PathVariable("filename") @NotBlank @Size(min = 3, max = 200) String filename,
+            @RequestParam("file") MultipartFile file) {
+
+        fileService.upload(filename, file);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -30,12 +36,16 @@ public class FileController {
     public ResponseEntity<byte[]> download(
             @PathVariable @NotBlank @Size(min = 3, max = 200) String filename) {
 
-        return ResponseEntity.status(HttpStatus.OK).contentType(...).build();
+        byte[] file = fileService.getFile(filename);
+
+        return ResponseEntity.status(HttpStatus.OK).contentType(FileUtils.getMediaType(filename)).body(file);
     }
 
     @DeleteMapping("/{filename}")
-    public ResponseEntity<String> delete(
+    public ResponseEntity<Void> delete(
             @PathVariable @NotBlank @Size(min = 3, max = 200) String filename) {
+
+        fileService.delete(filename);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
