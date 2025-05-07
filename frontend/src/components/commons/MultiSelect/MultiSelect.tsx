@@ -41,10 +41,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         {options.map((option) => (
           <button
             key={option.value}
-            className={`px-3 py-1 rounded-full whitespace-nowrap text-xs bg-gray-100 text-gray-700 transition ${
+            className={`px-3 py-1 rounded-full whitespace-nowrap text-xs text-gray-700 transition ${
               selectedValues.includes(option.value)
                 ? "text-white bg-green-500 hover:bg-green-600"
-                : "hover:bg-gray-200"
+                : "bg-gray-100 hover:bg-gray-200"
             }`}
             onClick={() => handleSelect(option.value)}
           >

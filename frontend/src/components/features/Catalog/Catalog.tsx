@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ProductDto } from "../../../api/product/dto/ProductDto";
 import ProductCard from "../ProductCard/ProductCard";
 import "./Catalog.css";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { PreferenceApi } from "../../../api/preference/UserPreferenceApi";
 import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 import { ProductPreferenceDto } from "../../../api/preference/dto/ProductPreferenceDto";
+import PopupNotification from "../PopupNotification/PopupNotification";
 
 interface CatalogProps {
   products: ProductDto[];
@@ -17,6 +18,30 @@ interface CatalogProps {
 const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
+
+  const [notification, setNotification] = useState<{
+    id: number;
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    id: 0,
+    message: "",
+    type: "success",
+    isVisible: false,
+  });
+
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info"
+  ) => {
+    setNotification({
+      id: Date.now(),
+      message,
+      type,
+      isVisible: true,
+    });
+  };
 
   const handleNavigateToProductPage = (productId: number) => {
     const product = products.find((product) => product.id === productId);
@@ -32,8 +57,10 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
     try {
       await CartApi.addItemToCart(userId, { productId, quantity: 1 });
       console.log(`Товар с ID ${productId} добавлен в корзину`);
+      showNotification("Товар успешно добавлен в корзину!", "success");
     } catch (error) {
       console.error("Ошибка при добавлении товара в корзину:", error);
+      showNotification("Ошибка при добавлении товара в корзину.", "error");
     }
   };
 
@@ -43,6 +70,10 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
   ) => {
     if (!userId) {
       console.error("Пользователь не авторизован");
+      showNotification(
+        "Для выбора предпочтений необходимо войти в систему",
+        "info"
+      );
       return;
     }
 
@@ -51,22 +82,26 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
         productId: productId,
         preferenceType: preferenceType,
       });
+      showNotification("Блюдо добавлено в предпочтения!", "success");
       console.log(`Товар с ID ${productId} добавлен в предпочтения`);
     } catch (error) {
       console.error("Ошибка при добавлении товара в предпочтения:", error);
     }
   };
 
-  const handleRemoveFromPreference = async (
-    productId: number
-  ) => {
+  const handleRemoveFromPreference = async (productId: number) => {
     if (!userId) {
       console.error("Пользователь не авторизован");
+      showNotification(
+        "Для выбора предпочтений необходимо войти в систему",
+        "info"
+      );
       return;
     }
 
     try {
       await PreferenceApi.removeProductPreference(userId, productId);
+      showNotification("Блюдо убрано из предпочтений!", "success");
       console.log(`Товар с ID ${productId} убран из предпочтений`);
     } catch (error) {
       console.error("Ошибка при удалении товара из предпочтений:", error);
@@ -90,11 +125,15 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
           onAddToPreference={(preferenceType: PreferenceType) =>
             handleAddToPreference(product.id, preferenceType)
           }
-          onRemoveFromPreference={() =>
-            handleRemoveFromPreference(product.id)
-          }
+          onRemoveFromPreference={() => handleRemoveFromPreference(product.id)}
         />
       ))}
+      <PopupNotification
+        key={notification.id}
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+      />
     </div>
   );
 };

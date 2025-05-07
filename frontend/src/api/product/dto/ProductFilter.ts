@@ -16,5 +16,5 @@ export interface ProductFilter {
   minSugars?: number; // Optional, must be >= 0
   maxSugars?: number; // Optional, must be > 0
   supplierId?: number; // Optional
-  categories?: number[]; // Optional list of category IDs
+  categories?: string; // Optional list of category IDs
 }

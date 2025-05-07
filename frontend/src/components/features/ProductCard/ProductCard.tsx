@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ProductDto } from "../../../api/product/dto/ProductDto";
 import "./ProductCard.css";
 import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
+import { useAuth } from "../../../contexts/AuthContext";
 
 interface ProductCardProps {
   product: ProductDto;
@@ -20,6 +21,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onAddToPreference,
   onRemoveFromPreference,
 }) => {
+  const { userId } = useAuth();
+
   const [currentPreferenceType, setCurrentPreferenceType] =
     useState<PreferenceType | null>(preferenceType);
 
@@ -37,9 +40,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const handleAddToPreference = (type: PreferenceType) => {
     if (currentPreferenceType === type) {
       onRemoveFromPreference();
-      setCurrentPreferenceType(null);
+      if (userId !== null) {
+        setCurrentPreferenceType(null);
+      }
     } else {
-      setCurrentPreferenceType(type);
+      if (userId !== null) {
+        setCurrentPreferenceType(type);
+      }
       onAddToPreference(type);
     }
   };

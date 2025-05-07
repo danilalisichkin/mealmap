@@ -29,9 +29,36 @@ export const OrganizationApi = {
     return response.data;
   },
 
+  getSuppliers: async (
+    offset: number = 0,
+    limit: number = 20,
+    sortBy: OrganizationSortField = OrganizationSortField.NAME,
+    sortOrder: "ASC" | "DESC" = "ASC",
+  ): Promise<PageDto<OrganizationDto>> => {
+    const response = await ApiClient.get<PageDto<OrganizationDto>>(
+      "/organizations/suppliers",
+      {
+        params: {
+          offset,
+          limit,
+          sortBy,
+          sortOrder,
+        },
+      }
+    );
+    return response.data;
+  },
+
   getOrganizationById: async (id: number): Promise<OrganizationDto> => {
     const response = await ApiClient.get<OrganizationDto>(
       `/organizations/${id}`
+    );
+    return response.data;
+  },
+
+  getSupplierById: async (id: number): Promise<OrganizationDto> => {
+    const response = await ApiClient.get<OrganizationDto>(
+      `/organizations/suppliers/${id}`
     );
     return response.data;
   },

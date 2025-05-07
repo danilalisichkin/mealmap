@@ -5,6 +5,7 @@ interface RangeInputProps {
   label: string;
   minValue: number | undefined;
   maxValue: number | undefined;
+  step?: number;
   onChange: (
     newMinValue: number | undefined,
     newMaxValue: number | undefined
@@ -15,6 +16,7 @@ const RangeInput: React.FC<RangeInputProps> = ({
   label,
   minValue,
   maxValue,
+  step = 1,
   onChange,
 }) => {
   const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +40,7 @@ const RangeInput: React.FC<RangeInputProps> = ({
           value={minValue ?? ""}
           placeholder="От"
           min="0"
+          step={step}
           className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
           onChange={handleMinChange}
         />
@@ -47,6 +50,7 @@ const RangeInput: React.FC<RangeInputProps> = ({
           value={maxValue ?? ""}
           placeholder="До"
           min="0"
+          step={step}
           className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
           onChange={handleMaxChange}
         />

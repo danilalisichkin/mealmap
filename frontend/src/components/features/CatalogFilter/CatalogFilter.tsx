@@ -21,7 +21,7 @@ const emptyFilter: ProductFilter = {
   minSugars: undefined,
   maxSugars: undefined,
   supplierId: undefined,
-  categories: [],
+  categories: "",
 };
 
 interface CatalogFilterProps {
@@ -66,6 +66,17 @@ const CatalogFilter: React.FC<CatalogFilterProps> = ({
     [handleFilterUpdate]
   );
 
+  const handlePriceRangeChange = useCallback(
+    (minRubles: number | undefined, maxRubles: number | undefined) => {
+      const minCents =
+        minRubles !== undefined ? Math.round(minRubles * 100) : undefined;
+      const maxCents =
+        maxRubles !== undefined ? Math.round(maxRubles * 100) : undefined;
+      handleFilterUpdate({ minPrice: minCents, maxPrice: maxCents });
+    },
+    [handleFilterUpdate]
+  );
+
   const handleFilterReset = useCallback(() => {
     onFilterChange(emptyFilter);
   }, [onFilterChange]);
@@ -80,9 +91,14 @@ const CatalogFilter: React.FC<CatalogFilterProps> = ({
       <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <RangeInput
           label="Цена (₽)"
-          minValue={filter.minPrice}
-          maxValue={filter.maxPrice}
-          onChange={handleRangeChange("minPrice", "maxPrice")}
+          minValue={
+            filter.minPrice !== undefined ? filter.minPrice / 100 : undefined
+          }
+          maxValue={
+            filter.maxPrice !== undefined ? filter.maxPrice / 100 : undefined
+          }
+          step={0.01}
+          onChange={handlePriceRangeChange}
         />
 
         <RangeInput

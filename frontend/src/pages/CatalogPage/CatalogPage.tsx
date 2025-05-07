@@ -15,24 +15,10 @@ import { ProductApi } from "../../api/product/ProductApi";
 import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
 import { useAuth } from "../../contexts/AuthContext";
 import { ProductPreferenceDto } from "../../api/preference/dto/ProductPreferenceDto";
+import { CategoryApi } from "../../api/product/CategoryApi";
+import { OrganizationApi } from "../../api/organization/OrganizationApi";
 
 interface CatalogPageProps {}
-
-const categoryOptions = [
-  { label: "Все", value: "all" },
-  { label: "Завтраки", value: "breakfast" },
-  { label: "Салаты", value: "salads" },
-  { label: "Основные", value: "main" },
-  { label: "Супы", value: "soups" },
-];
-
-const suppliers = [
-  { label: "Все", value: "all" },
-  { label: "McDonalds", value: "1" },
-  { label: "BurgerKing", value: "2" },
-  { label: "Тутака", value: "3" },
-  { label: "ПиццаПанда", value: "4" },
-];
 
 const DEFAULT_FILTER: ProductFilter = {
   minPrice: undefined,
@@ -52,7 +38,7 @@ const DEFAULT_FILTER: ProductFilter = {
   minSugars: undefined,
   maxSugars: undefined,
   supplierId: undefined,
-  categories: [],
+  categories: "",
 };
 
 const DEFAULT_PAGINATION_OPTIONS = {
@@ -66,6 +52,13 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   const [productPage, setProductPage] = useState<PageDto<ProductDto> | null>(
     null
   );
+
+  const [categories, setCategories] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [suppliers, setSuppliers] = useState<
+    { label: string; value: string }[]
+  >([]);
   const [filter, setFilter] = useState<ProductFilter>(DEFAULT_FILTER);
   const [isFilterOpened, setFilterOpened] = useState(false);
   const [sortField, setSortField] = useState<ProductSortField>(
@@ -83,26 +76,59 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  //TODO: прикрутить категории из MultiSelect в запрос
-  const fetchProducts = useCallback(async () => {
+  const fetchProducts = useCallback(
+    async (newFilter?: ProductFilter, newSearchText?: string) => {
+      try {
+        setLoading(true);
+
+        const searchTextToUse = newSearchText ?? searchText;
+
+        const filterToUse = newFilter || filter;
+
+        const response = await ProductApi.getProducts(
+          currentPage - 1,
+          DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE,
+          sortField,
+          sortOrder.toUpperCase() as "ASC" | "DESC",
+          filterToUse,
+          searchTextToUse
+        );
+        setProductPage(response);
+      } catch (error) {
+        console.error("Ошибка при загрузке продуктов:", error);
+        setError("Не удалось загрузить продукты.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage, sortField, sortOrder]
+  );
+
+  const fetchCategories = useCallback(async () => {
     try {
-      setLoading(true);
-      const response = await ProductApi.getProducts(
-        currentPage - 1,
-        DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE,
-        sortField,
-        sortOrder.toUpperCase() as "ASC" | "DESC",
-        filter,
-        searchText
-      );
-      setProductPage(response);
+      const response = await CategoryApi.getCategories(0, 20);
+      const formattedCategories = response.items.map((category) => ({
+        label: category.name,
+        value: category.id.toString(),
+      }));
+      setCategories(formattedCategories);
     } catch (error) {
-      console.error("Ошибка при загрузке продуктов:", error);
-      setError("Не удалось загрузить продукты.");
-    } finally {
-      setLoading(false);
+      console.error("Ошибка при загрузке категорий:", error);
     }
-  }, [currentPage, sortField, sortOrder, filter, searchText]);
+  }, []);
+
+  const fetchSuppliers = useCallback(async () => {
+    try {
+      const response = await OrganizationApi.getSuppliers();
+      const formattedSuppliers = response.items.map((supplier) => ({
+        label: supplier.name,
+        value: supplier.id.toString(),
+      }));
+      setSuppliers(formattedSuppliers);
+    } catch (error) {
+      console.error("Ошибка при загрузке поставщиков:", error);
+    }
+  }, []);
 
   const fetchProductPreferences = async () => {
     if (!userId) return;
@@ -120,7 +146,7 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(filter, searchText);
   }, [fetchProducts]);
 
   useEffect(() => {
@@ -128,6 +154,14 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
       fetchProductPreferences();
     }
   }, [userId]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    fetchSuppliers();
+  }, [fetchSuppliers]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -137,9 +171,17 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
     setFilterOpened((prev) => !prev);
   };
 
+  const handleFilterApply = () => {
+    setFilterOpened(false);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    } else {
+      fetchProducts(filter);
+    }
+  };
+
   const handleFilterChange = (updatedFilter: ProductFilter) => {
     setFilter(updatedFilter);
-    setCurrentPage(1);
   };
 
   const handleSortChange = (field: ProductSortField, order: "asc" | "desc") => {
@@ -153,7 +195,26 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   };
 
   const handleSearchApply = () => {
-    setCurrentPage(1);
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    } else {
+      fetchProducts(filter, searchText);
+    }
+  };
+
+  const handleCategorySelect = (selectedCategories: string[]) => {
+    const serializedCategories =
+      selectedCategories.includes("all") || selectedCategories.length === 0
+        ? ""
+        : selectedCategories?.join(",") || "";
+    const updatedFilter = { ...filter, categories: serializedCategories };
+    setFilter(updatedFilter);
+
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+    } else {
+      fetchProducts(updatedFilter);
+    }
   };
 
   return (
@@ -180,12 +241,12 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
         suppliers={suppliers}
         isOpened={isFilterOpened}
         onFilterChange={handleFilterChange}
-        onApply={() => setFilterOpened(false)}
+        onApply={handleFilterApply}
       />
       <MultiSelect
         title="Категории"
-        options={categoryOptions}
-        onSelect={(selected) => console.log("Выбранные категории:", selected)}
+        options={categories}
+        onSelect={handleCategorySelect}
       />
       {(() => {
         let content;
@@ -210,7 +271,9 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
             </>
           );
         } else {
-          content = <p className="text-center py-12">Нет данных для отображения.</p>;
+          content = (
+            <p className="text-center py-12">Нет данных для отображения.</p>
+          );
         }
         return content;
       })()}
