@@ -9,9 +9,12 @@ import { useLocation } from "react-router-dom";
 import { HealthApi } from "../../api/health/UserHealthApi";
 import { DietDto } from "../../api/health/dto/DietDto";
 import { PhysicHealthHistoryDto } from "../../api/health/dto/PhysicHealthHistoryDto";
-import NotFoundError from "../../components/commons/NotFoundError/NotFoundError";
 import { PhysicHealthDto } from "../../api/health/dto/PhysicHealthDto";
 import { DietType } from "../../api/health/enums/DietType";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import { PhysicHealthCreationDto } from "../../api/health/dto/PhysicHealthCreationDto";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
 interface UserHealthPageProps {}
 
@@ -33,17 +36,19 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
   );
   const [diet, setDiet] = useState<DietDto | null>(null);
   const [bmi, setBmi] = useState<string>("-");
-
   const [isPhysicModalOpen, setPhysicModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("overview");
-
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorDetail | null>(null);
 
   const fetchPhysicHealth = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -54,9 +59,18 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
       const response = await HealthApi.getUserPhysicHealth(userId);
       setPhysicHealth(response);
-    } catch (err) {
-      console.error("Ошибка при загрузке физического здоровья:", err);
-      setError("Не удалось загрузить данные физического здоровья.");
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.error("Информация о здоровье не найдена:", err);
+        setPhysicModalOpen(true);
+      } else {
+        console.error("Ошибка при загрузке физического здоровья:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -64,7 +78,11 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
   const fetchDiet = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -80,7 +98,11 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
         setDiet(null);
       } else {
         console.error("Ошибка при загрузке диеты:", err);
-        setError("Не удалось загрузить данные диеты.");
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
       }
     } finally {
       setLoading(false);
@@ -89,7 +111,11 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
   const fetchPhysicHealthHistory = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -100,9 +126,18 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
       const response = await HealthApi.getUserPhysicHealthHistory(userId);
       setWeightHistory(response);
-    } catch (err) {
-      console.error("Ошибка при загрузке диеты:", err);
-      setError("Не удалось загрузить данные диеты.");
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.error("Ошибка при загрузке истории здоровья:", err);
+        setWeightHistory([]);
+      } else if (err.response?.status === 500) {
+        console.error("Ошибка при загрузке истории здоровья:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -126,6 +161,39 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
     }
   }, [physicHealth]);
 
+  const handleCreatePhysicHealth = async (data: PhysicHealthCreationDto) => {
+    if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const newPhysicHealth = await HealthApi.createUserPhysicHealth(
+        userId,
+        data
+      );
+      setPhysicHealth(newPhysicHealth);
+      setSuccessMessage("Информация о здоровье успешно добавлена!");
+      setPhysicModalOpen(false);
+    } catch (err: any) {
+      console.error("Ошибка при создании информации о здоровье:", err);
+      setError({
+        title: "Ошибка при создании информации о здоровье",
+        detail: err.response?.data.detail,
+        status: "400",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSaveWeight = async (newWeight: number) => {
     if (!userId) {
       return;
@@ -147,9 +215,14 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
       fetchPhysicHealthHistory();
 
       setSuccessMessage("Вес успешно обновлён!");
-    } catch (err) {
-      console.error("Ошибка при обновлении веса:", err);
-      setError("Не удалось обновить вес. Попробуйте снова.");
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        setError({
+          title: "Некорректный запрос",
+          detail: err.response?.data.detail,
+          status: "400",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -157,7 +230,11 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
   const handleDeleteDiet = async () => {
     if (!userId) {
-      setError("Пользователь не авторизован.");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       return;
     }
 
@@ -168,9 +245,14 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
       await HealthApi.deleteUserDiet(userId);
       setDiet(null);
       setSuccessMessage("Диета успешно завершена!");
-    } catch (err) {
-      console.error("Ошибка при завершении диеты:", err);
-      setError("Не удалось завершить диету. Попробуйте снова.");
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        setError({
+          title: "Некорректный запрос",
+          detail: err.response?.data.detail,
+          status: "400",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -178,7 +260,11 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
   const handleCreateDiet = async (type: DietType, goalWeight: number) => {
     if (!userId) {
-      setError("Пользователь не авторизован.");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       return;
     }
 
@@ -196,87 +282,93 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
       });
       setDiet(newDiet);
       setSuccessMessage("Новая диета успешно создана!");
-    } catch (err) {
-      console.error("Ошибка при создании диеты:", err);
-      setError("Не удалось создать диету. Попробуйте снова.");
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        setError({
+          title: "Некорректный запрос",
+          detail: err.response?.data.detail,
+          status: "400",
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <div className="text-center py-12">Загрузка...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-12 text-red-500">{error}</div>;
-  }
-
-  if (!physicHealth) {
     return (
-      <NotFoundError
-        title="Упс! Кажется, информация о Вашем здоровье не найдена"
-        message="Похоже, что Вы еще не заполняли форму"
-      />
+      <div className="h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
     );
   }
 
-  const age = Math.floor(
-    differenceInCalendarDays(new Date(), new Date(physicHealth.birthDate)) /
-      365.25
-  );
+  if (error) {
+    return <ErrorBanner error={error} />;
+  }
+
+  const age = physicHealth
+    ? Math.floor(
+        differenceInCalendarDays(new Date(), new Date(physicHealth.birthDate)) /
+          365.25
+      )
+    : "-";
 
   return (
-    <main className="container mx-auto px-4 py-4">
-      <div className="flex border-b mb-6">
-        {TABS.map((tab) => (
-          <button
-            key={tab.key}
-            className={`tab-button px-4 py-2 font-medium ${
-              activeTab === tab.key ? "active" : ""
-            }`}
-            onClick={() => setActiveTab(tab.key)}
-            data-tab={tab.key}
-            type="button"
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+    <main className="container mx-auto px-4 py-4 h-screen">
+      {physicHealth && (
+        <>
+          <div className="flex border-b mb-6">
+            {TABS.map((tab) => (
+              <button
+                key={tab.key}
+                className={`tab-button px-4 py-2 font-medium ${
+                  activeTab === tab.key ? "active" : ""
+                }`}
+                onClick={() => setActiveTab(tab.key)}
+                data-tab={tab.key}
+                type="button"
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-      <div id="tab-content">
-        {activeTab === "overview" && (
-          <UserHealthOverviewTab
-            physicHealth={physicHealth}
-            diet={diet}
-            weightHistory={weightHistory}
-            bmi={bmi}
-            age={age}
-          />
-        )}
+          <div id="tab-content">
+            {activeTab === "overview" && (
+              <UserHealthOverviewTab
+                physicHealth={physicHealth}
+                diet={diet}
+                weightHistory={weightHistory}
+                bmi={bmi}
+                age={age}
+              />
+            )}
 
-        {activeTab === "diet" && (
-          <UserHealthDietTab
-            diet={diet}
-            currentWeight={physicHealth.weight}
-            onDeleteDiet={handleDeleteDiet}
-            onCreateDiet={handleCreateDiet}
-          />
-        )}
+            {activeTab === "diet" && (
+              <UserHealthDietTab
+                diet={diet}
+                currentWeight={physicHealth.weight}
+                onDeleteDiet={handleDeleteDiet}
+                onCreateDiet={handleCreateDiet}
+              />
+            )}
 
-        {activeTab === "physical" && (
-          <UserHealthPhysicalTab
-            physicHealth={physicHealth}
-            age={age}
-            onSaveWeight={handleSaveWeight}
-            successMessage={successMessage}
-          />
-        )}
-      </div>
-
+            {activeTab === "physical" && (
+              <UserHealthPhysicalTab
+                physicHealth={physicHealth}
+                age={age}
+                onSaveWeight={handleSaveWeight}
+                successMessage={successMessage}
+              />
+            )}
+          </div>
+        </>
+      )}
       <PhysicHealthModal
         isOpen={isPhysicModalOpen}
         onClose={() => setPhysicModalOpen(false)}
+        onSubmit={handleCreatePhysicHealth}
       />
     </main>
   );

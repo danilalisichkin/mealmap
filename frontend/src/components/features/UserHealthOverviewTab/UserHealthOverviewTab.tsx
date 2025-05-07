@@ -50,7 +50,9 @@ const UserHealthOverviewTab: React.FC<UserHealthOverviewTabProps> = ({
   const formattedDietStartWeight =
     weightHistory.length > 0 ? weightHistory[0].weight / 1000 : 0;
   const formattedRemainingWeight =
-    formattedCurrentWeight - formattedDietGoalWeight;
+    diet && diet.type === DietType.WEIGHT_LOSS
+      ? formattedCurrentWeight - formattedDietGoalWeight
+      : formattedDietGoalWeight - formattedCurrentWeight;
 
   return (
     <div id="overview-tab" className="tab-panel active">

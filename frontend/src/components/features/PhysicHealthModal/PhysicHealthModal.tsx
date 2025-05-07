@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import "./PhysicHealthModal.css";
+import { PhysicHealthCreationDto } from "../../../api/health/dto/PhysicHealthCreationDto";
+import { Gender } from "../../../api/health/enums/Gender";
 
 interface PhysicHealthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmit: (data: PhysicHealthCreationDto) => void;
 }
 
 const GENDER_LABELS: Record<string, string> = {
@@ -20,6 +23,7 @@ const DIET_LABELS: Record<string, string> = {
 const PhysicHealthModal: React.FC<PhysicHealthModalProps> = ({
   isOpen,
   onClose,
+  onSubmit,
 }) => {
   const [weight, setWeight] = useState(72.5);
   const [height, setHeight] = useState(175);
@@ -28,10 +32,13 @@ const PhysicHealthModal: React.FC<PhysicHealthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Здесь можно обработать отправку формы
-    onClose();
+  const handleSubmit = () => {
+    onSubmit({
+      weight: weight * 1000,
+      height,
+      birthDate,
+      gender: gender as Gender,
+    });
   };
 
   return (
@@ -55,7 +62,13 @@ const PhysicHealthModal: React.FC<PhysicHealthModalProps> = ({
             </button>
           </div>
 
-          <form id="update-physical-form" onSubmit={handleSubmit}>
+          <form
+            id="update-physical-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-medium mb-2"
@@ -149,6 +162,6 @@ const PhysicHealthModal: React.FC<PhysicHealthModalProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default PhysicHealthModal;
