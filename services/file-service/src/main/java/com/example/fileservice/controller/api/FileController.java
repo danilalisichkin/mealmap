@@ -1,5 +1,7 @@
 package com.example.fileservice.controller.api;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +21,21 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("filename") String fileName) {
+            @RequestParam("filename") @NotBlank @Size(min = 3, max = 200) String fileName) {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{filename}")
-    public ResponseEntity<byte[]> download(@PathVariable String filename) {
+    public ResponseEntity<byte[]> download(
+            @PathVariable @NotBlank @Size(min = 3, max = 200) String filename) {
 
         return ResponseEntity.status(HttpStatus.OK).contentType(...).build();
     }
 
     @DeleteMapping("/{filename}")
-    public ResponseEntity<String> delete(@PathVariable String filename) {
+    public ResponseEntity<String> delete(
+            @PathVariable @NotBlank @Size(min = 3, max = 200) String filename) {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
