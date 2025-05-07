@@ -22,7 +22,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
 
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { setToken } = useAuth();
+  const { setAuth } = useAuth();
 
   if (!isOpen) return null;
 
@@ -52,12 +52,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
       const user = await AuthApi.signUp(registerData);
       console.log("Пользователь успешно зарегистрирован:", user);
 
-      const token = await AuthApi.signIn({
+      const tokens = await AuthApi.signIn({
         identifier: registerData.email,
         password: registerData.password,
       });
 
-      setToken(token);
+      setAuth(tokens);
+
       onClose();
     } catch (err: any) {
       console.error("Ошибка регистрации:", err);

@@ -14,7 +14,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose }) => {
     password: "",
   });
 
-  const { setToken } = useAuth();
+  const { setAuth } = useAuth();
 
   if (!isOpen) return null;
 
@@ -22,10 +22,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
 
     try {
-      const token = await AuthApi.signIn(loginData);
-      console.log("Получен токен:", token);
+      const tokens = await AuthApi.signIn(loginData);
+      console.log("Получены токены:", tokens);
 
-      setToken(token);
+      setAuth(tokens);
 
       onClose();
     } catch (err: any) {

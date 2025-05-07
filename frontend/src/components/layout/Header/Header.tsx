@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import AuthModal from "../../features/AuthModal/AuthModal";
 import ShoppingCart from "../../features/Cart/Cart";
 import { useAuth } from "../../../contexts/AuthContext";
+import LogoutModal from "../../features/LogoutModal/LogoutModal";
 
 interface HeaderProps {
   title: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
-  const { userId } = useAuth();
+  const { userId, logout } = useAuth();
 
   const [isAuthModalOpen, setAuthModalOpen] = useState(false);
   const openAuthModal = () => setAuthModalOpen(true);
@@ -19,14 +20,15 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
   const openCart = () => setCartOpen(true);
   const closeCart = () => setCartOpen(false);
 
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const openLogoutModal = () => setLogoutModalOpen(true);
+  const closeLogoutModal = () => setLogoutModalOpen(false);
+
   const navigate = useNavigate();
 
   const ITEMS_IN_CART = 0; // TODO: API CALL / FROM LOCAL STORAGE
 
-  const navigateToHomePage = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.preventDefault();
+  const navigateToHomePage = () => {
     navigate(`/catalog`);
   };
 
@@ -48,6 +50,12 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    closeLogoutModal();
+    navigateToHomePage();
+  };
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
       <nav
@@ -58,7 +66,10 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
           href="/catalog"
           className="flex items-center focus:outline-none"
           aria-label="Главная"
-          onClick={navigateToHomePage}
+          onClick={(e) => {
+            e.preventDefault();
+            navigateToHomePage();
+          }}
         >
           <span className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mr-2">
             <i className="fas fa-utensils text-white text-xl"></i>
@@ -115,19 +126,36 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
             </>
           )}
           <li>
-            <button
-              id="auth-btn"
-              className="text-gray-600"
-              onClick={openAuthModal}
-              aria-label="Вход или регистрация"
-            >
-              <i className="fas fa-sign-in-alt text-lg"></i>
-            </button>
+            {userId ? (
+              <button
+                id="logout-btn"
+                className="text-gray-600"
+                onClick={openLogoutModal}
+                aria-label="Выход"
+              >
+                <i className="fas fa-sign-out-alt text-lg"></i>
+              </button>
+            ) : (
+              <button
+                id="auth-btn"
+                className="text-gray-600"
+                onClick={openAuthModal}
+                aria-label="Вход или регистрация"
+              >
+                <i className="fas fa-sign-in-alt text-lg"></i>
+              </button>
+            )}
           </li>
         </ul>
       </nav>
 
       <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
+
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={closeLogoutModal}
+        onConfirm={handleLogout}
+      />
 
       <ShoppingCart isOpened={isCartOpen} onClose={closeCart} />
     </header>
