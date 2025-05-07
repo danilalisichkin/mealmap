@@ -1,20 +1,38 @@
 package com.mealmap.productservice.cache.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.mealmap.productservice.cache.properties.CacheProperties;
+import com.mealmap.productservice.cache.util.CacheConfigurationHelper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-@Getter
-@AllArgsConstructor
-@ConfigurationProperties(prefix = "business.cache")
+@Configuration
+@EnableCaching
+@RequiredArgsConstructor
 public class CacheConfig {
-    private final Cache product;
-    private final Cache category;
+    private final CacheProperties cacheProperties;
 
-    @Getter
-    @AllArgsConstructor
-    public static class Cache {
-        private final String name;
-        private final Long ttl;
+    private final CacheConfigurationHelper cacheConfigHelper;
+
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration defaultCacheConfig = cacheConfigHelper.defaultCacheConfiguration();
+
+        var productCache = cacheProperties.getProduct();
+        var productCacheConfig = cacheConfigHelper.cacheConfiguration(productCache);
+
+        var categoryCache = cacheProperties.getCategory();
+        var categoryCacheConfig = cacheConfigHelper.cacheConfiguration(categoryCache);
+
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .withCacheConfiguration(productCache.getName(), productCacheConfig)
+                .withCacheConfiguration(categoryCache.getName(), categoryCacheConfig)
+                .cacheDefaults(defaultCacheConfig)
+                .transactionAware()
+                .build();
     }
 }

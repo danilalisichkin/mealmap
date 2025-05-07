@@ -1,6 +1,6 @@
 package com.mealmap.preferenceservice.cache.resolver;
 
-import com.mealmap.preferenceservice.cache.config.CacheConfig;
+import com.mealmap.preferenceservice.cache.properties.CacheProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -17,11 +17,11 @@ import java.util.List;
 public class UserPreferenceCacheResolver implements CacheResolver {
     private final CacheManager cacheManager;
 
-    private final CacheConfig cacheConfig;
+    private final CacheProperties cacheProperties;
 
     @Override
     public Collection<? extends Cache> resolveCaches(CacheOperationInvocationContext<?> context) {
-        Cache cache = cacheManager.getCache(cacheConfig.getUserPreferences().getName());
+        Cache cache = cacheManager.getCache(cacheProperties.getUserPreferences().getName());
 
         return cache != null ? List.of(cache) : Collections.emptyList();
     }

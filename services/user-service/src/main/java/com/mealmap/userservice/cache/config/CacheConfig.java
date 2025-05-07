@@ -1,19 +1,34 @@
 package com.mealmap.userservice.cache.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.mealmap.userservice.cache.properties.CacheProperties;
+import com.mealmap.userservice.cache.util.CacheConfigurationHelper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 
-@Getter
-@AllArgsConstructor
-@ConfigurationProperties(prefix = "business.cache")
+@Configuration
+@EnableCaching
+@RequiredArgsConstructor
 public class CacheConfig {
-    private final Cache userProfile;
+    private final CacheProperties cacheProperties;
 
-    @Getter
-    @AllArgsConstructor
-    public static class Cache {
-        private final String name;
-        private final Long ttl;
+    private final CacheConfigurationHelper cacheConfigHelper;
+
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration defaultCacheConfig = cacheConfigHelper.defaultCacheConfiguration();
+
+        var userProfileCache = cacheProperties.getUserProfile();
+        var userProfileCacheConfig = cacheConfigHelper.cacheConfiguration(userProfileCache);
+
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .withCacheConfiguration(userProfileCache.getName(), userProfileCacheConfig)
+                .cacheDefaults(defaultCacheConfig)
+                .transactionAware()
+                .build();
     }
 }

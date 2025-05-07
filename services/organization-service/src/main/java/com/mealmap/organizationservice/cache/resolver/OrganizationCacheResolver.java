@@ -1,6 +1,6 @@
 package com.mealmap.organizationservice.cache.resolver;
 
-import com.mealmap.organizationservice.cache.config.CacheConfig;
+import com.mealmap.organizationservice.cache.properties.CacheProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -17,11 +17,11 @@ import java.util.List;
 public class OrganizationCacheResolver implements CacheResolver {
     private final CacheManager cacheManager;
 
-    private final CacheConfig cacheConfig;
+    private final CacheProperties cacheProperties;
 
     @Override
     public Collection<? extends Cache> resolveCaches(CacheOperationInvocationContext<?> context) {
-        Cache cache = cacheManager.getCache(cacheConfig.getOrganization().getName());
+        Cache cache = cacheManager.getCache(cacheProperties.getOrganization().getName());
 
         return cache != null ? List.of(cache) : Collections.emptyList();
     }

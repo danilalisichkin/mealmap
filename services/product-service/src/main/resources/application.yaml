@@ -20,6 +20,13 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+cache:
+  product:
+    name: ${CACHE_PRODUCT_NAME:productCache}
+    ttl: ${CACHE_PRODUCT_TTL:3600}
+  category:
+    name: ${CACHE_CATEGORY_NAME:categoryCache}
+    ttl: ${CACHE_CATEGORY_TTL:36000}
 security:
   oauth2:
     client:
@@ -41,13 +48,6 @@ business:
       sync:
         enabled: ${ELASTIC_CATEGORY_SYNC_ENABLED:true}
         interval: ${ELASTIC_CATEGORY_SYNC_INTERVAL:36000}
-  cache:
-    product:
-      name: ${CACHE_PRODUCT_NAME:productCache}
-      ttl: ${CACHE_PRODUCT_TTL:3600}
-    category:
-      name: ${CACHE_CATEGORY_NAME:categoryCache}
-      ttl: ${CACHE_CATEGORY_TTL:36000}
 eureka:
   client:
     service-url:

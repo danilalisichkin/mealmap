@@ -33,6 +33,10 @@ spring:
         spring.deserializer:
           key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
           value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+cache:
+  user-profile:
+    name: ${CACHE_USER_PROFILE_NAME:userProfileCache}
+    ttl: ${CACHE_USER_PROFILE_TTL:7200}
 security:
   oauth2:
     client:
@@ -77,10 +81,6 @@ business:
         name: user.creation.v1
         consumer:
           group-id: user.creation.consumer.group
-  cache:
-    user-profile:
-      name: ${CACHE_USER_PROFILE_NAME:userProfileCache}
-      ttl: ${CACHE_USER_PROFILE_TTL:7200}
 eureka:
   client:
     service-url:

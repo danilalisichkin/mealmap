@@ -1,4 +1,4 @@
-package com.mealmap.organizationservice.cache.config;
+package com.mealmap.userservice.cache.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,9 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @AllArgsConstructor
-@ConfigurationProperties(prefix = "business.cache")
-public class CacheConfig {
-    private final Cache organization;
+@ConfigurationProperties(prefix = "cache")
+public class CacheProperties {
+    private final Cache userProfile;
 
     @Getter
     @AllArgsConstructor

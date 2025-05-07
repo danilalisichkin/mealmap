@@ -29,6 +29,10 @@ spring:
         spring.deserializer:
           key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
           value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+cache:
+  user-preferences:
+    name: ${CACHE_USER_PREFERENCES_NAME:userPreferencesCache}
+    ttl: ${CACHE_USER_PREFERENCES_TTL:3600}
 security:
   oauth2:
     client:
@@ -45,10 +49,6 @@ business:
         name: user.preferences-creation.v1
         consumer:
           group-id: user.preferences-creation.consumer.group
-  cache:
-    user-preferences:
-      name: ${CACHE_USER_PREFERENCES_NAME:userPreferencesCache}
-      ttl: ${CACHE_USER_PREFERENCES_TTL:3600}
 eureka:
   client:
     service-url:

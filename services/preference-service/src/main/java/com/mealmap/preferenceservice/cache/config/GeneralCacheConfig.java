@@ -1,5 +1,6 @@
 package com.mealmap.preferenceservice.cache.config;
 
+import com.mealmap.preferenceservice.cache.properties.CacheProperties;
 import com.mealmap.preferenceservice.cache.util.CacheConfigurationHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,7 +14,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 @EnableCaching
 @RequiredArgsConstructor
 public class GeneralCacheConfig {
-    private final CacheConfig cacheConfig;
+    private final CacheProperties cacheProperties;
 
     private final CacheConfigurationHelper cacheConfigHelper;
 
@@ -21,9 +22,8 @@ public class GeneralCacheConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration defaultCacheConfig = cacheConfigHelper.defaultCacheConfiguration();
 
-        CacheConfig.Cache userPreferenceCache = cacheConfig.getUserPreferences();
-        RedisCacheConfiguration userPreferenceCacheCacheConfig
-                = cacheConfigHelper.cacheConfiguration(userPreferenceCache);
+        var userPreferenceCache = cacheProperties.getUserPreferences();
+        var userPreferenceCacheCacheConfig = cacheConfigHelper.cacheConfiguration(userPreferenceCache);
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .withCacheConfiguration(

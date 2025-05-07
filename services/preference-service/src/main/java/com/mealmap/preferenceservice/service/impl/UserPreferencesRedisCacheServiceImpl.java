@@ -1,6 +1,6 @@
 package com.mealmap.preferenceservice.service.impl;
 
-import com.mealmap.preferenceservice.cache.config.CacheConfig;
+import com.mealmap.preferenceservice.cache.properties.CacheProperties;
 import com.mealmap.preferenceservice.core.mapper.UserPreferencesMapper;
 import com.mealmap.preferenceservice.entity.UserPreferences;
 import com.mealmap.preferenceservice.service.UserPreferencesRedisCacheService;
@@ -18,7 +18,7 @@ import static com.mealmap.preferenceservice.cache.constant.CachePrefixes.PRODUCT
 @Service
 @RequiredArgsConstructor
 public class UserPreferencesRedisCacheServiceImpl implements UserPreferencesRedisCacheService {
-    private final CacheConfig cacheConfig;
+    private final CacheProperties cacheProperties;
 
     private final ValueOperations<String, Object> valueOperations;
 
@@ -56,14 +56,14 @@ public class UserPreferencesRedisCacheServiceImpl implements UserPreferencesRedi
     }
 
     private String generateKeyForUserPreferences(UUID userId) {
-        return "%s::%s".formatted(cacheConfig.getUserPreferences().getName(), userId);
+        return "%s::%s".formatted(cacheProperties.getUserPreferences().getName(), userId);
     }
 
     private String generateWildcardKeyForProductPreferences(UUID userId) {
-        return "%s::%s_%s_*".formatted(cacheConfig.getUserPreferences().getName(), userId, PRODUCTS);
+        return "%s::%s_%s_*".formatted(cacheProperties.getUserPreferences().getName(), userId, PRODUCTS);
     }
 
     private String generateWildcardKeyForCategoryPreferences(UUID userId) {
-        return "%s::%s_%s_*".formatted(cacheConfig.getUserPreferences().getName(), userId, CATEGORIES);
+        return "%s::%s_%s_*".formatted(cacheProperties.getUserPreferences().getName(), userId, CATEGORIES);
     }
 }

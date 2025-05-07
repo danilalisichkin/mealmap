@@ -17,6 +17,10 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
+cache:
+  organization:
+    name: ${CACHE_ORGANIZATION_NAME:organizationCache}
+    ttl: ${CACHE_ORGANIZATION_TTL:7200}
 security:
   oauth2:
     client:
@@ -26,11 +30,6 @@ security:
     cors:
       allowed-origins:
         - http://localhost:3000
-business:
-  cache:
-    organization:
-      name: ${CACHE_ORGANIZATION_NAME:organizationCache}
-      ttl: ${CACHE_ORGANIZATION_TTL:7200}
 eureka:
   client:
     service-url:
