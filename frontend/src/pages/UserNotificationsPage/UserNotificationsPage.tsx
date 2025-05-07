@@ -10,6 +10,9 @@ import { PageDto } from "../../api/common/dto/PageDto";
 import { NotificationSortField } from "../../api/notification/enums/NotificationSortField";
 import Pagination from "../../components/commons/Pagination/Pagination";
 import NotificationSort from "../../components/features/NotificationSort/NotificatonSort";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
 interface UserNotificationsPageProps {}
 
@@ -55,8 +58,6 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
 
   const [notificationPage, setNotificationPage] =
     useState<PageDto<NotificationDto> | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   const [sortField, setSortField] = useState<NotificationSortField>(
     NotificationSortField.SENT_AT
@@ -66,9 +67,16 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
     DEFAULT_PAGINATION_OPTIONS.PAGE_NUMBER
   );
 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<ErrorDetail | null>(null);
+
   const fetchNotifications = useCallback(async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -82,9 +90,22 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
         sortOrder.toUpperCase() as "ASC" | "DESC"
       );
       setNotificationPage(response);
-    } catch (err) {
-      console.error("Ошибка при загрузке уведомлений:", err);
-      setError("Не удалось загрузить уведомления.");
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.error("Ошибка при загрузке уведомлений:", err);
+        setError({
+          title: "Упс! Кажется, уведомления не найдены",
+          detail: err.response?.data.detail,
+          status: "404",
+        });
+      } else {
+        console.error("Ошибка при загрузке уведомлений:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -108,19 +129,44 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-12">Загрузка...</div>;
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center py-12 text-red-500">{error}</div>;
+    return (
+      <div className="h-screen">
+        <ErrorBanner error={error} />;
+      </div>
+    );
   }
 
-  if (!notificationPage) {
-    return <div className="text-center py-12">Нет уведомлений</div>;
+  if (!notificationPage || notificationPage.items.length === 0) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div
+          id="empty-state"
+          className="flex flex-col items-center justify-center"
+        >
+          <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+            <i className="fas fa-bell-slash text-gray-400 text-2xl"></i>
+          </div>
+          <h3 className="text-lg font-medium text-gray-700 mb-1">
+            Нет уведомлений
+          </h3>
+          <p className="text-gray-500 text-center max-w-xs">
+            У вас пока нет уведомлений
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container h-screen mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Мои уведомления</h1>
         <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
@@ -132,42 +178,25 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
         </div>
       </div>
       <div id="notification-list" className="space-y-2">
-        {notificationPage.items.length > 0 ? (
-          notificationPage.items.map((notification) => {
-            const channelInfo = channelMap[notification.channel] || {
-              icon: "fas fa-question",
-              class: "bg-gray-200 text-gray-500",
-              label: notification.channel,
-            };
-            const statusInfo = statusMap[notification.status] || {
-              class: "bg-gray-300",
-              label: notification.status,
-            };
-            return (
-              <UserNotificationItem
-                key={notification.id}
-                notification={notification}
-                channelInfo={channelInfo}
-                statusInfo={statusInfo}
-              />
-            );
-          })
-        ) : (
-          <div
-            id="empty-state"
-            className="flex flex-col items-center justify-center py-10"
-          >
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-              <i className="fas fa-bell-slash text-gray-400 text-2xl"></i>
-            </div>
-            <h3 className="text-lg font-medium text-gray-700 mb-1">
-              Нет уведомлений
-            </h3>
-            <p className="text-gray-500 text-center max-w-xs">
-              У вас пока нет уведомлений.
-            </p>
-          </div>
-        )}
+        {notificationPage.items.map((notification) => {
+          const channelInfo = channelMap[notification.channel] || {
+            icon: "fas fa-question",
+            class: "bg-gray-200 text-gray-500",
+            label: notification.channel,
+          };
+          const statusInfo = statusMap[notification.status] || {
+            class: "bg-gray-300",
+            label: notification.status,
+          };
+          return (
+            <UserNotificationItem
+              key={notification.id}
+              notification={notification}
+              channelInfo={channelInfo}
+              statusInfo={statusInfo}
+            />
+          );
+        })}
       </div>
       <Pagination
         page={currentPage}
