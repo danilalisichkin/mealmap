@@ -17,6 +17,9 @@ import { useAuth } from "../../contexts/AuthContext";
 import { ProductPreferenceDto } from "../../api/preference/dto/ProductPreferenceDto";
 import { CategoryApi } from "../../api/product/CategoryApi";
 import { OrganizationApi } from "../../api/organization/OrganizationApi";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 
 interface CatalogPageProps {}
 
@@ -74,7 +77,7 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
     ProductPreferenceDto[]
   >([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ErrorDetail | null>(null);
 
   const fetchProducts = useCallback(
     async (newFilter?: ProductFilter, newSearchText?: string) => {
@@ -94,9 +97,13 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
           searchTextToUse
         );
         setProductPage(response);
-      } catch (error) {
-        console.error("Ошибка при загрузке продуктов:", error);
-        setError("Не удалось загрузить продукты.");
+      } catch (err: any) {
+        console.error("Ошибка при загрузке каталога:", err);
+        setError({
+          title: "Не получилось загрузить каталог",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
       } finally {
         setLoading(false);
       }
@@ -106,7 +113,7 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await CategoryApi.getCategories(0, 20);
+      const response = await CategoryApi.getCategories();
       const formattedCategories = response.items.map((category) => ({
         label: category.name,
         value: category.id.toString(),
@@ -137,9 +144,13 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
       setLoading(true);
       const response = await PreferenceApi.getProductPreferences(userId);
       setProductPreferences(response);
-    } catch (error) {
-      console.error("Ошибка при загрузке предпочтений продуктов:", error);
-      setError("Не удалось загрузить предпочтения продуктов.");
+    } catch (err: any) {
+      console.error("Ошибка при загрузке предпочтений:", err);
+      setError({
+        title: "Не получилось загрузить предпочтения",
+        detail: err.response?.data.detail,
+        status: "500",
+      });
     } finally {
       setLoading(false);
     }
@@ -251,9 +262,9 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
       {(() => {
         let content;
         if (loading) {
-          content = <p className="text-center py-12">Загрузка...</p>;
+          content = <LoadingSpinner />;
         } else if (error) {
-          content = <p className="text-center py-12 text-red-500">{error}</p>;
+          content = <ErrorBanner error={error} />;
         } else if (productPage) {
           content = (
             <>

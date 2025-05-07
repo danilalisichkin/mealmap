@@ -5,6 +5,7 @@ export const mockProducts: ProductDto[] = [
   {
     id: 41,
     name: "Куриный бульон",
+    imageUrl: "products_1.webp",
     price: 100,
     weight: 200,
     nutrients: {
@@ -29,6 +30,7 @@ export const mockProducts: ProductDto[] = [
   {
     id: 55,
     name: "Салат с курицей и ананасом",
+    imageUrl: "products_1.webp",
     price: 260,
     weight: 300,
     nutrients: {

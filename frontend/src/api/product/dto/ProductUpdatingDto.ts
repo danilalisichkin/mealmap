@@ -2,6 +2,7 @@ import { NutrientDto } from "./NutrientDto";
 
 export interface ProductUpdatingDto {
   name: string; // Max length: 40
+  imageUrl: string;
   price: number; // Must be positive
   weight: number; // Must be positive
   nutrients: NutrientDto; // Nutritional information

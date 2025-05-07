@@ -4,6 +4,7 @@ import { CategorySimpleDto } from "./CategorySimpleDto";
 export interface ProductDto {
   id: number;
   name: string;
+  imageUrl: string;
   price: number;
   weight: number;
   nutrients: NutrientDto; // Nutritional information

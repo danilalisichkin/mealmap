@@ -51,6 +51,7 @@ export const mockPreferenceProducts: ProductDto[] = [
   {
     id: 1,
     name: "Жаренный редис",
+    imageUrl: "products_1.webp",
     price: 300,
     weight: 60,
     nutrients: {
@@ -75,6 +76,7 @@ export const mockPreferenceProducts: ProductDto[] = [
   {
     id: 2,
     name: "Гречка с грибами",
+    imageUrl: "products_1.webp",
     price: 250,
     weight: 150,
     nutrients: {
@@ -99,6 +101,7 @@ export const mockPreferenceProducts: ProductDto[] = [
   {
     id: 3,
     name: "Салат Цезарь",
+    imageUrl: "products_1.webp",
     price: 350,
     weight: 120,
     nutrients: {
@@ -123,6 +126,7 @@ export const mockPreferenceProducts: ProductDto[] = [
   {
     id: 4,
     name: "Плов с бараниной",
+    imageUrl: "products_1.webp",
     price: 400,
     weight: 200,
     nutrients: {

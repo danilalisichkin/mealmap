@@ -9,7 +9,7 @@ import { PageDto } from "../common/dto/PageDto";
 export const CategoryApi = {
   getCategories: async (
     offset: number = 0,
-    limit: number = 10,
+    limit: number = 20,
     sortBy: CategorySortField = CategorySortField.ID,
     sortOrder: "ASC" | "DESC" = "ASC",
     search?: string
@@ -26,7 +26,6 @@ export const CategoryApi = {
     return response.data;
   },
 
-  
   bulkGetCategories: async (ids: number[]): Promise<CategoryDto[]> => {
     const response = await ApiClient.get<CategoryDto[]>("/categories/bulk", {
       params: { ids },

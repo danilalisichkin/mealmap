@@ -10,6 +10,8 @@ import { CartApi } from "../../api/cart/UserCartApi";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 import PopupNotification from "../../components/features/PopupNotification/PopupNotification";
+import { FileApi } from "../../api/file/FileApi";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
 interface ProductPageProps {}
 
@@ -21,13 +23,14 @@ const ProductPage: React.FC<ProductPageProps> = () => {
     location.state?.product ?? null
   );
 
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [currentPreferenceType, setCurrentPreferenceType] =
     useState<PreferenceType | null>(null);
 
+  const [quantity, setQuantity] = useState(1);
+
   const [loading, setLoading] = useState<boolean>(!product);
   const [error, setError] = useState<ErrorDetail | null>(null);
-
-  const [quantity, setQuantity] = useState(1);
 
   const [notification, setNotification] = useState<{
     id: number;
@@ -82,6 +85,24 @@ const ProductPage: React.FC<ProductPageProps> = () => {
       }
     }
   };
+
+  const fetchImage = async () => {
+    if (!product) return;
+
+    try {
+      const imageBlob = await FileApi.downloadFile(product.imageUrl);
+      const imageUrl = URL.createObjectURL(imageBlob);
+      setImageSrc(imageUrl);
+    } catch (error) {
+      console.error("Ошибка при загрузке изображения:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (product?.imageUrl) {
+      fetchImage();
+    }
+  }, [product?.imageUrl]);
 
   const fetchProductPreference = async () => {
     if (!userId || !params.id) return;
@@ -223,21 +244,27 @@ const ProductPage: React.FC<ProductPageProps> = () => {
         <div className="md:w-1/2 overflow-hidden">
           {/* Product Image */}
           <div className="relative">
-            <img
-              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt={product.name}
-              className="product-image shadow-md"
-            />
-            {product.isNew && (
-              <div className="absolute top-4 left-4 flex space-x-2">
-                <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                  новинка
-                </span>
-              </div>
+            {imageSrc ? (
+              <>
+                <img
+                  src={imageSrc}
+                  alt={product.name}
+                  className="product-image"
+                />
+                {product.isNew && (
+                  <div className="absolute top-4 right-4 flex space-x-2">
+                    <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                      новинка
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <LoadingSpinner />
             )}
 
             {/* Preference Choice */}
-            <div className="absolute bottom-4 right-4 flex space-x-2">
+            <div className="absolute scale-150 bottom-4 right-4 flex space-x-2">
               {currentPreferenceType !== PreferenceType.DISLIKED && (
                 <button
                   className={`like-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
@@ -283,28 +310,6 @@ const ProductPage: React.FC<ProductPageProps> = () => {
               <h1 className="text-2xl font-bold text-gray-800 mb-1">
                 {product.name}
               </h1>
-            </div>
-
-            {/* Price & Quantity */}
-            <div className="flex items-center justify-between space-x-2 mb-2">
-              <span className="text-2xl font-bold text-green-600">
-                {(product.price / 100).toFixed(2)}₽
-              </span>
-              <div className="flex items-center space-x-2">
-                <button
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center"
-                  onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
-                >
-                  <i className="fas fa-minus"></i>
-                </button>
-                <span className="w-8 text-center">{quantity}</span>
-                <button
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center"
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                >
-                  <i className="fas fa-plus"></i>
-                </button>
-              </div>
             </div>
           </div>
 
@@ -396,6 +401,28 @@ const ProductPage: React.FC<ProductPageProps> = () => {
                   <div className="bg-green-500 nutrient-bar"></div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Price & Quantity */}
+          <div className="flex items-center justify-between space-x-2 mb-6">
+            <span className="text-2xl font-bold text-green-600">
+              {(product.price / 100).toFixed(2)}₽
+            </span>
+            <div className="flex items-center space-x-2">
+              <button
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center"
+                onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
+              >
+                <i className="fas fa-minus"></i>
+              </button>
+              <span className="w-8 text-center">{quantity}</span>
+              <button
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center"
+                onClick={() => setQuantity((prev) => prev + 1)}
+              >
+                <i className="fas fa-plus"></i>
+              </button>
             </div>
           </div>
 

@@ -147,7 +147,11 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   }
 
   if (error) {
-    return <ErrorBanner error={error} />;
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <ErrorBanner error={error} />
+      </div>
+    );
   }
 
   const handleRemoveProductPreference = async (id: number) => {

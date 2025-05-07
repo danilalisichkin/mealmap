@@ -3,6 +3,8 @@ import { ProductDto } from "../../../api/product/dto/ProductDto";
 import "./ProductCard.css";
 import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 import { useAuth } from "../../../contexts/AuthContext";
+import { FileApi } from "../../../api/file/FileApi";
+import LoadingSpinner from "../../commons/LoadingSpinner/LoadingSpinner";
 
 interface ProductCardProps {
   product: ProductDto;
@@ -27,6 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     useState<PreferenceType | null>(preferenceType);
 
   const [isMounted, setIsMounted] = useState(false);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentPreferenceType(preferenceType);
@@ -51,6 +54,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const imageBlob = await FileApi.downloadFile(product.imageUrl);
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setImageSrc(imageUrl);
+      } catch (error) {
+        console.error("Ошибка при загрузке изображения:", error);
+      }
+    };
+
+    if (product.imageUrl) {
+      fetchImage();
+    }
+  }, [product.imageUrl]);
+
   return (
     <a
       className={`dish-card bg-white rounded-lg shadow-sm overflow-hidden cursor-pointer z-100
@@ -65,8 +84,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onNavigateToProductPage();
       }}
     >
-      <div className="relative">
-        <div className="action-buttons">
+      <div className="relative dish-image bg-gray-200 flex items-center justify-center">
+        {imageSrc ? (
+          <img
+            src={imageSrc}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <LoadingSpinner />
+        )}
+        {product.isNew && (
+          <span className="absolute top-1 right-1 bg-orange-500 text-white text-xs px-1 py-0.5 rounded-full">
+            новинка
+          </span>
+        )}
+
+        <div className="absolute bottom-1 left-4 flex space-x-2">
           {currentPreferenceType !== PreferenceType.DISLIKED && (
             <button
               className={`like-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
@@ -98,18 +132,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </button>
           )}
         </div>
-        <div className="dish-image bg-gray-200 flex items-center justify-center">
-          <img
-            src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        {product.isNew && (
-          <span className="absolute top-1 right-1 bg-orange-500 text-white text-xs px-1 py-0.5 rounded-full">
-            новинка
-          </span>
-        )}
       </div>
       <div className="p-2">
         <div className="flex justify-between items-start mb-2">
