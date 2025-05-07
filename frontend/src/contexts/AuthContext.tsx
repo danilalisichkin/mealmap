@@ -1,12 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { setAccessToken, updateRefreshToken } from "../functions/AuthInterceptor";
+import {
+  setAccessToken,
+  updateRefreshToken,
+} from "../functions/AuthInterceptor";
 import { AuthApi } from "../api/auth/AuthApi";
 import { KeycloakAccessTokenDto } from "../api/auth/dto/KeycloakAccessTokenDto";
 
 interface AuthContextProps {
   userId: string | null;
-  setToken: (token: KeycloakAccessTokenDto) => void;
+  setAuth: (tokens: KeycloakAccessTokenDto) => void;
   logout: () => void;
 }
 
@@ -14,21 +17,44 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 const AUTH_PROPERTIES = {
   REFRESH_INTERVAL: 4 * 60 * 1000,
-}
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [userId, setUserId] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [tokens, setTokens] = useState<KeycloakAccessTokenDto | null>(null);
 
-  const setToken = (token: KeycloakAccessTokenDto) => {
+  useEffect(() => {
+    const storedTokens = localStorage.getItem("tokens");
+
+    if (storedTokens) {
+      try {
+        const parsedTokens: KeycloakAccessTokenDto = JSON.parse(storedTokens);
+        setTokens(parsedTokens);
+
+        const decodedAccessToken = jwtDecode<{ sub: string }>(
+          parsedTokens.accessToken
+        );
+        setUserId(decodedAccessToken.sub);
+        setAccessToken(parsedTokens.accessToken);
+        updateRefreshToken(parsedTokens.refreshToken);
+      } catch (error) {
+        console.error("Ошибка при декодировании токена:", error);
+        logout();
+      }
+    }
+  }, []);
+
+  const setAuth = (tokens: KeycloakAccessTokenDto) => {
     try {
-      const decodedToken = jwtDecode<{ sub: string }>(token.accessToken);
+      const decodedToken = jwtDecode<{ sub: string }>(tokens.accessToken);
       setUserId(decodedToken.sub);
-      setAccessToken(token.accessToken);
-      setRefreshToken(token.refreshToken);
-      updateRefreshToken(token.refreshToken);
+      setTokens(tokens);
+      setAccessToken(tokens.accessToken);
+      updateRefreshToken(tokens.refreshToken);
+
+      localStorage.setItem("tokens", JSON.stringify(tokens));
     } catch (error) {
       console.error("Ошибка при декодировании токена:", error);
     }
@@ -37,15 +63,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = () => {
     setUserId(null);
     setAccessToken(null);
-    setRefreshToken(null);
+
+    localStorage.removeItem("tokens");
   };
 
   const refreshTokens = async () => {
-    if (!refreshToken) return;
+    if (!tokens) return;
 
     try {
-      const response = await AuthApi.refreshToken(refreshToken);
-      setToken(response);
+      const newTokens = await AuthApi.refreshToken(tokens.refreshToken);
+      setTokens(newTokens);
     } catch (error) {
       console.error("Ошибка при обновлении токенов:", error);
       logout();
@@ -57,10 +84,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       refreshTokens();
     }, AUTH_PROPERTIES.REFRESH_INTERVAL);
     return () => clearInterval(interval);
-  }, [refreshToken]);
+  }, [tokens]);
 
   return (
-    <AuthContext.Provider value={{ userId, setToken, logout }}>
+    <AuthContext.Provider value={{ userId, setAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );
