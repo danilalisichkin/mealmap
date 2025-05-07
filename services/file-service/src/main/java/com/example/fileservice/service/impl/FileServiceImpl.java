@@ -12,6 +12,10 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.errors.ErrorResponseException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +26,7 @@ import static com.example.fileservice.core.message.ApplicationMessages.FILE_NOT_
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheResolver = "fileCacheResolver")
 public class FileServiceImpl implements FileService {
     private final FileValidator fileValidator;
 
@@ -30,6 +35,7 @@ public class FileServiceImpl implements FileService {
     private final MinioProperties minioProperties;
 
     @Override
+    @CachePut(key = "#fileName")
     public void upload(String fileName, MultipartFile file) {
         String bucket = getBucket(fileName);
         fileValidator.validateFileUniqueness(bucket, fileName);
@@ -47,6 +53,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Cacheable(key = "#fileName")
     public byte[] getFile(String fileName) {
         String bucket = getBucket(fileName);
 
@@ -66,6 +73,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @CacheEvict(key = "#fileName")
     public void delete(String fileName) {
         String bucket = getBucket(fileName);
 

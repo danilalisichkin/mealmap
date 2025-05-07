@@ -1,11 +1,23 @@
 spring:
   application:
     name: file-service
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6384}
+      password: ${REDIS_PASSWORD:password}
+      database: ${REDIS_DATABASE:0}
 minio:
   url: ${MINIO_URL:http://localhost:9002}
   access-key: ${MINIO_ACCESS_KEY:minioadmin}
   secret-key: ${MINIO_SECRET_KEY:minioadmin}
   buckets:
-    - ${MINIO_BUCKETS_IMAGES:images}
+    - ${MINIO_BUCKETS_PRODUCTS:products}
+    - ${MINIO_BUCKETS_CATEGORIES:categories}
+    - ${MINIO_BUCKETS_PRODUCTS:organizations}
+cache:
+  file:
+    name: ${CACHE_FILE_NAME:fileCache}
+    ttl: ${CACHE_FILE_TTL:300}
 server:
   port: ${SERVER_PORT:8093}

@@ -383,6 +383,25 @@ services:
     networks:
       - mealmap-network
 
+  file-redis:
+    image: redis:7.4-alpine
+    container_name: mealmap-file-redis-server
+    restart: on-failure
+    ports:
+      - "6384:6379"
+    environment:
+      REDIS_PASSWORD: password
+    volumes:
+      - file-redis_data:/data
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4
     container_name: mealmap-keycloak
@@ -535,6 +554,7 @@ volumes:
   user-redis_data:
   organization-redis_data:
   preference-redis_data:
+  file-redis_data:
   elasticsearch_data:
   minio_data:
 
