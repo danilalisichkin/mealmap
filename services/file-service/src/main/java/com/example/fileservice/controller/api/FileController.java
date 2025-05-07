@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/{filename}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> upload(
             @PathVariable("filename") @NotBlank @Size(min = 3, max = 200) String filename,
             @RequestParam("file") MultipartFile file) {
@@ -42,6 +44,7 @@ public class FileController {
     }
 
     @DeleteMapping("/{filename}")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> delete(
             @PathVariable @NotBlank @Size(min = 3, max = 200) String filename) {
 

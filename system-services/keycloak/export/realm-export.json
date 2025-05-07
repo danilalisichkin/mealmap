@@ -374,6 +374,7 @@
         "containerId" : "daf2c694-701a-4f63-81b2-228e3d6b628f",
         "attributes" : { }
       } ],
+      "file-service" : [ ],
       "notification-service" : [ ],
       "recommendation-service" : [ {
         "id" : "01db6678-e893-4ae3-a839-b877ee40bce8",
@@ -507,34 +508,6 @@
   "webAuthnPolicyPasswordlessAcceptableAaguids" : [ ],
   "webAuthnPolicyPasswordlessExtraOrigins" : [ ],
   "users" : [ {
-    "id" : "f5a1fd44-d87f-45f4-b113-bbc08f4fe1c7",
-    "username" : "375254533567",
-    "firstName" : "Сабрина какашка",
-    "lastName" : "ковзан",
-    "email" : "test@gmail.com",
-    "emailVerified" : false,
-    "attributes" : {
-      "organizationId" : [ "3" ],
-      "isBlocked" : [ "false" ],
-      "isTemporaryBlocked" : [ "false" ],
-      "isActive" : [ "true" ]
-    },
-    "createdTimestamp" : 1744366494325,
-    "enabled" : true,
-    "totp" : false,
-    "credentials" : [ {
-      "id" : "aefc9bed-a770-43f3-ae19-a4721b7ea030",
-      "type" : "password",
-      "createdDate" : 1744366494499,
-      "secretData" : "{\"value\":\"Bl7/DHf54zGDl93arop+B2HqWf+TJebLCOtJpPRLmwM=\",\"salt\":\"BeJeCm1+drNSmfmoBerE8w==\",\"additionalParameters\":{}}",
-      "credentialData" : "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-    } ],
-    "disableableCredentialTypes" : [ ],
-    "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-mealmap-realm", "CUSTOMER" ],
-    "notBefore" : 0,
-    "groups" : [ ]
-  }, {
     "id" : "0e3901b5-fb3f-44e4-b691-adac0a735789",
     "username" : "375291234567",
     "firstName" : "Иванов",
@@ -663,6 +636,20 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
     "realmRoles" : [ "CART_SERVICE" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "76a477a5-8660-4223-9dc4-c5fdc1b0c16c",
+    "username" : "service-account-file-service",
+    "emailVerified" : false,
+    "createdTimestamp" : 1746635904043,
+    "enabled" : true,
+    "totp" : false,
+    "serviceAccountClientId" : "file-service",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-mealmap-realm" ],
     "notBefore" : 0,
     "groups" : [ ]
   }, {
@@ -1066,6 +1053,44 @@
       "realm_client" : "false",
       "oidc.ciba.grant.enabled" : "false",
       "client.secret.creation.time" : "1744200681",
+      "backchannel.logout.session.required" : "true",
+      "oauth2.device.authorization.grant.enabled" : "false",
+      "backchannel.logout.revoke.offline.tokens" : "false"
+    },
+    "authenticationFlowBindingOverrides" : { },
+    "fullScopeAllowed" : true,
+    "nodeReRegistrationTimeout" : -1,
+    "defaultClientScopes" : [ "web-origins", "service_account", "acr", "profile", "roles", "basic", "email" ],
+    "optionalClientScopes" : [ "address", "phone", "offline_access", "organization", "microprofile-jwt" ]
+  }, {
+    "id" : "191613ae-e4f7-404e-9282-f29c4c380bde",
+    "clientId" : "file-service",
+    "name" : "client_file-service",
+    "description" : "",
+    "rootUrl" : "",
+    "adminUrl" : "",
+    "baseUrl" : "",
+    "surrogateAuthRequired" : false,
+    "enabled" : true,
+    "alwaysDisplayInConsole" : false,
+    "clientAuthenticatorType" : "client-secret",
+    "secret" : "rlceoDknbCkoqCz72jEhzjbfhhDid8uz",
+    "redirectUris" : [ "/*" ],
+    "webOrigins" : [ "/*" ],
+    "notBefore" : 0,
+    "bearerOnly" : false,
+    "consentRequired" : false,
+    "standardFlowEnabled" : false,
+    "implicitFlowEnabled" : false,
+    "directAccessGrantsEnabled" : true,
+    "serviceAccountsEnabled" : true,
+    "publicClient" : false,
+    "frontchannelLogout" : true,
+    "protocol" : "openid-connect",
+    "attributes" : {
+      "realm_client" : "false",
+      "oidc.ciba.grant.enabled" : "false",
+      "client.secret.creation.time" : "1746635904",
       "backchannel.logout.session.required" : "true",
       "oauth2.device.authorization.grant.enabled" : "false",
       "backchannel.logout.revoke.offline.tokens" : "false"

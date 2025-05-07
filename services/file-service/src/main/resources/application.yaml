@@ -19,5 +19,14 @@ cache:
   file:
     name: ${CACHE_FILE_NAME:fileCache}
     ttl: ${CACHE_FILE_TTL:300}
+security:
+  oauth2:
+    client:
+      client-id: ${OAUTH2_CLIENT_CLIENT_ID:file-service}
+      client-secret: ${OAUTH2_CLIENT_CLIENT_SECRET:rlceoDknbCkoqCz72jEhzjbfhhDid8uz}
+  web:
+    cors:
+      allowed-origins:
+        - http://localhost:3000
 server:
   port: ${SERVER_PORT:8093}
