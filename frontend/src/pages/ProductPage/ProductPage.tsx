@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { ProductDto } from "../../api/product/dto/ProductDto";
 import { useLocation, useParams } from "react-router-dom";
 import { ProductApi } from "../../api/product/ProductApi";
-import NotFoundError from "../../components/commons/NotFoundError/NotFoundError";
 import "./ProductPage.css";
 import { PreferenceType } from "../../api/preference/enums/PreferenceType";
 import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
 import { useAuth } from "../../contexts/AuthContext";
 import { CartApi } from "../../api/cart/UserCartApi";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import PopupNotification from "../../components/features/PopupNotification/PopupNotification";
 
 interface ProductPageProps {}
 
@@ -23,9 +25,33 @@ const ProductPage: React.FC<ProductPageProps> = () => {
     useState<PreferenceType | null>(null);
 
   const [loading, setLoading] = useState<boolean>(!product);
-  const [error, setError] = useState<boolean | null>(null);
+  const [error, setError] = useState<ErrorDetail | null>(null);
 
   const [quantity, setQuantity] = useState(1);
+
+  const [notification, setNotification] = useState<{
+    id: number;
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    id: 0,
+    message: "",
+    type: "success",
+    isVisible: false,
+  });
+
+  const showNotification = (
+    message: string,
+    type: "success" | "error" | "info"
+  ) => {
+    setNotification({
+      id: Date.now(),
+      message,
+      type,
+      isVisible: true,
+    });
+  };
 
   const fetchProduct = async () => {
     if (!product && params.id) {
@@ -35,9 +61,22 @@ const ProductPage: React.FC<ProductPageProps> = () => {
           Number(params.id)
         );
         setProduct(fetchedProduct);
-      } catch (err) {
-        console.error("Ошибка при загрузке продукта:", err);
-        setError(true);
+      } catch (err: any) {
+        if (err.response?.status === 404) {
+          console.error("Ошибка при загрузке продукта:", err);
+          setError({
+            title: "Упс! Кажется, продукт не найден в каталоге",
+            detail: err.response?.data.detail,
+            status: "404",
+          });
+        } else {
+          console.error("Ошибка при загрузке продукта:", err);
+          setError({
+            title: "Что-то пошло не так",
+            detail: err.response?.data.detail,
+            status: "500",
+          });
+        }
       } finally {
         setLoading(false);
       }
@@ -56,11 +95,14 @@ const ProductPage: React.FC<ProductPageProps> = () => {
       setCurrentPreferenceType(fetchedPreference.preferenceType);
     } catch (err: any) {
       if (err.response?.status === 404) {
-        // Если предпочтение не найдено, устанавливаем null
         setCurrentPreferenceType(null);
       } else {
         console.error("Ошибка при загрузке предпочтения продукта:", err);
-        setError(true);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
       }
     } finally {
       setLoading(false);
@@ -75,8 +117,10 @@ const ProductPage: React.FC<ProductPageProps> = () => {
 
     try {
       await CartApi.addItemToCart(userId, { productId, quantity });
+      showNotification("Товар успешно добавлен в корзину!", "success");
       console.log(`Товар с ID ${productId} добавлен в корзину`);
     } catch (error) {
+      showNotification("Ошибка при добавлении товара в корзину", "error");
       console.error("Ошибка при добавлении товара в корзину:", error);
     }
   };
@@ -87,6 +131,10 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   ) => {
     if (!userId) {
       console.error("Пользователь не авторизован");
+      showNotification(
+        "Для выбора предпочтений необходимо войти в систему",
+        "info"
+      );
       return;
     }
 
@@ -95,8 +143,9 @@ const ProductPage: React.FC<ProductPageProps> = () => {
         productId,
         preferenceType,
       });
-      console.log(`Товар с ID ${productId} добавлен в предпочтения`);
       setCurrentPreferenceType(preferenceType);
+      showNotification("Блюдо добавлено в предпочтения!", "success");
+      console.log(`Товар с ID ${productId} добавлен в предпочтения`);
     } catch (error) {
       console.error("Ошибка при добавлении товара в предпочтения:", error);
     }
@@ -105,13 +154,18 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   const handleRemoveFromPreference = async (productId: number) => {
     if (!userId) {
       console.error("Пользователь не авторизован");
+      showNotification(
+        "Для выбора предпочтений необходимо войти в систему",
+        "info"
+      );
       return;
     }
 
     try {
       await PreferenceApi.removeProductPreference(userId, productId);
-      console.log(`Товар с ID ${productId} убран из предпочтений`);
       setCurrentPreferenceType(null);
+      showNotification("Блюдо убрано из предпочтений!", "success");
+      console.log(`Товар с ID ${productId} убран из предпочтений`);
     } catch (error) {
       console.error("Ошибка при удалении товара из предпочтений:", error);
     }
@@ -120,7 +174,13 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   const addToPreference = (type: PreferenceType) => {
     if (currentPreferenceType === type) {
       handleRemoveFromPreference(product!.id);
+      if (userId !== null) {
+        setCurrentPreferenceType(null);
+      }
     } else {
+      if (userId !== null) {
+        setCurrentPreferenceType(type);
+      }
       handleAddToPreference(product!.id, type);
     }
   };
@@ -139,42 +199,94 @@ const ProductPage: React.FC<ProductPageProps> = () => {
     return <div className="text-center py-12">Загрузка...</div>;
   }
 
-  if (error || !product) {
+  if (error) {
+    return <ErrorBanner error={error} />;
+  }
+
+  if (!product) {
     return (
-      <NotFoundError
-        title="Упс! Кажется, блюдо не найдено"
-        message="Похоже, что запрашиваемое блюдо не существует в каталоге"
+      <ErrorBanner
+        error={{
+          title: "Упс! Кажется, продукт не найден в каталоге",
+          detail: "Продукт не найден",
+          status: "404",
+        }}
       />
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/2 p-6">
-            <div className="relative">
-              <img
-                src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                alt={product.name}
-                className="product-image shadow-md"
-              />
-              {product.isNew && (
-                <div className="absolute top-4 left-4">
-                  <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                    новинка
-                  </span>
-                </div>
+    <main className="container mx-auto px-4 py-8 max-w-6xl">
+      {/* Product Card */}
+      <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md">
+        {/* Image Container */}
+        <div className="md:w-1/2 overflow-hidden">
+          {/* Product Image */}
+          <div className="relative">
+            <img
+              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              alt={product.name}
+              className="product-image shadow-md"
+            />
+            {product.isNew && (
+              <div className="absolute top-4 left-4 flex space-x-2">
+                <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                  новинка
+                </span>
+              </div>
+            )}
+
+            {/* Preference Choice */}
+            <div className="absolute bottom-4 right-4 flex space-x-2">
+              {currentPreferenceType !== PreferenceType.DISLIKED && (
+                <button
+                  className={`like-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
+                    currentPreferenceType === PreferenceType.LIKED
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addToPreference(PreferenceType.LIKED);
+                  }}
+                >
+                  <i className="far fa-thumbs-up"></i>
+                </button>
+              )}
+              {currentPreferenceType !== PreferenceType.LIKED && (
+                <button
+                  className={`dislike-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
+                    currentPreferenceType === PreferenceType.DISLIKED
+                      ? "active"
+                      : ""
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addToPreference(PreferenceType.DISLIKED);
+                  }}
+                >
+                  <i className="far fa-thumbs-down"></i>
+                </button>
               )}
             </div>
           </div>
+        </div>
 
-          <div className="md:w-1/2 p-6">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              {product.name}
-            </h1>
+        {/* Product Info */}
+        <div className="md:w-1/2 p-6 product">
+          {/* Product Header */}
+          <div className="flex justify-between items-start mb-4">
+            {/* Product Name & Categories */}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800 mb-1">
+                {product.name}
+              </h1>
+            </div>
 
-            <div className="flex items-center justify-between mb-6">
+            {/* Price & Quantity */}
+            <div className="flex items-center justify-between space-x-2 mb-2">
               <span className="text-2xl font-bold text-green-600">
                 {(product.price / 100).toFixed(2)}₽
               </span>
@@ -194,37 +306,114 @@ const ProductPage: React.FC<ProductPageProps> = () => {
                 </button>
               </div>
             </div>
+          </div>
 
-            <div className="flex space-x-4 mb-6">
-              <button
-                className={`like-btn bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition ${
-                  currentPreferenceType === PreferenceType.LIKED ? "active" : ""
-                }`}
-                onClick={() => addToPreference(PreferenceType.LIKED)}
+          {/* Categories */}
+          <div className="flex flex-wrap gap-1 mb-2">
+            {product.categories.map((category) => (
+              <span
+                key={category.id}
+                className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded"
               >
-                <i className="far fa-thumbs-up"></i>
-              </button>
-              <button
-                className={`dislike-btn bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition ${
-                  currentPreferenceType === PreferenceType.DISLIKED
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() => addToPreference(PreferenceType.DISLIKED)}
-              >
-                <i className="far fa-thumbs-down"></i>
-              </button>
+                {category.name}
+              </span>
+            ))}
+          </div>
+
+          {/* Description */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Описание
+            </h3>
+            <p className="text-gray-600 text-sm">{product.description}</p>
+          </div>
+
+          {/* Nutrients */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              Пищевая ценность
+            </h3>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-gray-600 text-sm">Вес</span>
+                  <span className="font-medium">{product.weight} г</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-gray-600 text-sm">Калории</span>
+                  <span className="font-medium">
+                    {product.nutrients.calories} ккал
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <button
-              className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-bold transition flex items-center justify-center text-lg"
-              onClick={() => handleAddToCart(product.id)}
-            >
-              <i className="fas fa-plus mr-2"></i> Добавить в корзину
-            </button>
+            <div className="space-y-2">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-600">Белки</span>
+                  <span className="font-medium">
+                    {product.nutrients.proteins} г
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="bg-blue-500 nutrient-bar"></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-600">Жиры</span>
+                  <span className="font-medium">
+                    {product.nutrients.fats} г
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="bg-yellow-500 nutrient-bar"></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-600">Углеводы</span>
+                  <span className="font-medium">
+                    {product.nutrients.carbs} г
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="bg-red-500 nutrient-bar"></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-600">Клетчатка</span>
+                  <span className="font-medium">
+                    {product.nutrients.fibers} г
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="bg-green-500 nutrient-bar"></div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Add to Cart Button */}
+          <button
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-bold transition flex items-center justify-center text-lg"
+            onClick={() => handleAddToCart(product.id)}
+          >
+            <i className="fas fa-plus mr-2"></i> Добавить в корзину
+          </button>
         </div>
       </div>
+      <PopupNotification
+        key={notification.id}
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+      />
     </main>
   );
 };

@@ -5,11 +5,3 @@
 .dislike-btn.active {
   color: #ef4444;
 }
-
-.action-buttons {
-  position: absolute;
-  bottom: 5px;
-  left: 5px;
-  display: flex;
-  gap: 5px;
-}
