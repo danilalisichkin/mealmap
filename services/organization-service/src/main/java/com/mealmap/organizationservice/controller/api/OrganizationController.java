@@ -49,11 +49,33 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @GetMapping("/suppliers")
+    public ResponseEntity<PageDto<OrganizationDto>> getPageOfSuppliers(
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
+            @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
+            @RequestParam(defaultValue = "ID") OrganizationSortField sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder) {
+
+        PageDto<OrganizationDto> page =
+                organizationService.getPageOfSuppliers(offset, limit, sortBy, sortOrder);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
+    }
+
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
     public ResponseEntity<OrganizationDto> getOrganization(@PathVariable Integer id) {
         OrganizationDto organization = organizationService.getOrganization(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(organization);
+    }
+
+    @GetMapping("/suppliers/{id}")
+    public ResponseEntity<OrganizationDto> getSupplier(@PathVariable Integer id) {
+
+        OrganizationDto supplier = organizationService.getSupplier(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(supplier);
     }
 
     @PostMapping

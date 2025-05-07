@@ -7,6 +7,7 @@ import com.mealmap.organizationservice.core.dto.organization.OrganizationUpdatin
 import com.mealmap.organizationservice.core.enums.sort.OrganizationSortField;
 import com.mealmap.organizationservice.core.mapper.OrganizationMapper;
 import com.mealmap.organizationservice.entity.Organization;
+import com.mealmap.organizationservice.entity.enums.OrganizationType;
 import com.mealmap.organizationservice.repository.OrganizationRepository;
 import com.mealmap.organizationservice.service.OrganizationService;
 import com.mealmap.organizationservice.validator.OrganizationValidator;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.mealmap.organizationservice.core.message.ApplicationMessages.ORGANIZATION_NOT_FOUND;
+import static com.mealmap.organizationservice.core.message.ApplicationMessages.SUPPLIER_NOT_FOUND;
 import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasEmail;
 import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasLegalAddressLike;
 import static com.mealmap.organizationservice.entity.specification.OrganizationSpecification.hasNameLike;
@@ -66,11 +68,31 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
+    @Cacheable
+    public PageDto<OrganizationDto> getPageOfSuppliers(
+            Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder) {
+
+        PageRequest request = PageBuilder.buildPageRequest(offset, limit, sortBy.getValue(), sortOrder);
+
+        return pageMapper.pageToPageDto(
+                organizationMapper.entityPageToDtoPage(
+                        organizationRepository.findAllByType(OrganizationType.SUPPLIER, request)));
+    }
+
+    @Override
     @Cacheable(key = "#id")
     public OrganizationDto getOrganization(Integer id) {
         Organization organization = getOrganizationEntity(id);
 
         return organizationMapper.entityToDto(organization);
+    }
+
+    @Override
+    @Cacheable(key = "'supplier_' + #id")
+    public OrganizationDto getSupplier(Integer id) {
+        Organization supplier = getSupplierEntity(id);
+
+        return organizationMapper.entityToDto(supplier);
     }
 
     @Override
@@ -105,5 +127,11 @@ public class OrganizationServiceImpl implements OrganizationService {
         return organizationRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ORGANIZATION_NOT_FOUND.formatted(id)));
+    }
+
+    private Organization getSupplierEntity(Integer id) {
+        return organizationRepository
+                .findByIdAndType(id, OrganizationType.SUPPLIER)
+                .orElseThrow(() -> new ResourceNotFoundException(SUPPLIER_NOT_FOUND.formatted(id)));
     }
 }

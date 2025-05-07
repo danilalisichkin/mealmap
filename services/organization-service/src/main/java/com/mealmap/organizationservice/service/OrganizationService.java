@@ -13,7 +13,11 @@ public interface OrganizationService {
             Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder,
             OrganizationFilter filter);
 
+    PageDto<OrganizationDto> getPageOfSuppliers( Integer offset, Integer limit, OrganizationSortField sortBy, Sort.Direction sortOrder);
+
     OrganizationDto getOrganization(Integer id);
+
+    OrganizationDto getSupplier(Integer id);
 
     OrganizationDto createOrganization(OrganizationCreationDto organizationDto);
 

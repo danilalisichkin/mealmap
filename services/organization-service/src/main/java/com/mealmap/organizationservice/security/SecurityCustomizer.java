@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 public class SecurityCustomizer {
 
@@ -11,6 +13,7 @@ public class SecurityCustomizer {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web
                 .ignoring()
-                .requestMatchers("/api/v1/organizations/{id:^[0-9]+$}");
+                .requestMatchers(GET, "/api/v1/organizations/suppliers")
+                .requestMatchers(GET, "/api/v1/organizations/suppliers/{id:^[0-9]+$}");
     }
 }
