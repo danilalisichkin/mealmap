@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const contacts = {
   phone: "+375 (29) 28-84-988",
@@ -7,139 +8,113 @@ const contacts = {
 };
 
 const socialMedia = {
-  telegram: "t.me/mealmap",
-  instagram: "instagram.com/mealmap",
-  vk: "vk.com/mealmap",
+  telegram: "https://t.me/mealmap",
+  instagram: "https://instagram.com/mealmap",
+  vk: "https://vk.com/mealmap",
 };
 
-const Footer: React.FC = () => (
-  <footer className="bg-white shadow-sm border-t mt-12 py-8 px-4">
-    <div className="max-w-6xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <div className="flex items-center mb-4 md:mb-0">
-          <i className="fas fa-utensils text-green-500 text-2xl mr-3"></i>
-          <span className="font-bold text-green-500 text-xl">MealMap</span>
-        </div>
-        <span className="text-gray-500 text-sm">
-          © <span id="current-year"></span> Все права защищены
-        </span>
-      </div>
-  
-      <div className="footer-divider my-6"></div>
+const Footer: React.FC = () => {
+  return (
+    <footer className="bg-white shadow-sm border-t mt-12 py-8 px-4">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <div className="flex items-center mb-4">
+              <i className="fas fa-utensils text-green-400 text-2xl mr-3"></i>
+              <span className="font-bold text-xl text-green-400">MealMap</span>
+            </div>
+            <p>
+              Инновационная платформа для организации корпоративного питания
+            </p>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 className="font-semibold text-gray-800 text-lg mb-3">
-            Навигация
-          </h3>
-          <ul className="space-y-2">
-            <li>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-green-600 transition flex items-center"
-              >
-                <i className="fas fa-chevron-right text-xs text-green-500 mr-2"></i>
-                О нас
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-green-600 transition flex items-center"
-              >
-                <i className="fas fa-chevron-right text-xs text-green-500 mr-2"></i>
-                Каталог
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-gray-600 hover:text-green-600 transition flex items-center"
-              >
-                <i className="fas fa-chevron-right text-xs text-green-500 mr-2"></i>
-                Политика конфиденциальности
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="font-semibold text-gray-800 text-lg mb-3">Контакты</h3>
-          <ul className="space-y-3">
-            <li className="flex items-start">
-              <i className="fas fa-phone text-green-500 mt-1 mr-3"></i>
-              <div>
-                <span className="text-gray-500 text-sm">Телефон</span>
-                <a
-                  href={`tel:${contacts.phone}`}
-                  className="block text-gray-700 hover:text-green-600 transition"
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Компания</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  to="/about"
+                  className="text-gray-400 hover:text-green-400 transition"
                 >
-                  {contacts.phone}
-                </a>
-              </div>
-            </li>
-            <li className="flex items-start">
-              <i className="fas fa-envelope text-green-500 mt-1 mr-3"></i>
-              <div>
-                <span className="text-gray-500 text-sm">Email</span>
-                <a
-                  href={`mailto:${contacts.email}`}
-                  className="block text-gray-700 hover:text-green-600 transition"
-                >
-                  {contacts.email}
-                </a>
-              </div>
-            </li>
-            <li className="flex items-start">
-              <i className="fas fa-map-marker-alt text-green-500 mt-1 mr-3"></i>
-              <div>
-                <span className="text-gray-500 text-sm">Адрес</span>
-                <span className="block text-gray-700">{contacts.address}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
+                  О нас
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-        <div>
-          <h3 className="font-semibold text-gray-800 text-lg mb-3">
-            Мы в соцсетях
-          </h3>
-          <p className="text-gray-500 text-sm mb-4">
-            Следите за нашими новостями и акциями
-          </p>
-          <div className="flex space-x-3">
-            <a
-              href={socialMedia.vk}
-              aria-label="VK"
-              className="social-icon bg-blue-500 text-white hover:bg-blue-600"
-            >
-              <i className="fab fa-vk"></i>
-            </a>
-            <a
-              href={socialMedia.telegram}
-              aria-label="Telegram"
-              className="social-icon bg-blue-400 text-white hover:bg-blue-500"
-            >
-              <i className="fab fa-telegram"></i>
-            </a>
-            <a
-              href={socialMedia.instagram}
-              aria-label="Instagram"
-              className="social-icon bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
-            >
-              <i className="fab fa-instagram"></i>
-            </a>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Ресурсы</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  to="/faq"
+                  className="text-gray-400 hover:text-green-400 transition"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/privacy-policy"
+                  className="text-gray-400 hover:text-green-400 transition"
+                >
+                  Политика конфиденциальности
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms"
+                  className="text-gray-400 hover:text-green-400 transition"
+                >
+                  Условия использования
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Связаться с нами</h3>
+            <div className="flex space-x-4 mb-4">
+              <a
+                href={socialMedia.vk}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 text-white bg-green-400 hover:bg-green-600 rounded-full flex items-center justify-center transition"
+              >
+                <i className="fab fa-vk"></i>
+              </a>
+              <a
+                href={socialMedia.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 text-white bg-green-400 hover:bg-green-600 rounded-full flex items-center justify-center transition"
+              >
+                <i className="fab fa-telegram"></i>
+              </a>
+              <a
+                href={socialMedia.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 text-white bg-green-400 hover:bg-green-600 rounded-full flex items-center justify-center transition"
+              >
+                <i className="fab fa-instagram"></i>
+              </a>
+            </div>
+            <div className="flex flex-col text-gray-400">
+              <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
+              <a href={`tel:${contacts.phone}`}>{contacts.phone}</a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="mt-8 pt-6 border-t border-gray-200 md:hidden">
-        <p className="text-gray-500 text-center text-sm">
-          © <span id="mobile-current-year"></span> MealMap. Все права защищены.
-        </p>
+        <div className="border-t border-green-400 mt-8 pt-8 text-center text-gray-400">
+          <p>
+            © <span id="footer-year">2025</span> MealMap. Все права защищены.
+          </p>
+        </div>
       </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 export default Footer;
