@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AuthModal.css";
 import LoginForm from "../../commons/LoginForm/LoginForm";
 import RegisterForm from "../../commons/RegisterForm/RegisterForm";
@@ -10,8 +10,18 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [isVisible, setIsVisible] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true)
+    } else {
+      const timeout = setTimeout(() => setIsVisible(false), 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isOpen]);
+
+  if (!isVisible) return null;
 
   return (
     <div

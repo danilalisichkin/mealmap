@@ -75,19 +75,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose }) => {
           required
         />
       </div>
-      <div className="mb-4 flex items-center">
-        <input
-          type="checkbox"
-          id="remember-me"
-          className="h-4 w-4 text-green-500 focus:ring-green-600 border-gray-300 rounded"
-        />
-        <label
-          htmlFor="remember-me"
-          className="ml-2 block text-sm text-gray-700"
-        >
-          Запомнить меня
-        </label>
-      </div>
       <button
         type="submit"
         className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"

@@ -1,11 +1,10 @@
 .modal {
-  transition: all 0.3s ease;
   opacity: 0;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .modal.active {
   opacity: 1;
-  visibility: visible;
 }
 
 .form-tab {

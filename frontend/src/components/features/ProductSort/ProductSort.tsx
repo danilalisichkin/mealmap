@@ -11,7 +11,6 @@ const SORT_FIELDS = [
   { value: ProductSortField.FATS, label: "Жиры" },
   { value: ProductSortField.CARBS, label: "Углеводы" },
   { value: ProductSortField.FIBERS, label: "Клетчатка" },
-  { value: ProductSortField.SUGARS, label: "Сахар" },
   { value: ProductSortField.NEWNESS, label: "Новизна" },
 ];
 
