@@ -1,5 +1,8 @@
 package com.mealmap.productservice.service.impl;
 
+import co.elastic.clients.elasticsearch._types.FieldSort;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
@@ -7,6 +10,7 @@ import com.mealmap.productservice.core.dto.filter.ProductFilter;
 import com.mealmap.productservice.service.ElasticsearchQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +52,23 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
                 .withPageable(pageable)
                 .build()
                 .getQuery();
+    }
+
+    @Override
+    public SortOptions buildSortOptions(String sortBy, Sort.Direction sortOrder) {
+        return SortOptions.of(s -> s
+                .field(f -> {
+                    FieldSort.Builder builder = new FieldSort.Builder()
+                            .field(sortBy)
+                            .order(sortOrder == Sort.Direction.ASC ? SortOrder.Asc : SortOrder.Desc);
+
+                    if (sortBy.contains(".")) {
+                        String nestedPath = sortBy.substring(0, sortBy.lastIndexOf('.'));
+                        builder.nested(n -> n.path(nestedPath));
+                    }
+
+                    return builder;
+                }));
     }
 
     private void applyQueryByProductSearch(BoolQuery.Builder query, String search) {

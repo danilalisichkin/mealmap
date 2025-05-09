@@ -1,6 +1,7 @@
 package com.mealmap.productservice.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -63,11 +64,15 @@ public class CategoryServiceImpl implements CategoryService {
                 offset, limit, sortBy.getValue(), sortOrder);
 
         Query searchQuery = esQueryService.buildQueryForCategories(pageRequest, search);
+
+        SortOptions sortOptions = esQueryService.buildSortOptions(sortBy.getValue(), sortOrder);
+
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
+                .index("categories")
                 .query(searchQuery)
                 .from(offset * limit)
                 .size(limit)
-                .index("categories"));
+                .sort(sortOptions));
 
         SearchResponse<CategoryDoc> response = esClient.search(searchRequest, CategoryDoc.class);
 

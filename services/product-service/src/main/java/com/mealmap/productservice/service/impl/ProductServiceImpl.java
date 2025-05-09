@@ -1,9 +1,7 @@
 package com.mealmap.productservice.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.SearchType;
 import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -28,7 +26,6 @@ import com.mealmap.starters.paginationstarter.mapper.PageMapper;
 import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -45,7 +42,6 @@ import java.util.Set;
 import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGORIES_NOT_FOUND;
 import static com.mealmap.productservice.core.message.ApplicationMessages.PRODUCT_NOT_FOUND;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheResolver = "productCacheResolver")
@@ -76,20 +72,14 @@ public class ProductServiceImpl implements ProductService {
 
         Query searchQuery = esQueryService.buildQueryForProducts(pageRequest, filter, search);
 
-        SortOptions sortOptions = SortOptions.of(s -> s
-                .field(f -> f
-                        .field(sortBy.getValue())
-                        .order(sortOrder == Sort.Direction.ASC ? SortOrder.Asc : SortOrder.Desc)));
+        SortOptions sortOptions = esQueryService.buildSortOptions(sortBy.getValue(), sortOrder);
 
         SearchRequest searchRequest = SearchRequest.of(sr -> sr
-                .query(searchQuery)
                 .index("products")
+                .query(searchQuery)
                 .from(offset * limit)
                 .size(limit)
                 .sort(sortOptions));
-
-        log.info(pageRequest.toString());
-        log.info(searchQuery.toString());
 
         SearchResponse<ProductDoc> response = esClient.search(searchRequest, ProductDoc.class);
 
