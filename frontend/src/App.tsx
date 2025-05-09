@@ -10,6 +10,8 @@ import CatalogPage from "./pages/CatalogPage/CatalogPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserHealthPage from "./pages/UserHealthPage/UserHealthPage";
 import { AuthProvider } from "./contexts/AuthContext";
+import FaqPage from "./pages/FaqPage/FaqPage";
+import GreetingPage from "./pages/GreetingPage/GreetingPage";
 
 const App: React.FC = () => {
   return (
@@ -18,12 +20,17 @@ const App: React.FC = () => {
         <div className="w-full min-h-screen flex flex-col">
           <Header title="Meal Map" />
           <Routes>
+            <Route path="" element={<GreetingPage />} />
+            <Route path="/faq" element={<FaqPage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/catalog/products/:id" element={<ProductPage />} />
             <Route path="/user/:userId/profile" element={<UserProfilePage />} />
             <Route path="/user/:userId/health" element={<UserHealthPage />} />
             <Route path="/user/:userId/orders" element={<UserOrdersPage />} />
-            <Route path="/user/:userId/notifications" element={<UserNotificationsPage />} />
+            <Route
+              path="/user/:userId/notifications"
+              element={<UserNotificationsPage />}
+            />
             <Route path="/cart/checkout" element={<CartCheckoutPage />} />
           </Routes>
           <Footer />

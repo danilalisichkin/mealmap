@@ -1,0 +1,38 @@
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.scale {
+    animation: scale 2s infinite;
+}
+
+@keyframes scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.floating {
+  animation: float 6s ease-in-out infinite;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
