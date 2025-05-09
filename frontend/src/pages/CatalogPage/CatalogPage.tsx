@@ -17,9 +17,9 @@ import { useAuth } from "../../contexts/AuthContext";
 import { ProductPreferenceDto } from "../../api/preference/dto/ProductPreferenceDto";
 import { CategoryApi } from "../../api/product/CategoryApi";
 import { OrganizationApi } from "../../api/organization/OrganizationApi";
-import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import CatalogPlaceholder from "../../components/commons/Placeholders/CatalogPlaceholder/CatalogPlaceholder";
 
 interface CatalogPageProps {}
 
@@ -261,10 +261,10 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
       />
       {(() => {
         let content;
-        if (loading) {
-          content = <LoadingSpinner />;
-        } else if (error) {
+        if (error) {
           content = <ErrorBanner error={error} />;
+        } else if (loading) {
+          content = <CatalogPlaceholder numberOfElements={DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE}/>;
         } else if (productPage) {
           content = (
             <>
@@ -280,10 +280,6 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
                 onPageChange={handlePageChange}
               />
             </>
-          );
-        } else {
-          content = (
-            <p className="text-center py-12">Нет данных для отображения.</p>
           );
         }
         return content;

@@ -242,63 +242,61 @@ const ProductPage: React.FC<ProductPageProps> = () => {
       <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md">
         {/* Image Container */}
         <div className="md:w-1/2 overflow-hidden">
-          {/* Product Image */}
-          <div className="relative">
-            {imageSrc ? (
-              <>
-                <img
-                  src={imageSrc}
-                  alt={product.name}
-                  className="product-image"
-                />
-                {product.isNew && (
-                  <div className="absolute top-4 right-4 flex space-x-2">
-                    <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
-                      новинка
-                    </span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <LoadingSpinner />
-            )}
+          {imageSrc ? (
+            <div className="relative">
+              <img
+                src={imageSrc}
+                alt={product.name}
+                className="product-image"
+              />
+              {product.isNew && (
+                <div className="absolute top-4 right-4 flex space-x-2">
+                  <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                    новинка
+                  </span>
+                </div>
+              )}
 
-            {/* Preference Choice */}
-            <div className="absolute scale-150 bottom-4 right-4 flex space-x-2">
-              {currentPreferenceType !== PreferenceType.DISLIKED && (
-                <button
-                  className={`like-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
-                    currentPreferenceType === PreferenceType.LIKED
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addToPreference(PreferenceType.LIKED);
-                  }}
-                >
-                  <i className="far fa-thumbs-up"></i>
-                </button>
-              )}
-              {currentPreferenceType !== PreferenceType.LIKED && (
-                <button
-                  className={`dislike-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
-                    currentPreferenceType === PreferenceType.DISLIKED
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    addToPreference(PreferenceType.DISLIKED);
-                  }}
-                >
-                  <i className="far fa-thumbs-down"></i>
-                </button>
-              )}
+              {/* Preference Choice */}
+              <div className="absolute scale-150 bottom-4 right-4 flex space-x-2">
+                {currentPreferenceType !== PreferenceType.DISLIKED && (
+                  <button
+                    className={`like-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
+                      currentPreferenceType === PreferenceType.LIKED
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      addToPreference(PreferenceType.LIKED);
+                    }}
+                  >
+                    <i className="far fa-thumbs-up"></i>
+                  </button>
+                )}
+                {currentPreferenceType !== PreferenceType.LIKED && (
+                  <button
+                    className={`dislike-btn bg-white p-1 rounded-full shadow-md transition z-5 ${
+                      currentPreferenceType === PreferenceType.DISLIKED
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      addToPreference(PreferenceType.DISLIKED);
+                    }}
+                  >
+                    <i className="far fa-thumbs-down"></i>
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <LoadingSpinner />
+          )}
+          {/* Product Image */}
         </div>
 
         {/* Product Info */}

@@ -84,6 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         onNavigateToProductPage();
       }}
     >
+      {/* Product Image & isNew & Preference choice */}
       <div className="relative dish-image bg-gray-200 flex items-center justify-center">
         {imageSrc ? (
           <img
@@ -133,7 +134,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
       </div>
+
+      {/* Product info */}
       <div className="p-2">
+        {/* Name & Price */}
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-sm font-semibold text-gray-800 truncate">
             {product.name}
@@ -143,6 +147,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
+        {/* Weight & Calories */}
         <div className="flex justify-between text-xs text-gray-500 mb-2">
           <span>
             <i className="fas fa-weight-hanging mr-1"></i>
@@ -154,6 +159,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
+        {/* Nutrients */}
         <div className="flex justify-end space-x-2 text-xs mb-2">
           <span className="text-gray-600">
             <span className="nutrient-dot bg-blue-500"></span>
@@ -173,6 +179,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         </div>
 
+        {/* Add to cart button */}
         <button
           className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md font-medium transition flex items-center justify-center text-sm"
           onClick={(e) => {
