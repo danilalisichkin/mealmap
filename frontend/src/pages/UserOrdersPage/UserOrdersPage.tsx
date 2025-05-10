@@ -4,8 +4,10 @@ import Pagination from "../../components/commons/Pagination/Pagination";
 import { OrderDto } from "../../api/order/dto/OrderDto";
 import { PageDto } from "../../api/common/dto/PageDto";
 import { UserOrderApi } from "../../api/order/UserOrderApi";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 
 interface UserOrdersPageProps {}
 
@@ -15,8 +17,7 @@ const DEFAULT_PAGINATION_OPTIONS = {
 };
 
 const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
-  const location = useLocation();
-  const userId = location.state?.userId ?? null;
+  const { userId } = useParams<{ userId: string }>();
 
   const [orderPage, setOrderPage] = useState<PageDto<OrderDto> | null>(null);
   const [currentPage, setCurrentPage] = useState(
@@ -24,9 +25,15 @@ const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
   );
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<ErrorDetail | null>(null);
 
   const fetchOrders = useCallback(async () => {
     if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -61,6 +68,14 @@ const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <ErrorBanner error={error} />
+      </div>
+    );
+  }
+
   if (!orderPage || orderPage.items.length === 0) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -83,7 +98,7 @@ const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container h-screen mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Мои заказы</h1>
       </div>

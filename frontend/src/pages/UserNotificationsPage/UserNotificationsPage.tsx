@@ -3,7 +3,7 @@ import { NotificationStatus } from "../../api/notification/enums/NotificationSta
 import { Channel } from "../../api/notification/enums/Channel";
 import "./UserNotificationsPage.css";
 import UserNotificationItem from "../../components/features/UserNotificationItem/UserNotificationItem";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { NotificationDto } from "../../api/notification/dto/NotificationDto";
 import { UserNotificationApi } from "../../api/notification/UserNotificationApi";
 import { PageDto } from "../../api/common/dto/PageDto";
@@ -53,8 +53,7 @@ const statusMap: Record<NotificationStatus, { class: string; label: string }> =
   };
 
 const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
-  const location = useLocation();
-  const userId = location.state?.userId ?? null;
+  const { userId } = useParams<{ userId: string }>();
 
   const [notificationPage, setNotificationPage] =
     useState<PageDto<NotificationDto> | null>(null);
@@ -127,6 +126,8 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
     setSortOrder(order);
     setCurrentPage(1);
   };
+
+  console.log("USERID:", userId);
 
   if (loading) {
     return (

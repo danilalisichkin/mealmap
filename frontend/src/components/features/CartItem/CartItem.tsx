@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CartItemDto } from "../../../api/cart/dto/CartItemDto";
 import { ProductDto } from "../../../api/product/dto/ProductDto";
 import "./CartItem.css";
+import LoadingSpinner from "../../commons/LoadingSpinner/LoadingSpinner";
+import { FileApi } from "../../../api/file/FileApi";
 
 interface CartItemProps {
   cartItem: CartItemDto;
@@ -20,6 +22,24 @@ const CartItem: React.FC<CartItemProps> = ({
   onRemove,
   onQuantityChange,
 }) => {
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const imageBlob = await FileApi.downloadFile(product.imageUrl);
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setImageSrc(imageUrl);
+      } catch (error) {
+        console.error("Ошибка при загрузке изображения:", error);
+      }
+    };
+
+    if (product.imageUrl) {
+      fetchImage();
+    }
+  }, [product.imageUrl]);
+
   const handleQuantityChange = (delta: number) => {
     const newQuantity = Math.max(
       1,
@@ -33,19 +53,24 @@ const CartItem: React.FC<CartItemProps> = ({
 
   const isReachedLowBorder = () => {
     return cartItem.quantity <= 1;
-  }
+  };
 
   const isReachedUpBorder = () => {
-    return cartItem.quantity >= LIMITS.QUANTITY_PER_ITEM;  
-  }
+    return cartItem.quantity >= LIMITS.QUANTITY_PER_ITEM;
+  };
 
   return (
     <div className="cart-item p-4 flex items-center relative">
-      <img
-        src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-        alt={product.name}
-        className="w-16 h-16 object-cover rounded-lg mr-4"
-      />
+      {imageSrc ? (
+        <img
+          src={imageSrc}
+          alt={product.name}
+          className="w-16 h-16 object-cover rounded-lg mr-4"
+        />
+      ) : (
+        <LoadingSpinner />
+      )}
+
       <div className="flex-1">
         <h4 className="font-medium text-gray-800">{product.name}</h4>
         <div className="flex justify-between items-center mt-1">
@@ -58,7 +83,11 @@ const CartItem: React.FC<CartItemProps> = ({
         </div>
         <div className="flex items-center mt-2">
           <button
-            className={`cart-item-quantity-minus ${isReachedLowBorder() ? "bg-gray-100 text-gray-400" : "bg-gray-100 hover:bg-gray-200 text-gray-800"} w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2`}
+            className={`cart-item-quantity-minus ${
+              isReachedLowBorder()
+                ? "bg-gray-100 text-gray-400"
+                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+            } w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2`}
             onClick={() => handleQuantityChange(-1)}
             disabled={isReachedLowBorder()}
           >
@@ -66,7 +95,11 @@ const CartItem: React.FC<CartItemProps> = ({
           </button>
           <span className="quantity">{cartItem.quantity}</span>
           <button
-            className={`cart-item-quantity-minus ${isReachedUpBorder() ? "bg-gray-100 text-gray-400" : "bg-gray-100 hover:bg-gray-200 text-gray-800"} w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2`}
+            className={`cart-item-quantity-minus ${
+              isReachedUpBorder()
+                ? "bg-gray-100 text-gray-400"
+                : "bg-gray-100 hover:bg-gray-200 text-gray-800"
+            } w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2`}
             onClick={() => handleQuantityChange(1)}
             disabled={isReachedUpBorder()}
           >

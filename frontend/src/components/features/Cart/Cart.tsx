@@ -8,9 +8,12 @@ import { CartApi } from "../../../api/cart/UserCartApi";
 import { ProductApi } from "../../../api/product/ProductApi";
 import { useAuth } from "../../../contexts/AuthContext";
 import { ErrorDetail } from "../../../api/common/dto/ErrorDetail";
-import PopupNotification from "../PopupNotification/PopupNotification";
+import PopupNotification, {
+  NotificationType,
+} from "../PopupNotification/PopupNotification";
 import ErrorBanner from "../../commons/ErrorBanner/ErrorBanner";
 import LoadingSpinner from "../../commons/LoadingSpinner/LoadingSpinner";
+import { ca } from "date-fns/locale";
 
 interface CartProps {
   isOpened: boolean;
@@ -31,19 +34,16 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
   const [notification, setNotification] = useState<{
     id: number;
     message: string;
-    type: "success" | "error" | "info";
+    type: NotificationType;
     isVisible: boolean;
   }>({
     id: 0,
     message: "",
-    type: "success",
+    type: NotificationType.SUCCESS,
     isVisible: false,
   });
 
-  const showNotification = (
-    message: string,
-    type: "success" | "error" | "info"
-  ) => {
+  const showNotification = (message: string, type: NotificationType) => {
     setNotification({
       id: Date.now(),
       message,
@@ -97,8 +97,10 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
       throw new Error("Не удалось загрузить продукты.");
     }
   };
-
+  
   const initializeCart = useCallback(async () => {
+    if (!isOpened) return;
+
     if (!userId) {
       setError({
         title: "Пользователь не авторизован",
@@ -109,18 +111,25 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
       return;
     }
 
-    fetchCart();
+    try {
+      setLoading(true);
+      await fetchCart();
+    } catch (err) {
+      console.error("Ошибка при инициализации корзины:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, isOpened]);
+
+  useEffect(() => {
     if (cart && cart.items.length > 0) {
       fetchProducts();
     }
-    setLoading(false);
-  }, [userId]);
+  }, [cart]);
 
   useEffect(() => {
-    if (isOpened) {
-      initializeCart();
-    }
-  }, [isOpened, initializeCart]);
+    initializeCart();
+  }, [initializeCart]);
 
   const handleCartSubmit = () => {
     onClose();
@@ -151,7 +160,7 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
       console.error("Ошибка при изменении количества товара:", err);
       showNotification(
         "В корзине максимальное количество данных блюд!",
-        "error"
+        NotificationType.ERROR
       );
     }
   };
@@ -167,7 +176,10 @@ const Cart: React.FC<CartProps> = ({ isOpened, onClose }) => {
       }));
     } catch (err) {
       console.error("Ошибка при удалении товара из корзины:", err);
-      showNotification("Не удалось убрать товар из корзины", "error");
+      showNotification(
+        "Не удалось убрать товар из корзины",
+        NotificationType.ERROR
+      );
     }
   };
 

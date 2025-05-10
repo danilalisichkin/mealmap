@@ -16,13 +16,13 @@ const UserProfileStats: React.FC<UserProfileStatsProps> = ({
 
   const navigateToHealth = () => {
     if (userId) {
-      navigate(`/user/${userId}/health`, { state: { userId } });
+      navigate(`/users/${userId}/health`, { state: { userId } });
     }
   };
 
   const navigateToOrders = () => {
     if (userId) {
-      navigate(`/user/${userId}/orders`, { state: { userId } });
+      navigate(`/users/${userId}/orders`, { state: { userId } });
     }
   };
 

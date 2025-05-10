@@ -5,25 +5,29 @@ import NutrientChart from "../../components/features/NutrientChart/NutrientChart
 import NutrientBar from "../../components/features/NutrientBar/NutrientBar";
 import CartDeliveryForm from "../../components/features/CartDeliveryForm/CartDeliveryForm";
 import CartCheckoutSidebar from "../../components/features/CartCheckoutSidebar/CartCheckoutSidebar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CartDto } from "../../api/cart/dto/CartDto";
 import { CartApi } from "../../api/cart/UserCartApi";
 import { ProductApi } from "../../api/product/ProductApi";
 import { useAuth } from "../../contexts/AuthContext";
 import { UserOrderApi } from "../../api/order/UserOrderApi";
 import { PromoCodeApi } from "../../api/promo/PromoCodeApi";
+import PopupNotification, {
+  NotificationType,
+} from "../../components/features/PopupNotification/PopupNotification";
+import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 
 interface CartCheckoutPagePageProps {}
 
 const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { userId } = useAuth() ?? null;
   const [cart, setCart] = useState<CartDto | null>(
     location.state?.cart ?? null
   );
   const [products, setProducts] = useState<ProductDto[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [deliveryData, setDeliveryData] = useState({
@@ -38,9 +42,37 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
   const [discount, setDiscount] = useState<number>(0);
   const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(null);
 
+  const [notification, setNotification] = useState<{
+    id: number;
+    message: string;
+    type: NotificationType;
+    isVisible: boolean;
+  }>({
+    id: 0,
+    message: "",
+    type: NotificationType.SUCCESS,
+    isVisible: false,
+  });
+
+  const showNotification = (message: string, type: NotificationType) => {
+    setNotification({
+      id: Date.now(),
+      message,
+      type,
+      isVisible: true,
+    });
+  };
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<ErrorDetail | null>(null);
+
   const fetchCart = async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -54,9 +86,22 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
         fetchedCart = await CartApi.getCart(userId);
         setCart(fetchedCart);
       }
-    } catch (err) {
-      console.error("Ошибка при загрузке корзины:", err);
-      setError("Не удалось загрузить данные. Попробуйте снова.");
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.error("Ошибка при загрузке корзины:", err);
+        setError({
+          title: "Упс! Кажется, корзина не найдена",
+          detail: err.response?.data.detail,
+          status: "404",
+        });
+      } else {
+        console.error("Ошибка при загрузке корзины:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -64,7 +109,11 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
 
   const fetchProducts = async () => {
     if (!userId) {
-      setError("Пользователь не авторизован");
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
       setLoading(false);
       return;
     }
@@ -78,7 +127,6 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
       setProducts(fetchedProducts);
     } catch (err) {
       console.error("Ошибка при загрузке продуктов:", err);
-      setError("Не удалось загрузить продукты. Попробуйте снова.");
     } finally {
       setLoading(false);
     }
@@ -99,17 +147,37 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
       setPromoCodeStatus("valid");
       setDiscount(promo.discountPercentage);
       setAppliedPromoCode(promoCode);
-    } catch (err) {
-      console.error("Ошибка при применении промокода:", err);
-      setPromoCodeStatus("invalid");
-      setDiscount(0);
-      setAppliedPromoCode(null);
+      showNotification("Промокод успешно применен!", NotificationType.SUCCESS);
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setPromoCodeStatus("invalid");
+        setDiscount(0);
+        setAppliedPromoCode(null);
+        showNotification("Промокод не найден!", NotificationType.ERROR);
+      } else {
+        console.error("Ошибка при полчении промокода:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
     }
   };
 
   const handlePlaceOrder = async () => {
-    if (!userId || !cart) {
-      setError("Пользователь не авторизован или корзина пуста.");
+    if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (!cart) {
+      showNotification("Корзина пуста!", NotificationType.ERROR);
       return;
     }
 
@@ -131,12 +199,17 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
         promoCode: appliedPromoCode ?? "",
         items: orderItems,
       });
-      setSuccessMessage(
-        `Заказ успешно оформлен! Номер заказа: ${createdOrder.id}`
+      showNotification(
+        `Заказ успешно оформлен! Номер заказа: ${createdOrder.id}`,
+        NotificationType.SUCCESS
       );
+      const timeout = setTimeout(
+        () => navigate(`users/${userId}/orders`),
+        1000
+      );
+      return () => clearTimeout(timeout);
     } catch (err) {
       console.error("Ошибка при оформлении заказа:", err);
-      setError("Не удалось оформить заказ. Попробуйте снова.");
     } finally {
       setLoading(false);
     }
@@ -203,12 +276,10 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
   }
 
   if (error) {
-    return <div className="text-center py-12 text-red-500">{error}</div>;
-  }
-
-  if (successMessage) {
     return (
-      <div className="text-center py-12 text-green-500">{successMessage}</div>
+      <div className="h-screen flex items-center justify-center">
+        <ErrorBanner error={error} />
+      </div>
     );
   }
 
@@ -306,6 +377,13 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
           </div>
         </div>
       </div>
+
+      <PopupNotification
+        key={notification.id}
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+      />
     </main>
   );
 };

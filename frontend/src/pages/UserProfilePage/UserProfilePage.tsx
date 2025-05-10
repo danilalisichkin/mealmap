@@ -3,7 +3,6 @@ import UserProfileSidebar from "../../components/features/UserProfileSidebar/Use
 import UserProfileStats from "../../components/features/UserProfileStats/UserProfileStats";
 import UserProfileHistory from "../../components/features/UserProfileHistory/UserProfileHistory";
 import UserPreferences from "../../components/features/UserPreferences/UserPreferences";
-import { useAuth } from "../../contexts/AuthContext";
 import { UserApi } from "../../api/user/UserApi";
 import { UserDto } from "../../api/user/dto/UserDto";
 import { StatusHistoryDto } from "../../api/user/dto/StatusHistoryDto";
@@ -11,13 +10,16 @@ import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
 import { UserPreferencesDto } from "../../api/preference/dto/UserPreferencesDto";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
-import PopupNotification from "../../components/features/PopupNotification/PopupNotification";
+import PopupNotification, {
+  NotificationType,
+} from "../../components/features/PopupNotification/PopupNotification";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
+import { useParams } from "react-router-dom";
 
 interface UserProfilePageProps {}
 
 const UserProfilePage: React.FC<UserProfilePageProps> = () => {
-  const { userId } = useAuth();
+  const { userId } = useParams<{ userId: string }>();
   const [user, setUser] = useState<UserDto | null>(null);
 
   const [userStatusHistory, setUserStatusHistory] = useState<
@@ -36,19 +38,16 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   const [notification, setNotification] = useState<{
     id: number;
     message: string;
-    type: "success" | "error" | "info";
+    type: NotificationType;
     isVisible: boolean;
   }>({
     id: 0,
     message: "",
-    type: "success",
+    type: NotificationType.SUCCESS,
     isVisible: false,
   });
 
-  const showNotification = (
-    message: string,
-    type: "success" | "error" | "info"
-  ) => {
+  const showNotification = (message: string, type: NotificationType) => {
     setNotification({
       id: Date.now(),
       message,
@@ -168,7 +167,10 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
               }
             : null
         );
-        showNotification("Блюдо убрано из предпочтений!", "success");
+        showNotification(
+          "Блюдо убрано из предпочтений!",
+          NotificationType.SUCCESS
+        );
       } catch (err) {
         console.error("Ошибка при удалении предпочтения продукта:", err);
       }
@@ -192,7 +194,10 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
               }
             : null
         );
-        showNotification("Категория убрана из предпочтений!", "success");
+        showNotification(
+          "Категория убрана из предпочтений!",
+          NotificationType.SUCCESS
+        );
       } catch (err) {
         console.error("Ошибка при удалении предпочтения категории:", err);
       }
