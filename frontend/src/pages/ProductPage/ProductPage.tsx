@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProductDto } from "../../api/product/dto/ProductDto";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { ProductApi } from "../../api/product/ProductApi";
 import "./ProductPage.css";
 import { PreferenceType } from "../../api/preference/enums/PreferenceType";
@@ -9,7 +9,9 @@ import { useAuth } from "../../contexts/AuthContext";
 import { CartApi } from "../../api/cart/UserCartApi";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
-import PopupNotification from "../../components/features/PopupNotification/PopupNotification";
+import PopupNotification, {
+  NotificationType,
+} from "../../components/features/PopupNotification/PopupNotification";
 import { FileApi } from "../../api/file/FileApi";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
@@ -35,19 +37,16 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   const [notification, setNotification] = useState<{
     id: number;
     message: string;
-    type: "success" | "error" | "info";
+    type: NotificationType;
     isVisible: boolean;
   }>({
     id: 0,
     message: "",
-    type: "success",
+    type: NotificationType.SUCCESS,
     isVisible: false,
   });
 
-  const showNotification = (
-    message: string,
-    type: "success" | "error" | "info"
-  ) => {
+  const showNotification = (message: string, type: NotificationType) => {
     setNotification({
       id: Date.now(),
       message,
@@ -138,10 +137,16 @@ const ProductPage: React.FC<ProductPageProps> = () => {
 
     try {
       await CartApi.addItemToCart(userId, { productId, quantity });
-      showNotification("Товар успешно добавлен в корзину!", "success");
+      showNotification(
+        "Товар успешно добавлен в корзину!",
+        NotificationType.SUCCESS
+      );
       console.log(`Товар с ID ${productId} добавлен в корзину`);
     } catch (error) {
-      showNotification("Ошибка при добавлении товара в корзину", "error");
+      showNotification(
+        "Ошибка при добавлении товара в корзину",
+        NotificationType.ERROR
+      );
       console.error("Ошибка при добавлении товара в корзину:", error);
     }
   };
@@ -154,7 +159,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
       console.error("Пользователь не авторизован");
       showNotification(
         "Для выбора предпочтений необходимо войти в систему",
-        "info"
+        NotificationType.INFO
       );
       return;
     }
@@ -165,7 +170,10 @@ const ProductPage: React.FC<ProductPageProps> = () => {
         preferenceType,
       });
       setCurrentPreferenceType(preferenceType);
-      showNotification("Блюдо добавлено в предпочтения!", "success");
+      showNotification(
+        "Блюдо добавлено в предпочтения!",
+        NotificationType.SUCCESS
+      );
       console.log(`Товар с ID ${productId} добавлен в предпочтения`);
     } catch (error) {
       console.error("Ошибка при добавлении товара в предпочтения:", error);
@@ -177,7 +185,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
       console.error("Пользователь не авторизован");
       showNotification(
         "Для выбора предпочтений необходимо войти в систему",
-        "info"
+        NotificationType.INFO
       );
       return;
     }
@@ -185,7 +193,10 @@ const ProductPage: React.FC<ProductPageProps> = () => {
     try {
       await PreferenceApi.removeProductPreference(userId, productId);
       setCurrentPreferenceType(null);
-      showNotification("Блюдо убрано из предпочтений!", "success");
+      showNotification(
+        "Блюдо убрано из предпочтений!",
+        NotificationType.SUCCESS
+      );
       console.log(`Товар с ID ${productId} убран из предпочтений`);
     } catch (error) {
       console.error("Ошибка при удалении товара из предпочтений:", error);
@@ -237,7 +248,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 max-w-6xl">
+    <main className="container mx-auto px-4 py-8 min-h-screen max-w-6xl">
       {/* Product Card */}
       <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md">
         {/* Image Container */}
@@ -314,12 +325,13 @@ const ProductPage: React.FC<ProductPageProps> = () => {
           {/* Categories */}
           <div className="flex flex-wrap gap-1 mb-2">
             {product.categories.map((category) => (
-              <span
+              <Link
                 key={category.id}
-                className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded"
+                to={`/catalog/categories/${category.id}`}
+                className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded hover:bg-green-100 hover:text-green-600 transition"
               >
                 {category.name}
-              </span>
+              </Link>
             ))}
           </div>
 

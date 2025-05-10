@@ -8,7 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { PreferenceApi } from "../../../api/preference/UserPreferenceApi";
 import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 import { ProductPreferenceDto } from "../../../api/preference/dto/ProductPreferenceDto";
-import PopupNotification from "../PopupNotification/PopupNotification";
+import PopupNotification, {
+  NotificationType,
+} from "../PopupNotification/PopupNotification";
 
 interface CatalogProps {
   products: ProductDto[];
@@ -22,19 +24,16 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
   const [notification, setNotification] = useState<{
     id: number;
     message: string;
-    type: "success" | "error" | "info";
+    type: NotificationType;
     isVisible: boolean;
   }>({
     id: 0,
     message: "",
-    type: "success",
+    type: NotificationType.SUCCESS,
     isVisible: false,
   });
 
-  const showNotification = (
-    message: string,
-    type: "success" | "error" | "info"
-  ) => {
+  const showNotification = (message: string, type: NotificationType) => {
     setNotification({
       id: Date.now(),
       message,
@@ -57,10 +56,16 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
     try {
       await CartApi.addItemToCart(userId, { productId, quantity: 1 });
       console.log(`Товар с ID ${productId} добавлен в корзину`);
-      showNotification("Товар успешно добавлен в корзину!", "success");
+      showNotification(
+        "Товар успешно добавлен в корзину!",
+        NotificationType.SUCCESS
+      );
     } catch (error) {
       console.error("Ошибка при добавлении товара в корзину:", error);
-      showNotification("Ошибка при добавлении товара в корзину.", "error");
+      showNotification(
+        "Ошибка при добавлении товара в корзину.",
+        NotificationType.ERROR
+      );
     }
   };
 
@@ -72,7 +77,7 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
       console.error("Пользователь не авторизован");
       showNotification(
         "Для выбора предпочтений необходимо войти в систему",
-        "info"
+        NotificationType.INFO
       );
       return;
     }
@@ -82,7 +87,10 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
         productId: productId,
         preferenceType: preferenceType,
       });
-      showNotification("Блюдо добавлено в предпочтения!", "success");
+      showNotification(
+        "Блюдо добавлено в предпочтения!",
+        NotificationType.SUCCESS
+      );
       console.log(`Товар с ID ${productId} добавлен в предпочтения`);
     } catch (error) {
       console.error("Ошибка при добавлении товара в предпочтения:", error);
@@ -94,14 +102,17 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
       console.error("Пользователь не авторизован");
       showNotification(
         "Для выбора предпочтений необходимо войти в систему",
-        "info"
+        NotificationType.INFO
       );
       return;
     }
 
     try {
       await PreferenceApi.removeProductPreference(userId, productId);
-      showNotification("Блюдо убрано из предпочтений!", "success");
+      showNotification(
+        "Блюдо убрано из предпочтений!",
+        NotificationType.SUCCESS
+      );
       console.log(`Товар с ID ${productId} убран из предпочтений`);
     } catch (error) {
       console.error("Ошибка при удалении товара из предпочтений:", error);
