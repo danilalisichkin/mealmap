@@ -12,11 +12,15 @@ import UserHealthPage from "./pages/UserHealthPage/UserHealthPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import FaqPage from "./pages/FaqPage/FaqPage";
 import GreetingPage from "./pages/GreetingPage/GreetingPage";
+import ScrollToTop from "./components/commons/ScrollToTop/ScrollToTop";
+import CategoryPage from "./pages/CategoryPage/CategoryPage";
+import RecommendationPage from "./pages/RecommendationPage/RecommendationPage";
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <div className="w-full min-h-screen flex flex-col">
           <Header title="Meal Map" />
           <Routes>
@@ -24,11 +28,22 @@ const App: React.FC = () => {
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/catalog/products/:id" element={<ProductPage />} />
-            <Route path="/user/:userId/profile" element={<UserProfilePage />} />
-            <Route path="/user/:userId/health" element={<UserHealthPage />} />
-            <Route path="/user/:userId/orders" element={<UserOrdersPage />} />
             <Route
-              path="/user/:userId/notifications"
+              path="/catalog/categories/:categoryId"
+              element={<CategoryPage />}
+            />
+            <Route
+              path="/ai-recommendation-system"
+              element={<RecommendationPage />}
+            />
+            <Route
+              path="/users/:userId/profile"
+              element={<UserProfilePage />}
+            />
+            <Route path="/users/:userId/health" element={<UserHealthPage />} />
+            <Route path="/users/:userId/orders" element={<UserOrdersPage />} />
+            <Route
+              path="/users/:userId/notifications"
               element={<UserNotificationsPage />}
             />
             <Route path="/cart/checkout" element={<CartCheckoutPage />} />

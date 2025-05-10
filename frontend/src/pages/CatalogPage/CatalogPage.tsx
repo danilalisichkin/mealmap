@@ -8,7 +8,6 @@ import Catalog from "../../components/features/Catalog/Catalog";
 import Pagination from "../../components/commons/Pagination/Pagination";
 import { ProductFilter } from "../../api/product/dto/ProductFilter";
 import { PageDto } from "../../api/common/dto/PageDto";
-import RecommendationSection from "../../components/features/RecommendationSection/RecommendationSection";
 import { ProductSortField } from "../../api/product/enums/ProductSortField";
 import ProductSort from "../../components/features/ProductSort/ProductSort";
 import { ProductApi } from "../../api/product/ProductApi";
@@ -230,9 +229,11 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
 
   return (
     <main className="container mx-auto px-4 py-4">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-3xl font-bold text-gray-800">Каталог</h1>
-        <div className="w-full md:w-auto flex flex-col md:flex-row gap-3">
+        
+        {/* Search + Sorting */}
+        <div className="w-full md:w-auto flex flex-col md:flex-row gap-3 mb-4">
           <Search
             text={searchText}
             placeHolder="Поиск в каталоге..."
@@ -247,6 +248,8 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
           <FilterToggleButton label="фильтры" onClick={toggleFilter} />
         </div>
       </div>
+      
+      {/* Filter (hidden) */}
       <CatalogFilter
         filter={filter}
         suppliers={suppliers}
@@ -254,6 +257,8 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
         onFilterChange={handleFilterChange}
         onApply={handleFilterApply}
       />
+
+      {/* Category select */}
       <MultiSelect
         title="Категории"
         options={categories}
@@ -264,7 +269,11 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
         if (error) {
           content = <ErrorBanner error={error} />;
         } else if (loading) {
-          content = <CatalogPlaceholder numberOfElements={DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE}/>;
+          content = (
+            <CatalogPlaceholder
+              numberOfElements={DEFAULT_PAGINATION_OPTIONS.PAGE_SIZE}
+            />
+          );
         } else if (productPage) {
           content = (
             <>
@@ -284,7 +293,6 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
         }
         return content;
       })()}
-      <RecommendationSection />
     </main>
   );
 };
