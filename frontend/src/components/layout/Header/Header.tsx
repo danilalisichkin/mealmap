@@ -162,42 +162,45 @@ const DesktopHeader: React.FC<{
 
             {/* User Info */}
             <div className="relative">
-              <button
-                className="text-gray-700 hover:text-green-500 transition flex items-center"
-                onClick={toggleUserMenu}
-              >
-                <i className="fas fa-user text-lg mr-1"></i> Профиль
-              </button>
-              {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-                  <Link
-                    to={`/users/${userId}/profile`}
-                    className="block px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
+              <div className="relative" onMouseEnter={() => toggleUserMenu()}>
+                <button className="text-gray-700 hover:text-green-500 transition flex items-center">
+                  <i className="fas fa-user text-lg mr-1"></i> Профиль
+                </button>
+                {isUserMenuOpen && (
+                  <div
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20"
+                    onMouseEnter={() => toggleUserMenu()}
+                    onMouseLeave={() => toggleUserMenu()}
                   >
-                    <i className="fas fa-user text-lg mr-1"></i> Мой профиль
-                  </Link>
-                  <Link
-                    to={`/users/${userId}/orders`}
-                    className="block px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
-                  >
-                    <i className="fas fa-clipboard-list text-lg mr-1"></i> Мои
-                    заказы
-                  </Link>
-                  <Link
-                    to={`/users/${userId}/notifications`}
-                    className="block px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
-                  >
-                    <i className="fas fa-bell text-lg mr-1"></i> Уведомления
-                  </Link>
-                  <div className="border-t border-gray-200 my-1"></div>
-                  <button
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
-                    onClick={openLogoutModal}
-                  >
-                    <i className="fas fa-sign-out-alt text-lg mr-1"></i> Выйти
-                  </button>
-                </div>
-              )}
+                    <Link
+                      to={`/users/${userId}/profile`}
+                      className="block px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
+                    >
+                      <i className="fas fa-user text-lg mr-1"></i> Мой профиль
+                    </Link>
+                    <Link
+                      to={`/users/${userId}/orders`}
+                      className="block px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
+                    >
+                      <i className="fas fa-clipboard-list text-lg mr-1"></i> Мои
+                      заказы
+                    </Link>
+                    <Link
+                      to={`/users/${userId}/notifications`}
+                      className="block px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
+                    >
+                      <i className="fas fa-bell text-lg mr-1"></i> Уведомления
+                    </Link>
+                    <div className="border-t border-gray-200 my-1"></div>
+                    <button
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-green-500 hover:text-white"
+                      onClick={openLogoutModal}
+                    >
+                      <i className="fas fa-sign-out-alt text-lg mr-1"></i> Выйти
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </>
         ) : (
