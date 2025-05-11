@@ -21,10 +21,17 @@ const GreetingPage: React.FC<GreetingPageProps> = () => {
     navigate("/faq");
   };
 
+  const navigateToClientRegistration = () => {
+    navigate("/client-registration");
+  };
+
+  const navigateToSupplierRegistration = () => {
+    navigate("/supplier-registration");
+  }
+
   return (
     <main className="container min-h-screen mx-auto px-4 py-8">
-      {/* Hero Section */}
-      <HeroSection onNavigateToFaq={navigateToFaq} />
+      <HeroSection onNavigateToFaq={navigateToFaq} onNavigateToClientReg={navigateToClientRegistration}/>
 
       <StatsSection />
 
@@ -32,7 +39,7 @@ const GreetingPage: React.FC<GreetingPageProps> = () => {
 
       <BenefitsSection />
 
-      <PartnersSection />
+      <PartnersSection onNavigateToSupplierReg={navigateToSupplierRegistration} />
 
       <TestimonialsSection />
     </main>
@@ -41,9 +48,10 @@ const GreetingPage: React.FC<GreetingPageProps> = () => {
 
 interface HeroSectionProps {
   onNavigateToFaq: () => void;
+  onNavigateToClientReg: () => void;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onNavigateToFaq }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ onNavigateToFaq, onNavigateToClientReg }) => {
   return (
     <section className="hero-gradient">
       <div className="container mx-auto px-4 py-16 md:py-24 flex flex-col md:flex-row items-center">
@@ -57,7 +65,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigateToFaq }) => {
             персонализированного питания сотрудников вашей компании
           </p>
           <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-            <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-medium transition transform hover:scale-105 scale">
+            <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-medium transition transform hover:scale-105 scale" onClick={onNavigateToClientReg}>
               Подключить компанию
             </button>
             <button
@@ -293,7 +301,11 @@ const BenefitsSection: React.FC<{}> = () => {
     );
 };
 
-const PartnersSection: React.FC<{}> = () => {
+interface PartnersSectionProps {
+  onNavigateToSupplierReg: () => void;
+}
+
+const PartnersSection: React.FC<PartnersSectionProps> = ({onNavigateToSupplierReg}) => {
   return (
     <section id="partners" className="py-16 bg-green-50">
       <div className="container mx-auto px-4">
@@ -347,7 +359,7 @@ const PartnersSection: React.FC<{}> = () => {
               </p>
             </div>
 
-            <button className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium mt-4 transition transform hover:scale-105">
+            <button className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium mt-4 transition transform hover:scale-105" onClick={onNavigateToSupplierReg}>
               Стать поставщиком
             </button>
           </div>

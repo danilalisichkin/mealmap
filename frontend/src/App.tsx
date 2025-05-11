@@ -15,6 +15,8 @@ import GreetingPage from "./pages/GreetingPage/GreetingPage";
 import ScrollToTop from "./components/commons/ScrollToTop/ScrollToTop";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 import RecommendationPage from "./pages/RecommendationPage/RecommendationPage";
+import SupplierRegistrationPage from "./pages/SupplierRegistrationPage/SupplierRegistrationPage";
+import ClientRegistrationPage from "./pages/ClientRegistrationPage/ClientRegistrationPage";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +27,10 @@ const App: React.FC = () => {
           <Header title="Meal Map" />
           <Routes>
             <Route path="" element={<GreetingPage />} />
+            <Route
+              path="/ai-recommendation-system"
+              element={<RecommendationPage />}
+            />
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/catalog/products/:id" element={<ProductPage />} />
@@ -33,8 +39,12 @@ const App: React.FC = () => {
               element={<CategoryPage />}
             />
             <Route
-              path="/ai-recommendation-system"
-              element={<RecommendationPage />}
+              path="/client-registration"
+              element={<ClientRegistrationPage />}
+            />
+            <Route
+              path="/supplier-registration"
+              element={<SupplierRegistrationPage />}
             />
             <Route
               path="/users/:userId/profile"
