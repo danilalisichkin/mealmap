@@ -59,5 +59,8 @@ eureka:
   client:
     service-url:
       default-zone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
 server:
   port: ${SERVER_PORT:8083}
