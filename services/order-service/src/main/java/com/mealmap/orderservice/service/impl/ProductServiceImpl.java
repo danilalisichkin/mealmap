@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProducts(List<Long> ids) {
-        return productApiClient.bulkGetProducts(ids);
+        return productApiClient.bulkGetProducts(ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(",")));
     }
 }

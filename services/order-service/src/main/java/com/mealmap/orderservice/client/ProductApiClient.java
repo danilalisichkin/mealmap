@@ -16,5 +16,5 @@ import java.util.List;
         configuration = {ProductApiClientConfig.class, FeignOAuth2Config.class})
 public interface ProductApiClient {
     @GetMapping("/bulk")
-    List<ProductDto> bulkGetProducts(@RequestParam List<Long> ids);
+    List<ProductDto> bulkGetProducts(@RequestParam String ids);
 }
