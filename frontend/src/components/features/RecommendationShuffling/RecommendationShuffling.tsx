@@ -11,7 +11,7 @@ const RecommendationsShuffling: React.FC<RecommendationsShufflingProps> = ({
   <div id="ai-processing" className="text-center py-8">
     <div className="plate-container">
       <div className="plate pulse">
-        <i className="fas fa-utensils text-gray-300 text-4xl z-10"></i>
+        <i className="fas fa-utensils text-gray-300 text-4xl"></i>
       </div>
       <div className="food-item food-yellow" id="food-1">
         <i className="fas fa-apple-alt"></i>

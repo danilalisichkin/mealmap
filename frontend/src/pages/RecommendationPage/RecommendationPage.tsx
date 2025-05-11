@@ -1,18 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { ProductPreferenceDto } from "../../api/preference/dto/ProductPreferenceDto";
-import { mockRecommendation } from "../../mock/recommendations";
-import { mockProducts } from "../../mock/products";
 import PopupNotification, {
   NotificationType,
 } from "../../components/features/PopupNotification/PopupNotification";
-import { RecommendationItem } from "../../api/recommendation/dto/RecommendationItem";
 import { CartApi } from "../../api/cart/UserCartApi";
 import { PreferenceType } from "../../api/preference/enums/PreferenceType";
 import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
 import RecommendationPrompt from "../../components/features/RecommendationPrompt/RecommendationPrompt";
 import RecommendationsShuffling from "../../components/features/RecommendationShuffling/RecommendationShuffling";
 import RecommendationList from "../../components/features/RecommendationResult/RecommendationList";
+import { RecommendationApi } from "../../api/recommendation/RecommendationApi";
+import { ProductApi } from "../../api/product/ProductApi";
+import { UserRecommendationDto } from "../../api/recommendation/dto/UserRecommendationDto";
+import { ProductDto } from "../../api/product/dto/ProductDto";
+import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import { RecommendationItem } from "../../api/recommendation/dto/RecommendationItem";
 
 interface RecommendationPageProps {}
 
@@ -28,24 +31,19 @@ const AI_MESSAGES = [
 
 const RecommendationPage: React.FC<RecommendationPageProps> = () => {
   const { userId } = useAuth();
-  const [productPreferences, setProductPreferences] = useState<
-    ProductPreferenceDto[]
-  >([]);
 
   const [stage, setStage] = useState<"prompt" | "shuffling" | "result">(
     "prompt"
   );
 
-  //TODO: API CALL
-  const recommendations = mockRecommendation;
-
-  //TODO: API CALL
-  const products = mockProducts;
-  const recommendedProducts = products.filter((product) =>
-    recommendations.items.some(
-      (item: { productId: number }) => item.productId === product.id
-    )
+  const [recommendations, setRecommendations] =
+    useState<UserRecommendationDto | null>(null);
+  const [recommendedProducts, setRecommendedProducts] = useState<ProductDto[]>(
+    []
   );
+  const [productPreferences, setProductPreferences] = useState<
+    ProductPreferenceDto[]
+  >([]);
 
   const [aiMessageIndex, setAiMessageIndex] = useState(0);
   const [typedText, setTypedText] = useState(AI_MESSAGES[0].slice(0, 0));
@@ -89,7 +87,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
     typeNext();
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setStage("shuffling");
     setAiMessageIndex(0);
     typeMessage(AI_MESSAGES[0]);
@@ -102,12 +100,67 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
       });
     }, 3000);
 
-    aiTimeoutRef.current = setTimeout(() => {
-      setStage("result");
+    try {
+      const newRecommendations = await fetchRecommendations();
+      if (newRecommendations !== undefined) {
+        await fetchRecommendedProducts(newRecommendations);
+      }
+    } catch (error) {
+      console.error("Ошибка при генерации рекомендаций:", error);
+    } finally {
       if (aiIntervalRef.current) clearInterval(aiIntervalRef.current);
       if (foodAnimIntervalRef.current)
         clearInterval(foodAnimIntervalRef.current);
-    }, 5000);
+      setStage("result");
+    }
+  };
+
+  const fetchRecommendations = async () => {
+    if (!userId) {
+      console.error("Пользователь не авторизован");
+      return;
+    }
+
+    try {
+      const fetchedRecommendations =
+        await RecommendationApi.getNewUserRecommendation(userId);
+      setRecommendations(fetchedRecommendations);
+
+      const productIds = fetchedRecommendations.items.map(
+        (item) => item.productId
+      );
+      const fetchedProducts = await ProductApi.bulkGetProducts(productIds);
+      setRecommendedProducts(fetchedProducts);
+      return fetchedRecommendations;
+    } catch (error) {
+      console.error("Ошибка при загрузке рекомендаций:", error);
+      return null;
+    }
+  };
+
+  const fetchRecommendedProducts = async (
+    newRecommendations: UserRecommendationDto | null
+  ) => {
+    if (!newRecommendations || newRecommendations.items.length <= 0) {
+      setRecommendedProducts([]);
+      return;
+    }
+
+    try {
+      const productIds = newRecommendations.items.map((item) => item.productId);
+
+      const fetchedProducts = await ProductApi.bulkGetProducts(productIds);
+      setRecommendedProducts(fetchedProducts);
+
+      const filteredItems = newRecommendations.items.filter((item) =>
+        fetchedProducts.some((product) => product.id === item.productId)
+      );
+      setRecommendations((prev) =>
+        prev ? { ...prev, items: filteredItems } : null
+      );
+    } catch (error) {
+      console.error("Ошибка при загрузке рекомендованных продуктов:", error);
+    }
   };
 
   const handleAddToCart = async (item: RecommendationItem) => {
@@ -138,8 +191,10 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
       return;
     }
 
-    for (const item of recommendations.items) {
-      await handleAddToCart(item);
+    if (!recommendations) return;
+
+    for (const recommendation of recommendations.items) {
+      await handleAddToCart(recommendation);
     }
   };
 
@@ -286,6 +341,26 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
     }
   }, [stage]);
 
+  if (stage === "result" && !recommendations) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorBanner
+          error={{
+            title: "Упс! Кажется, рекомендации не найдены",
+            detail: "ИИ не смог подобрать для вас блюда",
+            status: "404",
+          }}
+        />
+      </div>
+    );
+  }
+
+  const isRecommendationsFound =
+    recommendations &&
+    recommendations.items &&
+    recommendations.items.length > 0 &&
+    recommendedProducts.length > 0;
+
   return (
     <main className="container min-h-screen mx-auto px-4 py-4">
       {/* Page Title */}
@@ -319,7 +394,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
       )}
 
       {/* Result */}
-      {stage === "result" && (
+      {stage === "result" && isRecommendationsFound && (
         <div className="bg-white rounded-xl shadow-sm p-6 max-w-md mx-auto mb-6">
           <div className="ai-message">
             <div className="flex items-start">
@@ -328,25 +403,30 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-800">
-                  {recommendations.message}
+                  {recommendations.message && recommendations.message !== ""
+                    ? recommendations.message
+                    : "Я старался подобрать наиболее подходящие блюда для Вас. Надеюсь, Вам понравится ;)."}
                 </p>
               </div>
             </div>
           </div>
-
-          <div className="flex justify-center">
-            <button
-              className="mt-4 px-4 py-2 bg-gray-100 text-green-700 rounded-full font-medium hover:bg-green-50 transition-all shadow"
-              onClick={handleGenerate}
-            >
-              <i className="fas fa-sync-alt mr-2"></i> Сгенерировать заново
-            </button>
-          </div>
         </div>
       )}
 
-      {/* Result Items*/}
-      {stage === "result" && (
+      {/* Generate Again */}
+      {stage === "result" && recommendations && (
+        <div className="mt-6 mb-6 text-center">
+          <button
+            className="px-6 py-3 bg-gray-100 text-green-700 rounded-full font-medium hover:bg-green-50 transition-all shadow"
+            onClick={handleGenerate}
+          >
+            <i className="fas fa-sync-alt mr-2"></i> Сгенерировать заново
+          </button>
+        </div>
+      )}
+
+      {/* Result Items */}
+      {stage === "result" && isRecommendationsFound && (
         <div className="bg-white rounded-xl shadow-sm p-6 max-w-4xl mx-auto">
           <RecommendationList
             recommendations={recommendations}
@@ -359,8 +439,8 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
         </div>
       )}
 
-      {/* Result Items*/}
-      {stage === "result" && (
+      {/* Add result to cart */}
+      {stage === "result" && isRecommendationsFound && (
         <div className="mt-6 text-center">
           <button
             className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full font-medium hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg"
@@ -372,6 +452,17 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
         </div>
       )}
 
+      {/* Result Items Not Found*/}
+      {stage === "result" && recommendations && !isRecommendationsFound && (
+        <ErrorBanner
+          error={{
+            title: "Упс! Кажется, рекомендации не найдены",
+            detail: "ИИ не смог подобрать для вас блюда",
+            status: "404",
+          }}
+        />
+      )}
+      
       <PopupNotification
         key={notification.id}
         message={notification.message}

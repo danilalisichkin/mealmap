@@ -42,32 +42,35 @@ const RecommendationList: React.FC<RecommendationListProps> = ({
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
         id="recommended-products"
       >
-        {recommendedProducts.map((product) => {
-          const recommendationItem = recommendations.items.find(
-            (item) => item.productId === product.id
+        {recommendations.items.map((recommendationItem) => {
+          const recommendedProduct = recommendedProducts.find(
+            (product) => product.id === recommendationItem.productId
           );
+
+          if (!recommendedProduct) return null;
+
           return (
             <div
               className="relative"
-              key={`recommendation-${recommendationItem?.productId}-${recommendationItem?.quantity}`}
+              key={`recommendation-${recommendationItem.productId}-${recommendationItem.quantity}`}
             >
               <ProductCard
-                key={product.id}
-                product={product}
+                key={recommendedProduct.id}
+                product={recommendedProduct}
                 preferenceType={
                   preferredProducts.find(
-                    (pref) => pref.productId === product.id
+                    (pref) => pref.productId === recommendedProduct.id
                   )?.preferenceType ?? null
                 }
-                onAddToCart={() => onAddToCart(recommendationItem!)}
+                onAddToCart={() => onAddToCart(recommendationItem)}
                 onNavigateToProductPage={() =>
-                  handleNavigateToProductPage(product.id)
+                  handleNavigateToProductPage(recommendedProduct.id)
                 }
                 onAddToPreference={(preferenceType: PreferenceType) =>
-                  onAddToPreference(product.id, preferenceType)
+                  onAddToPreference(recommendedProduct.id, preferenceType)
                 }
                 onRemoveFromPreference={() =>
-                  onRemoveFromPreference(product.id)
+                  onRemoveFromPreference(recommendedProduct.id)
                 }
               />
               {recommendationItem && recommendationItem.quantity > 0 && (
