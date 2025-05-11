@@ -147,7 +147,7 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
       setPromoCodeStatus("valid");
       setDiscount(promo.discountPercentage);
       setAppliedPromoCode(promoCode);
-      showNotification("Промокод успешно применен!", NotificationType.SUCCESS);
+      showNotification("Промокод применен!", NotificationType.SUCCESS);
     } catch (err: any) {
       if (err.response?.status === 404) {
         setPromoCodeStatus("invalid");
@@ -184,7 +184,6 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
     try {
       setLoading(true);
       setError(null);
-      setSuccessMessage(null);
 
       const orderItems = cart.items.map((item) => ({
         productId: item.productId,
@@ -208,8 +207,18 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
         1000
       );
       return () => clearTimeout(timeout);
-    } catch (err) {
-      console.error("Ошибка при оформлении заказа:", err);
+    } catch (err: any) {
+      setPromoCodeStatus("invalid");
+      setDiscount(0);
+      setAppliedPromoCode(null);
+      if (err.response?.status === 409) {
+        showNotification(err.response.data.detail, NotificationType.ERROR);
+      } else {
+        showNotification(
+          "Ошибка при оформлении заказа",
+          NotificationType.ERROR
+        );
+      }
     } finally {
       setLoading(false);
     }

@@ -68,7 +68,9 @@ const CartItem: React.FC<CartItemProps> = ({
           className="w-16 h-16 object-cover rounded-lg mr-4"
         />
       ) : (
-        <LoadingSpinner />
+        <div className="w-16 h-16 object-cover rounded-lg mr-4">
+          <LoadingSpinner />
+        </div>
       )}
 
       <div className="flex-1">
