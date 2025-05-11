@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { OrderDto } from "../../../api/order/dto/OrderDto";
-import OrderProductList from "../OrderProductList/OrderProductList";
 import OrderDetails from "../OrderDetails/OrderDetails";
 import OrderStatusTimeline from "../OrderStatusTimeline/OrderStatusTimeline";
+import OrderItemList from "../OrderItemList/OrderItemList";
 import "./OrderCard.css";
 
 interface OrderCardProps {
@@ -76,7 +76,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Состав заказа
               </h3>
-              <OrderProductList items={order.items} />
+              <OrderItemList items={order.items} />
               <OrderDetails order={order} />
             </div>
             <div>
