@@ -9,11 +9,17 @@ import java.util.Base64;
 import java.util.UUID;
 
 import static com.mealmap.telegrambot.core.constant.LinkTemplates.START_USER_LINK;
+import static com.mealmap.telegrambot.core.constant.LinkTemplates.WRITE_LINK;
 
 @Service
 @RequiredArgsConstructor
 public class TgLinkServiceImpl implements TgLinkService {
     private final TgBotProperties tgBotProperties;
+
+    @Override
+    public String generateWriteLink() {
+        return WRITE_LINK.formatted(tgBotProperties.getUsername());
+    }
 
     @Override
     public String generateStartLinkForUser(UUID userId) {

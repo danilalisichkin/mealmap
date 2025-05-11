@@ -37,6 +37,14 @@ public class TgBotController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/links/write")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> generateWriteLink() {
+        String link = tgLinkService.generateWriteLink();
+
+        return ResponseEntity.status(HttpStatus.OK).body(link);
+    }
+
     @GetMapping("/links/start")
     @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<String> generateStartLink(@RequestParam UUID userId) {
