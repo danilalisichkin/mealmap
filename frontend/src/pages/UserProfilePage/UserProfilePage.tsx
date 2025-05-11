@@ -15,6 +15,8 @@ import PopupNotification, {
 } from "../../components/features/PopupNotification/PopupNotification";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 import { useParams } from "react-router-dom";
+import { UserNotificationApi } from "../../api/notification/UserNotificationApi";
+import { TelegramBotApi } from "../../api/telegrambot/TelegramBotApi";
 
 interface UserProfilePageProps {}
 
@@ -28,7 +30,8 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   const [userPreferences, setUserPreferences] =
     useState<UserPreferencesDto | null>(null);
 
-  const tgChatId = 2;
+  const [tgChatId, setTgChatId] = useState<number | null>(null);
+
   const totalOrders = 20;
   const totalDiscounted = 1000;
 
@@ -91,6 +94,17 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
     }
   }, [userId]);
 
+  const fetchUserContacts = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const contacts = await UserNotificationApi.getUserContacts(userId);
+      setTgChatId(contacts.tgChatId || null);
+    } catch (err) {
+      console.error("Ошибка при загрузке контактов пользователя:", err);
+    }
+  }, [userId]);
+
   const fetchUserStatusHistory = useCallback(async () => {
     if (!userId) {
       setError({
@@ -133,9 +147,15 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
 
   useEffect(() => {
     fetchUser();
+    fetchUserContacts();
     fetchUserStatusHistory();
     fetchUserPreferences();
-  }, [fetchUser, fetchUserStatusHistory, fetchUserPreferences]);
+  }, [
+    fetchUser,
+    fetchUserContacts,
+    fetchUserStatusHistory,
+    fetchUserPreferences,
+  ]);
 
   if (loading) {
     return (
@@ -204,11 +224,55 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
     }
   };
 
+  const handleGoToTelegram = async () => {
+    try {
+      const botWriteLink = await TelegramBotApi.getBotWriteLink();
+      window.open(botWriteLink, "_blank");
+    } catch (err) {
+      console.error("Ошибка при получении ссылки на Telegram-бота:", err);
+    }
+  };
+
+  const handleLinkTelegram = async () => {
+    if (!userId) return;
+
+    try {
+      const botStartLink = await TelegramBotApi.getBotStartLink(userId);
+      window.open(botStartLink, "_blank");
+      const timeout = setTimeout(() => fetchUserContacts(), 5000);
+      return () => clearTimeout(timeout);
+    } catch (err) {
+      console.error(
+        "Ошибка при получении ссылки для запуска Telegram-бота:",
+        err
+      );
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorBanner
+          error={{
+            status: "404",
+            title: "Упс! Кажется, пользователь не найден.",
+            detail: "Возможно, данного пользователя не существует",
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <main className="container min-h-screen mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3 lg:w-1/4">
-          {user && <UserProfileSidebar user={user} tgChatId={tgChatId} />}
+          <UserProfileSidebar
+            user={user}
+            tgChatId={tgChatId}
+            onGoToTelegramChat={handleGoToTelegram}
+            onLinkTelegram={handleLinkTelegram}
+          />
         </div>
         <div className="w-full md:w-2/3 lg:w-3/4">
           <UserProfileStats

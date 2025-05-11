@@ -1,11 +1,13 @@
 import React from "react";
 import { UserDto } from "../../../api/user/dto/UserDto";
-import "./UserProfileSidebar.css";
 import { Role } from "../../../api/user/enums/Role";
+import "./UserProfileSidebar.css";
 
 interface UserProfileSidebarProps {
   user: UserDto;
-  tgChatId?: number;
+  tgChatId: number | null;
+  onLinkTelegram: () => void;
+  onGoToTelegramChat: () => void;
 }
 
 const roles = {
@@ -18,23 +20,24 @@ const roles = {
 const UserProfileSidebar: React.FC<UserProfileSidebarProps> = ({
   user,
   tgChatId,
+  onLinkTelegram,
+  onGoToTelegramChat,
 }) => {
-  const isTelegramLinked = () => !!tgChatId;
+  const isTelegramLinked = tgChatId !== null;
 
-  const handleGoToTelegram = () => {
-    if (isTelegramLinked()) {
-      //TODO: REDIRECT
-      console.log("Redirect to Telegram chat");
+  const handleTelegramAction = () => {
+    if (isTelegramLinked) {
+      onGoToTelegramChat();
     } else {
-      //TODO: API CALL, REDIRECT
-      console.log("Generate Telegram link");
+      onLinkTelegram();
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
       <div className="relative mb-6">
-        <div className="w-24 h-24 rounded-full profile-avatar mx-auto flex items-center justify-center text-white text-4xl bg-green-500 font-bold">
+        <div className="w-24 h-24 rounded-full profile-avatar mx-auto flex items-center justify-center text-white text-4xl font-bold">
+          {" "}
           {`${user.firstName?.[0] || ""}${
             user.lastName?.[0] || ""
           }`.toUpperCase()}
@@ -70,10 +73,10 @@ const UserProfileSidebar: React.FC<UserProfileSidebarProps> = ({
         </div>
         <button
           className="text-sm text-blue-500 hover:text-blue-600 flex items-center"
-          onClick={handleGoToTelegram}
+          onClick={handleTelegramAction}
         >
           <i className="fab fa-telegram mr-1"></i>
-          {isTelegramLinked() ? "Перейти в Telegram-чат" : "Привязать Telegram"}
+          {isTelegramLinked ? "Перейти в чат-бот" : "Привязать Telegram"}
         </button>
       </div>
       <div className="mt-8 pt-6 border-t border-gray-100">
