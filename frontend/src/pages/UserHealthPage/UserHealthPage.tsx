@@ -297,14 +297,18 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
   }
 
   if (error) {
-    return <ErrorBanner error={error} />;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorBanner error={error} />
+      </div>
+    );
   }
 
   const age = physicHealth
@@ -315,7 +319,7 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
     : "-";
 
   return (
-    <main className="container mx-auto px-4 py-4 h-screen">
+    <main className="container min-h-screen mx-auto px-4 py-4">
       {physicHealth && (
         <>
           <div className="flex border-b mb-6">

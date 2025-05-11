@@ -253,7 +253,7 @@ const supplierFaqItems = [
 
 const FaqPage: React.FC<FaqPageProps> = () => {
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container min-h-screen mx-auto px-4 py-8">
       {/* Page Header */}
       <div className="text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">

@@ -17,6 +17,7 @@ import PopupNotification, {
 } from "../../components/features/PopupNotification/PopupNotification";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
 interface CartCheckoutPagePageProps {}
 
@@ -28,7 +29,6 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
     location.state?.cart ?? null
   );
   const [products, setProducts] = useState<ProductDto[]>([]);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [deliveryData, setDeliveryData] = useState({
     name: "",
@@ -272,19 +272,26 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
   const scaleFactor = 150 / maxValue;
 
   if (loading) {
-    return <div className="text-center py-12">Загрузка...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <ErrorBanner error={error} />
       </div>
     );
   }
 
   return (
-    <main id="checkout-form" className="checkout-form inset-0 bg-white z-5 p-6">
+    <main
+      id="checkout-form"
+      className="min-h-screen checkout-form inset-0 bg-white z-5 p-6"
+    >
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">

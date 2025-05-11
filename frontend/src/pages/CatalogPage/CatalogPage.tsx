@@ -228,10 +228,10 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 py-4">
+    <main className="container min-h-screen mx-auto px-4 py-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h1 className="text-3xl font-bold text-gray-800">Каталог</h1>
-        
+
         {/* Search + Sorting */}
         <div className="w-full md:w-auto flex flex-col md:flex-row gap-3 mb-4">
           <Search
@@ -248,7 +248,7 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
           <FilterToggleButton label="фильтры" onClick={toggleFilter} />
         </div>
       </div>
-      
+
       {/* Filter (hidden) */}
       <CatalogFilter
         filter={filter}

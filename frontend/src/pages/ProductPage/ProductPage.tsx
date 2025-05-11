@@ -228,27 +228,37 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   }, [userId, params.id]);
 
   if (loading) {
-    return <div className="text-center py-12">Загрузка...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (error) {
-    return <ErrorBanner error={error} />;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorBanner error={error} />
+      </div>
+    );
   }
 
   if (!product) {
     return (
-      <ErrorBanner
-        error={{
-          title: "Упс! Кажется, продукт не найден в каталоге",
-          detail: "Продукт не найден",
-          status: "404",
-        }}
-      />
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorBanner
+          error={{
+            title: "Упс! Кажется, продукт не найден в каталоге",
+            detail: "Продукт не найден",
+            status: "404",
+          }}
+        />
+      </div>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 min-h-screen max-w-6xl">
+    <main className="container min-h-screen mx-auto px-4 py-8 max-w-6xl">
       {/* Product Card */}
       <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-md">
         {/* Image Container */}

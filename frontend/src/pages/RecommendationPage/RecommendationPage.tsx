@@ -121,7 +121,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
         productId: item.productId,
         quantity: item.quantity,
       });
-      showNotification("Блюдо добавлено в корзину!", NotificationType.INFO);
+      showNotification("Блюдо добавлено в корзину!", NotificationType.SUCCESS);
       console.log(`Товар с ID ${item.productId} добавлен в корзину`);
     } catch (error) {
       showNotification(
@@ -287,7 +287,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
   }, [stage]);
 
   return (
-    <main className="container h-screen mx-auto px-4 py-4">
+    <main className="container min-h-screen mx-auto px-4 py-4">
       {/* Page Title */}
       <div className="bg-white rounded-xl shadow-sm p-6 max-w-md mx-auto mb-6">
         <div className="flex items-center">

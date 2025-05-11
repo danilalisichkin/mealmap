@@ -139,7 +139,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -147,7 +147,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
 
   if (error) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <ErrorBanner error={error} />
       </div>
     );
@@ -205,7 +205,7 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container min-h-screen mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3 lg:w-1/4">
           {user && <UserProfileSidebar user={user} tgChatId={tgChatId} />}

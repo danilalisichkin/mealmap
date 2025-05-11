@@ -98,7 +98,7 @@ const UserOrdersPage: React.FC<UserOrdersPageProps> = () => {
   }
 
   return (
-    <main className="container h-screen mx-auto px-4 py-8">
+    <main className="container min-h-screen mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Мои заказы</h1>
       </div>

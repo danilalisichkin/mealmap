@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { CategoryApi } from "../../api/product/CategoryApi";
 import { PreferenceApi } from "../../api/preference/UserPreferenceApi";
 import { useAuth } from "../../contexts/AuthContext";
-import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 import { PreferenceType } from "../../api/preference/enums/PreferenceType";
@@ -348,18 +347,20 @@ const CategoryPage: React.FC = () => {
 
   if (!category) {
     return (
-      <ErrorBanner
-        error={{
-          title: "Упс! Кажется, категория не найдена",
-          detail: "Категория не найдена",
-          status: "404",
-        }}
-      />
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorBanner
+          error={{
+            title: "Упс! Кажется, категория не найдена",
+            detail: "Категория не найдена",
+            status: "404",
+          }}
+        />
+      </div>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8 min-h-screen max-w-6xl">
+    <main className="container min-h-screen mx-auto px-4 py-8 min-h-screen max-w-6xl">
       {/* Category Hierarchy */}
       <div className="mb-2">
         <div className="flex items-center space-x-2 text-sm">

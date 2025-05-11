@@ -22,7 +22,7 @@ const GreetingPage: React.FC<GreetingPageProps> = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="container min-h-screen mx-auto px-4 py-8">
       {/* Hero Section */}
       <HeroSection onNavigateToFaq={navigateToFaq} />
 

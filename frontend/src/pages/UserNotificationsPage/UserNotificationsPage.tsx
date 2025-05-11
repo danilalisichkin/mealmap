@@ -131,7 +131,7 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -139,7 +139,7 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
 
   if (error) {
     return (
-      <div className="h-screen">
+      <div className="min-h-screen flex items-center justify-center">
         <ErrorBanner error={error} />;
       </div>
     );
@@ -147,7 +147,7 @@ const UserNotificationsPage: React.FC<UserNotificationsPageProps> = () => {
 
   if (!notificationPage || notificationPage.items.length === 0) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div
           id="empty-state"
           className="flex flex-col items-center justify-center"
