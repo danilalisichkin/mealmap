@@ -1,8 +1,9 @@
 import axios from "axios";
 import { attachAuthInterceptor } from "../../../functions/AuthInterceptor";
+import ApiConfig from "../../ApiConfig";
 
 const ApiClient = axios.create({
-  baseURL: "http://localhost:8084/api/v1",
+  baseURL: ApiConfig.ORDER_API.BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

@@ -28,7 +28,7 @@ const ErrorBanner: React.FC<ErrorBannerProps> = ({ error }) => {
         <h2 className="text-4xl font-bold text-gray-800 text-center mt-6">
           {error.title}
         </h2>
-        <p className="text-gray-600 text-center mt-4 max-w-lg">
+        <p className="text-gray-600 text-center mt-4">
           {error.detail}
         </p>
       </div>
