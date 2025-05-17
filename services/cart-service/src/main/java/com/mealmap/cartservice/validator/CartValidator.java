@@ -19,7 +19,7 @@ public class CartValidator {
     private final CartRepository cartRepository;
 
     public void validateQuantityOfItems(Cart cart) {
-        if (cart.getItems().size() == MAX_ITEMS_PER_CART) {
+        if (cart.getItems().size() >= MAX_ITEMS_PER_CART) {
             throw new ForbiddenException(CART_IS_FULL);
         }
     }
