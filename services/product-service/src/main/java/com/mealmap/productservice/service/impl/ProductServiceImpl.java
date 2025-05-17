@@ -6,14 +6,16 @@ import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.mealmap.productservice.core.dto.filter.ProductFilter;
-import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
+import com.mealmap.productservice.core.dto.product.ProductCreationDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.core.enums.sort.ProductSortField;
 import com.mealmap.productservice.core.mapper.ProductMapper;
 import com.mealmap.productservice.document.ProductDoc;
+import com.mealmap.productservice.entity.Allergen;
 import com.mealmap.productservice.entity.Category;
 import com.mealmap.productservice.entity.Product;
+import com.mealmap.productservice.repository.AllergenRepository;
 import com.mealmap.productservice.repository.CategoryRepository;
 import com.mealmap.productservice.repository.ProductRepository;
 import com.mealmap.productservice.service.ElasticsearchQueryService;
@@ -39,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.mealmap.productservice.core.message.ApplicationMessages.ALLERGENS_NOT_FOUND;
 import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGORIES_NOT_FOUND;
 import static com.mealmap.productservice.core.message.ApplicationMessages.PRODUCT_NOT_FOUND;
 
@@ -59,6 +62,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     private final CategoryRepository categoryRepository;
+    private final AllergenRepository allergenRepository;
 
     @Override
     @Cacheable
@@ -113,12 +117,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     @CachePut(key = "#result.id")
-    public ProductDto createProduct(ProductCreatingDto productDto) {
+    public ProductDto createProduct(ProductCreationDto productDto) {
         productValidator.validateNameUniqueness(productDto.getName());
 
         List<Category> categories = getCategoryEntities(productDto.getCategories());
+        List<Allergen> allergens = getAllergenEntities(productDto.getAllergens());
+
         Product productToCreate = productMapper.dtoToEntity(productDto);
+
         productToCreate.setCategories(categories);
+        productToCreate.setAllergens(allergens);
 
         return productMapper.entityToDto(
                 productRepository.save(productToCreate));
@@ -135,7 +143,9 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productMapper.updateEntityFromDto(productToUpdate, productDto);
+
         updateCategories(productToUpdate, productDto.getCategories());
+        updateAllergens(productToUpdate, productDto.getAllergens());
 
         return productMapper.entityToDto(
                 productRepository.save(productToUpdate));
@@ -173,12 +183,38 @@ public class ProductServiceImpl implements ProductService {
         return categories;
     }
 
+    private List<Allergen> getAllergenEntities(Collection<Long> ids) {
+        List<Allergen> allergens = allergenRepository.findAllById(ids);
+
+        if (allergens.size() < ids.size()) {
+            List<Long> missingIds = ids.stream()
+                    .filter(id -> allergens.stream()
+                            .noneMatch(category -> category
+                                    .getId()
+                                    .equals(id)))
+                    .toList();
+
+            throw new ResourceNotFoundException(ALLERGENS_NOT_FOUND.formatted(missingIds.toString()));
+        }
+
+        return allergens;
+    }
+
     private void updateCategories(Product productToUpdate, Collection<Long> newCategoryIds) {
         if (newCategoryIds == null || newCategoryIds.isEmpty()) {
             productToUpdate.setCategories(null);
         } else {
             productToUpdate.setCategories(
                     getCategoryEntities(newCategoryIds));
+        }
+    }
+
+    private void updateAllergens(Product productToUpdate, Collection<Long> newAllergenIds) {
+        if (newAllergenIds == null || newAllergenIds.isEmpty()) {
+            productToUpdate.setAllergens(null);
+        } else {
+            productToUpdate.setAllergens(
+                    getAllergenEntities(newAllergenIds));
         }
     }
 }

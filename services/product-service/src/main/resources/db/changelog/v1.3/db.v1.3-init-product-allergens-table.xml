@@ -1,0 +1,33 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.3-init-product-allergens-table" author="danilalisichkin">
+        <createTable tableName="product_allergens">
+            <column name="allergen_id"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="allergen_id"
+                                 baseTableName="product_allergens"
+                                 constraintName="fk_procat_on_allergen_entity"
+                                 referencedColumnNames="id"
+                                 referencedTableName="allergens"/>
+
+        <addForeignKeyConstraint baseColumnNames="product_id"
+                                 baseTableName="product_allergens"
+                                 constraintName="fk_procat_on_product_entity"
+                                 referencedColumnNames="id"
+                                 referencedTableName="products"/>
+    </changeSet>
+
+</databaseChangeLog>

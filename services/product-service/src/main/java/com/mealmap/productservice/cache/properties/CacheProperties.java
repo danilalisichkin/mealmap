@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CacheProperties {
     private final Cache product;
     private final Cache category;
+    private final Cache allergen;
 
     @Getter
     @AllArgsConstructor

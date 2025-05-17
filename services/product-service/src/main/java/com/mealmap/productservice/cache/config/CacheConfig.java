@@ -28,9 +28,13 @@ public class CacheConfig {
         var categoryCache = cacheProperties.getCategory();
         var categoryCacheConfig = cacheConfigHelper.cacheConfiguration(categoryCache);
 
+        var allergenCache = cacheProperties.getAllergen();
+        var allergenCacheConfig = cacheConfigHelper.cacheConfiguration(allergenCache);
+
         return RedisCacheManager.builder(redisConnectionFactory)
                 .withCacheConfiguration(productCache.getName(), productCacheConfig)
                 .withCacheConfiguration(categoryCache.getName(), categoryCacheConfig)
+                .withCacheConfiguration(allergenCache.getName(), allergenCacheConfig)
                 .cacheDefaults(defaultCacheConfig)
                 .transactionAware()
                 .build();

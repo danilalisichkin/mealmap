@@ -1,5 +1,6 @@
 package com.mealmap.productservice.core.dto.product;
 
+import com.mealmap.productservice.core.dto.allergen.AllergenDto;
 import com.mealmap.productservice.core.dto.category.CategorySimpleDto;
 import com.mealmap.productservice.core.dto.nutrient.NutrientDto;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,6 @@ public class ProductDto {
     private Integer supplierId;
 
     private List<CategorySimpleDto> categories;
+
+    private List<AllergenDto> allergens;
 }

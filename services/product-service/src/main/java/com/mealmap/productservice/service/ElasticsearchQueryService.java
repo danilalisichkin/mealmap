@@ -9,7 +9,5 @@ import org.springframework.data.domain.Sort;
 public interface ElasticsearchQueryService {
     Query buildQueryForProducts(Pageable pageable, ProductFilter filter, String search);
 
-    Query buildQueryForCategories(Pageable pageable, String search);
-
     SortOptions buildSortOptions(String sortBy, Sort.Direction sortOrder);
 }

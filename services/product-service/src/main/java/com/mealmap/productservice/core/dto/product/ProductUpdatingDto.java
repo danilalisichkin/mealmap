@@ -40,6 +40,7 @@ public class ProductUpdatingDto {
     @NotNull
     Integer supplierId;
 
-    @NotEmpty
     Set<@NotNull Long> categories;
+
+    Set<@NotNull Long> allergens;
 }

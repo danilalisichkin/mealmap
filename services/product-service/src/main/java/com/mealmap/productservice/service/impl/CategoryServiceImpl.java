@@ -1,35 +1,20 @@
 package com.mealmap.productservice.service.impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
+import com.mealmap.productservice.core.dto.category.CategoryCreationDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
-import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import com.mealmap.productservice.core.mapper.CategoryMapper;
-import com.mealmap.productservice.document.CategoryDoc;
 import com.mealmap.productservice.entity.Category;
 import com.mealmap.productservice.repository.CategoryRepository;
 import com.mealmap.productservice.service.CategoryService;
-import com.mealmap.productservice.service.ElasticsearchQueryService;
-import com.mealmap.productservice.util.ElasticsearchPageBuilder;
 import com.mealmap.productservice.validator.CategoryValidator;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
-import com.mealmap.starters.paginationstarter.dto.PageDto;
-import com.mealmap.starters.paginationstarter.mapper.PageMapper;
-import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,43 +27,19 @@ import static com.mealmap.productservice.core.message.ApplicationMessages.CATEGO
 @RequiredArgsConstructor
 @CacheConfig(cacheResolver = "categoryCacheResolver")
 public class CategoryServiceImpl implements CategoryService {
-    private final ElasticsearchQueryService esQueryService;
-
-    private final ElasticsearchClient esClient;
-
     private final CategoryValidator categoryValidator;
 
     private final CategoryMapper categoryMapper;
 
-    private final PageMapper pageMapper;
 
     private final CategoryRepository categoryRepository;
 
     @Override
     @Cacheable
-    @SneakyThrows
-    public PageDto<CategoryDto> getPageOfCategories(
-            Integer offset, Integer limit, CategorySortField sortBy, Sort.Direction sortOrder, String search) {
+    public List<CategoryDto> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
 
-        PageRequest pageRequest = PageBuilder.buildPageRequest(
-                offset, limit, sortBy.getValue(), sortOrder);
-
-        Query searchQuery = esQueryService.buildQueryForCategories(pageRequest, search);
-
-        SortOptions sortOptions = esQueryService.buildSortOptions(sortBy.getValue(), sortOrder);
-
-        SearchRequest searchRequest = SearchRequest.of(sr -> sr
-                .index("categories")
-                .query(searchQuery)
-                .from(offset * limit)
-                .size(limit)
-                .sort(sortOptions));
-
-        SearchResponse<CategoryDoc> response = esClient.search(searchRequest, CategoryDoc.class);
-
-        return pageMapper.pageToPageDto(
-                categoryMapper.docPageToDtoPage(
-                        ElasticsearchPageBuilder.buildPage(response, pageRequest)));
+        return categoryMapper.entityListToDtoList(categories);
     }
 
     @Override
@@ -106,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     @CachePut(key = "#result.id")
-    public CategoryDto createCategory(CategoryCreatingDto categoryDto) {
+    public CategoryDto createCategory(CategoryCreationDto categoryDto) {
         categoryValidator.validateNameUniqueness(categoryDto.getName());
 
         Category categoryToCreate = categoryMapper.dtoToEntity(categoryDto);

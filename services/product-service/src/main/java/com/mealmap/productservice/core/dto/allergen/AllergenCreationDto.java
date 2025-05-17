@@ -1,4 +1,4 @@
-package com.mealmap.productservice.core.dto.category;
+package com.mealmap.productservice.core.dto.allergen;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -7,10 +7,8 @@ import lombok.Value;
 
 @Value
 @Builder
-public class CategoryCreatingDto {
+public class AllergenCreationDto {
     @NotEmpty
     @Size(max = 50)
     String name;
-
-    Long parent;
 }

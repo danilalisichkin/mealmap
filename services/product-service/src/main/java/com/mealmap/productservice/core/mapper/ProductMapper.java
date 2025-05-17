@@ -1,6 +1,6 @@
 package com.mealmap.productservice.core.mapper;
 
-import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
+import com.mealmap.productservice.core.dto.product.ProductCreationDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.document.ProductDoc;
@@ -19,6 +19,7 @@ import java.util.List;
         uses = {
                 CategoryMapper.class,
                 NutrientMapper.class,
+                AllergenMapper.class,
                 NewnessMapper.class})
 public interface ProductMapper {
     @Mapping(target = "isNew", source = "createdAt")
@@ -30,11 +31,13 @@ public interface ProductMapper {
     ProductDto entityToDto(Product entity);
 
     @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "allergens", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    Product dtoToEntity(ProductCreatingDto dto);
+    Product dtoToEntity(ProductCreationDto dto);
 
     @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "allergens", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     void updateEntityFromDto(@MappingTarget Product entity, ProductUpdatingDto dto);

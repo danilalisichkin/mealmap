@@ -1,7 +1,7 @@
 package com.mealmap.productservice.service;
 
 import com.mealmap.productservice.core.dto.filter.ProductFilter;
-import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
+import com.mealmap.productservice.core.dto.product.ProductCreationDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.core.enums.sort.ProductSortField;
@@ -22,7 +22,7 @@ public interface ProductService {
 
     ProductDto getProduct(Long id);
 
-    ProductDto createProduct(ProductCreatingDto productDto);
+    ProductDto createProduct(ProductCreationDto productDto);
 
     ProductDto updateProduct(Long id, ProductUpdatingDto productDto);
 

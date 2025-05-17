@@ -67,4 +67,12 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Category> categories;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "product_allergens",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "allergen_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Allergen> allergens;
 }

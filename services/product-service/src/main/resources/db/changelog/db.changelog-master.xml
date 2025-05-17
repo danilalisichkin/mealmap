@@ -30,4 +30,10 @@
         <tagDatabase tag="v1.2"/>
     </changeSet>
 
+    <include file="/db/changelog/files/db.v1.3-changelog.xml"/>
+
+    <changeSet id="4" author="danilalisichkin">
+        <tagDatabase tag="v1.3"/>
+    </changeSet>
+
 </databaseChangeLog>

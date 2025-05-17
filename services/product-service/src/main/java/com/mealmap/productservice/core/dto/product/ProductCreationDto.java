@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Value
 @Builder
-public class ProductCreatingDto {
+public class ProductCreationDto {
     @NotEmpty
     @Size(max = 40)
     String name;
@@ -42,4 +42,6 @@ public class ProductCreatingDto {
 
     @NotEmpty
     Set<@NotNull Long> categories;
+
+    Set<@NotNull Long> allergens;
 }

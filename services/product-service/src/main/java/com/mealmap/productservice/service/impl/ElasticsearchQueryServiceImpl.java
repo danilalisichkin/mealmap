@@ -41,20 +41,6 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
     }
 
     @Override
-    public Query buildQueryForCategories(Pageable pageable, String search) {
-        BoolQuery.Builder boolQuery = QueryBuilders.bool();
-
-        applyQueryByCategorySearch(boolQuery, search);
-
-        return NativeQuery.builder()
-                .withQuery(Query.of(q -> q
-                        .bool(boolQuery.build())))
-                .withPageable(pageable)
-                .build()
-                .getQuery();
-    }
-
-    @Override
     public SortOptions buildSortOptions(String sortBy, Sort.Direction sortOrder) {
         return SortOptions.of(s -> s
                 .field(f -> {
@@ -73,10 +59,6 @@ public class ElasticsearchQueryServiceImpl implements ElasticsearchQueryService 
 
     private void applyQueryByProductSearch(BoolQuery.Builder query, String search) {
         addMultiMatchQuery(query, search, "name", "description", "categories.name", "categories.parent.name");
-    }
-
-    private void applyQueryByCategorySearch(BoolQuery.Builder query, String search) {
-        addMultiMatchQuery(query, search, "name", "children.name", "parent.name");
     }
 
     private void applyQueryByPrice(BoolQuery.Builder query, ProductFilter filter) {
