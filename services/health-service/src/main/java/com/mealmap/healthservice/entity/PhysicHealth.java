@@ -51,10 +51,14 @@ public class PhysicHealth {
     @Column(nullable = false, updatable = false)
     private Gender gender;
 
-    @OneToOne(mappedBy = "physicHealth", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "physicHealth", cascade = CascadeType.ALL, orphanRemoval = true)
     private Diet diet;
 
     @Fetch(value = FetchMode.SUBSELECT)
-    @OneToMany(mappedBy = "physicHealth", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "physicHealth", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PhysicHealthHistory> history;
+
+    @Fetch(value = FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "physicHealth", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Allergen> allergens;
 }

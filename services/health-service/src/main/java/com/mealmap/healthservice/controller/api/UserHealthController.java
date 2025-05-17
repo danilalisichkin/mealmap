@@ -1,5 +1,7 @@
 package com.mealmap.healthservice.controller.api;
 
+import com.mealmap.healthservice.core.dto.allergen.AllergenAddingDto;
+import com.mealmap.healthservice.core.dto.allergen.AllergenDto;
 import com.mealmap.healthservice.core.dto.diet.DietCreationDto;
 import com.mealmap.healthservice.core.dto.diet.DietDto;
 import com.mealmap.healthservice.core.dto.diet.DietUpdatingDto;
@@ -59,6 +61,15 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }
 
+    @GetMapping("/{userId}/allergens")
+    @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
+            "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
+    public ResponseEntity<List<AllergenDto>> getUserAllergens(@PathVariable UUID userId) {
+        List<AllergenDto> allregens = userHealthService.getUserAllergens(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(allregens);
+    }
+
     @PostMapping("/{userId}/physic-health")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<PhysicHealthDto> createUserPhysicHealth(
@@ -79,6 +90,17 @@ public class UserHealthController {
         DietDto userDiet = userHealthService.createUserDiet(userId, userDietDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userDiet);
+    }
+
+    @PostMapping("/{userId}/allergens")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
+    public ResponseEntity<AllergenDto> addUserAllergen(
+            @PathVariable UUID userId,
+            @RequestBody @Valid AllergenAddingDto allergenDto) {
+
+        AllergenDto allergen = userHealthService.addUserAllergen(userId, allergenDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(allergen);
     }
 
     @PutMapping("/{userId}/physic-health")
@@ -107,6 +129,17 @@ public class UserHealthController {
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> deleteUserDiet(@PathVariable UUID userId) {
         userHealthService.deleteUserDiet(userId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{userId}/allergens/{allergenId}")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
+    public ResponseEntity<AllergenDto> removeUserAllergen(
+            @PathVariable UUID userId,
+            @PathVariable Long allergenId) {
+
+        userHealthService.removeUserAllergen(userId, allergenId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

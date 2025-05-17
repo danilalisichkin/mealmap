@@ -12,7 +12,7 @@
 
         <dropIndex tableName="diets" indexName="idx_user_diets_user_physic_health_id"/>
 
-        <createIndex indexName="idx_diets_user_physic_health_id"
+        <createIndex indexName="idx_diets_physic_health_id"
                      tableName="diets">
             <column name="physic_health_id"/>
         </createIndex>

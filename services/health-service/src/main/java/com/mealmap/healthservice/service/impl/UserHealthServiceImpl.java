@@ -1,5 +1,7 @@
 package com.mealmap.healthservice.service.impl;
 
+import com.mealmap.healthservice.core.dto.allergen.AllergenAddingDto;
+import com.mealmap.healthservice.core.dto.allergen.AllergenDto;
 import com.mealmap.healthservice.core.dto.diet.DietCreationDto;
 import com.mealmap.healthservice.core.dto.diet.DietDto;
 import com.mealmap.healthservice.core.dto.diet.DietUpdatingDto;
@@ -7,15 +9,18 @@ import com.mealmap.healthservice.core.dto.health.PhysicHealthCreationDto;
 import com.mealmap.healthservice.core.dto.health.PhysicHealthDto;
 import com.mealmap.healthservice.core.dto.health.PhysicHealthHistoryDto;
 import com.mealmap.healthservice.core.dto.health.PhysicHealthUpdatingDto;
+import com.mealmap.healthservice.core.mapper.AllergenMapper;
 import com.mealmap.healthservice.core.mapper.DietMapper;
 import com.mealmap.healthservice.core.mapper.PhysicHealthHistoryMapper;
 import com.mealmap.healthservice.core.mapper.PhysicHealthMapper;
+import com.mealmap.healthservice.entity.Allergen;
 import com.mealmap.healthservice.entity.Diet;
 import com.mealmap.healthservice.entity.PhysicHealth;
 import com.mealmap.healthservice.entity.PhysicHealthHistory;
 import com.mealmap.healthservice.repository.DietRepository;
 import com.mealmap.healthservice.repository.PhysicHealthRepository;
 import com.mealmap.healthservice.service.UserHealthService;
+import com.mealmap.healthservice.validator.AllergenValidator;
 import com.mealmap.healthservice.validator.DietValidator;
 import com.mealmap.healthservice.validator.PhysicHealthValidator;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
@@ -26,15 +31,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_ALLERGEN_NOT_FOUND;
 import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_DIET_NOT_FOUND;
 import static com.mealmap.healthservice.core.message.ApplicationMessages.USER_PHYSICAL_HEALTH_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class UserHealthServiceImpl implements UserHealthService {
+    private final AllergenValidator allergenValidator;
+
     private final DietValidator dietValidator;
 
     private final PhysicHealthValidator physicHealthValidator;
+
+    private final AllergenMapper allergenMapper;
 
     private final DietMapper dietMapper;
 
@@ -75,6 +85,15 @@ public class UserHealthServiceImpl implements UserHealthService {
     }
 
     @Override
+    public List<AllergenDto> getUserAllergens(UUID userId) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
+
+        List<Allergen> allergens = physicHealth.getAllergens();
+
+        return allergenMapper.entityListToDtoList(allergens);
+    }
+
+    @Override
     @Transactional
     public PhysicHealthDto createUserPhysicHealth(UUID userId, PhysicHealthCreationDto userPhysicHealthDto) {
         physicHealthValidator.validateUserIdUniqueness(userId);
@@ -84,6 +103,24 @@ public class UserHealthServiceImpl implements UserHealthService {
 
         return physicHealthMapper.entityToDto(
                 physicHealthRepository.save(physicHealthToCreate));
+    }
+
+    @Override
+    @Transactional
+    public AllergenDto addUserAllergen(UUID userId, AllergenAddingDto allergenDto) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
+        List<Allergen> allergens = physicHealth.getAllergens();
+
+        allergenValidator.validateAllergenUniqueness(allergens, allergenDto.getAllergenId());
+
+        Allergen allergenToAdd = allergenMapper.dtoToEntity(allergenDto);
+        allergenToAdd.setPhysicHealth(physicHealth);
+        allergens.add(allergenToAdd);
+
+        physicHealthRepository.save(physicHealth);
+        physicHealthRepository.flush();
+
+        return allergenMapper.entityToDto(allergens.getLast());
     }
 
     @Override
@@ -99,8 +136,7 @@ public class UserHealthServiceImpl implements UserHealthService {
         createNewHealthHistory(physicHealth);
         physicHealthRepository.save(physicHealth);
 
-        return dietMapper.entityToDto(
-                physicHealth.getDiet());
+        return dietMapper.entityToDto(physicHealth.getDiet());
     }
 
     @Override
@@ -140,6 +176,17 @@ public class UserHealthServiceImpl implements UserHealthService {
         physicHealthRepository.save(physicHealth);
     }
 
+    @Override
+    @Transactional
+    public void removeUserAllergen(UUID userId, Long allergenId) {
+        PhysicHealth physicHealth = getUserPhysicHealthEntity(userId);
+        List<Allergen> allergens = physicHealth.getAllergens();
+
+        removeAllergen(allergens, allergenId);
+
+        physicHealthRepository.save(physicHealth);
+    }
+
     private PhysicHealth getUserPhysicHealthEntity(UUID userId) {
         return physicHealthRepository
                 .findByUserId(userId)
@@ -153,5 +200,13 @@ public class UserHealthServiceImpl implements UserHealthService {
                 .build();
 
         physicHealth.getHistory().add(newHistory);
+    }
+
+    private void removeAllergen(List<Allergen> allergens, Long allergenId) {
+        boolean isRemoved = allergens.removeIf(al -> al.getAllergenId().equals(allergenId));
+
+        if (!isRemoved) {
+            throw new ResourceNotFoundException(USER_ALLERGEN_NOT_FOUND);
+        }
     }
 }

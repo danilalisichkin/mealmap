@@ -1,0 +1,36 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="v1.3-alter-primary-keys" author="danilalisichkin">
+        <dropForeignKeyConstraint baseTableName="physic_health_history"
+                                  constraintName="FK_USER_PHYSIC_HEALTH_HISTORY_ON_USER_PHYSIC_HEALTH"/>
+
+        <dropForeignKeyConstraint baseTableName="diets"
+                                  constraintName="FK_USER_DIETS_ON_USER_PHYSIC_HEALTH"/>
+
+        <dropPrimaryKey tableName="diets"/>
+
+        <addPrimaryKey tableName="diets" columnNames="id" constraintName="pk_diets"/>
+
+        <dropPrimaryKey tableName="physic_health"/>
+
+        <addPrimaryKey tableName="physic_health" columnNames="id" constraintName="pk_physic_health"/>
+
+        <addForeignKeyConstraint baseColumnNames="physic_health_id"
+                                 baseTableName="physic_health_history"
+                                 constraintName="FK_PHYSIC_HEALTH_HISTORY_ON_PHYSIC_HEALTH"
+                                 referencedColumnNames="id"
+                                 referencedTableName="physic_health"/>
+
+        <addForeignKeyConstraint baseColumnNames="physic_health_id"
+                                 baseTableName="diets"
+                                 constraintName="FK_DIETS_ON_PHYSIC_HEALTH"
+                                 referencedColumnNames="id"
+                                 referencedTableName="physic_health"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -150,9 +150,7 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
         UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
         List<ProductPreference> productPreferences = userPreferencesToUpdate.getProductPreferences();
 
-        userPreferencesValidator.validateProductPreferenceExistence(productPreferences, productId);
-
-        productPreferences.removeIf(pp -> pp.getProductId().equals(productId));
+        removeProductPreference(productPreferences, productId);
 
         userPreferencesRepository.save(userPreferencesToUpdate);
 
@@ -165,9 +163,7 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
         UserPreferences userPreferencesToUpdate = getUserPreferenceEntity(userId);
         List<CategoryPreference> categoryPreferences = userPreferencesToUpdate.getCategoryPreferences();
 
-        userPreferencesValidator.validateCategoryPreferenceExistence(categoryPreferences, categoryId);
-
-        categoryPreferences.removeIf(cp -> cp.getCategoryId().equals(categoryId));
+        removeCategoryPreference(categoryPreferences, categoryId);
 
         userPreferencesRedisService.updatePreferenceWithCategoryPreferences(userId, userPreferencesToUpdate);
     }
@@ -188,5 +184,21 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
         return userPreferencesRepository
                 .findByUserIdAndCategoryPreferenceType(userId, preferenceType)
                 .orElseThrow(() -> new ResourceNotFoundException(PREFERENCES_FOR_USER_NOT_FOUND.formatted(userId)));
+    }
+
+    private void removeProductPreference(List<ProductPreference> productPreferences, Long productId) {
+        boolean isRemoved = productPreferences.removeIf(pp -> pp.getProductId().equals(productId));
+
+        if (!isRemoved) {
+            throw new ResourceNotFoundException(PRODUCT_PREFERENCE_NOT_FOUND.formatted(productId));
+        }
+    }
+
+    private void removeCategoryPreference(List<CategoryPreference> categoryPreferences, Long categoryId) {
+        boolean isRemoved = categoryPreferences.removeIf(cp -> cp.getCategoryId().equals(categoryId));
+
+        if (!isRemoved) {
+            throw new ResourceNotFoundException(CATEGORY_PREFERENCE_NOT_FOUND.formatted(categoryId));
+        }
     }
 }

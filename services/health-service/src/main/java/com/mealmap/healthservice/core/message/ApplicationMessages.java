@@ -13,4 +13,8 @@ public final class ApplicationMessages {
             = "информация о диете пользователя %s не найдена";
     public static final String USER_DIET_ALREADY_EXISTS
             = "информация о диете пользователя %s уже существует";
+    public static final String USER_ALLERGEN_NOT_FOUND
+            = "информации об аллергии пользователя не существует";
+    public static final String USER_ALLERGEN_ALREADY_EXISTS
+            = "информация об аллергии пользователя уже существует";
 }
