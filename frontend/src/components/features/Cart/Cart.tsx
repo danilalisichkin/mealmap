@@ -13,7 +13,6 @@ import PopupNotification, {
 } from "../PopupNotification/PopupNotification";
 import ErrorBanner from "../../commons/ErrorBanner/ErrorBanner";
 import LoadingSpinner from "../../commons/LoadingSpinner/LoadingSpinner";
-import { ca } from "date-fns/locale";
 
 interface CartProps {
   isOpened: boolean;

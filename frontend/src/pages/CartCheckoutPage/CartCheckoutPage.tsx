@@ -18,6 +18,7 @@ import PopupNotification, {
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
+import { OrderCreationDto } from "../../api/order/dto/OrderCreationDto";
 
 interface CartCheckoutPagePageProps {}
 
@@ -190,20 +191,25 @@ const CartCheckoutPage: React.FC<CartCheckoutPagePageProps> = () => {
         quantity: item.quantity,
       }));
 
-      const createdOrder = await UserOrderApi.createUserOrder(userId, {
+      const orderData: OrderCreationDto = {
         deliveryAddress: {
           coordinates: [0, 0],
           fullAddress: deliveryData.address,
         },
-        promoCode: appliedPromoCode ?? "",
         items: orderItems,
-      });
+      };
+
+      if (appliedPromoCode && appliedPromoCode !== "") {
+        orderData.promoCode = appliedPromoCode;
+      }
+
+      const createdOrder = await UserOrderApi.createUserOrder(userId, orderData);
       showNotification(
         `Заказ успешно оформлен! Номер заказа: ${createdOrder.id}`,
         NotificationType.SUCCESS
       );
       const timeout = setTimeout(
-        () => navigate(`users/${userId}/orders`),
+        () => navigate(`/users/${userId}/orders`),
         1000
       );
       return () => clearTimeout(timeout);
