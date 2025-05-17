@@ -48,7 +48,7 @@ public class UserNotificationController {
     }
 
     @GetMapping("/{userId}/contacts")
-    @PreAuthorize("hasUserId(#userId) or (hasRole('ADMIN') and hasRole('OPERATOR'))")
+    @PreAuthorize("hasUserId(#userId) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<UserContactsDto> getContacts(@PathVariable @UUID String userId) {
         UserContactsDto contacts = userNotificationService.getContacts(userId);
 
@@ -56,7 +56,7 @@ public class UserNotificationController {
     }
 
     @PostMapping("/{userId}/notifications")
-    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<NotificationDto> createNotification(
             @PathVariable @UUID String userId,
             @RequestBody @Valid NotificationCreationDto notificationDto) {

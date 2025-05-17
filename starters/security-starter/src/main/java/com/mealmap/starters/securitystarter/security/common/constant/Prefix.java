@@ -1,4 +1,4 @@
-package com.mealmap.starters.securitystarter.security.constant;
+package com.mealmap.starters.securitystarter.security.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

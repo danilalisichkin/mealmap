@@ -1,6 +1,6 @@
-package com.mealmap.starters.securitystarter.security.expression;
+package com.mealmap.starters.securitystarter.security.common.expression;
 
-import com.mealmap.starters.securitystarter.security.util.SecurityUtils;
+import com.mealmap.starters.securitystarter.security.common.util.SecurityUtils;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.mealmap.starters.securitystarter.security.filter;
+package com.mealmap.starters.securitystarter.security.web.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,10 +12,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isActive;
-import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isApplicationService;
-import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isBlocked;
-import static com.mealmap.starters.securitystarter.security.util.SecurityUtils.isTemporaryBlocked;
+import static com.mealmap.starters.securitystarter.security.common.util.SecurityUtils.isActive;
+import static com.mealmap.starters.securitystarter.security.common.util.SecurityUtils.isApplicationService;
+import static com.mealmap.starters.securitystarter.security.common.util.SecurityUtils.isBlocked;
+import static com.mealmap.starters.securitystarter.security.common.util.SecurityUtils.isTemporaryBlocked;
 
 @Component
 public class UserAuthorizationFilter extends OncePerRequestFilter {

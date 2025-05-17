@@ -55,6 +55,12 @@ business:
     organization:
       name: ${ORGANIZATION_API_NAME:organization-service}
       path: ${ORGANIZATION_API_PATH:api/v1/organizations}
+security:
+  web:
+    cors:
+      allowed-origins:
+        - ${ALLOWED_ORIGINS_LOCALHOST:http://localhost:3000}
+        - ${ALLOWED_ORIGINS_PRODUCTION:http://172.20.10.4:3000}
 eureka:
   client:
     service-url:

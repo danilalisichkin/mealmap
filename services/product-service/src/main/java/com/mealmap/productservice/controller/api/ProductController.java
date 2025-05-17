@@ -1,7 +1,7 @@
 package com.mealmap.productservice.controller.api;
 
 import com.mealmap.productservice.core.dto.filter.ProductFilter;
-import com.mealmap.productservice.core.dto.product.ProductCreatingDto;
+import com.mealmap.productservice.core.dto.product.ProductCreationDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
 import com.mealmap.productservice.core.dto.product.ProductUpdatingDto;
 import com.mealmap.productservice.core.enums.sort.ProductSortField;
@@ -41,6 +41,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PageDto<ProductDto>> getPageOfProducts(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -73,6 +74,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         ProductDto product = productService.getProduct(id);
 
@@ -81,7 +83,7 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('SUPPLIER') and hasRole('ADMIN') and isOrganizationMember(#productDto.supplierId)")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductCreatingDto productDto) {
+    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductCreationDto productDto) {
         ProductDto product = productService.createProduct(productDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(product);

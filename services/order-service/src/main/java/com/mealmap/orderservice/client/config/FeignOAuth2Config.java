@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.client.config;
 
-import com.mealmap.starters.securitystarter.security.service.TokenProvider;
+import com.mealmap.starters.securitystarter.security.oauth2.service.TokenProvider;
 import feign.RequestInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

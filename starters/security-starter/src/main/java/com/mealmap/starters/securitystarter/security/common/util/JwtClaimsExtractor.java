@@ -1,6 +1,6 @@
-package com.mealmap.starters.securitystarter.security.util;
+package com.mealmap.starters.securitystarter.security.common.util;
 
-import com.mealmap.starters.securitystarter.security.constant.Prefix;
+import com.mealmap.starters.securitystarter.security.common.constant.Prefix;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;

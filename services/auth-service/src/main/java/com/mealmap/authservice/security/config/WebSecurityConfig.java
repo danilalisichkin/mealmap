@@ -1,5 +1,6 @@
 package com.mealmap.authservice.security.config;
 
+import com.mealmap.authservice.security.properties.WebSecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,6 +16,12 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    private final WebSecurityProperties webSecurityProperties;
+
+    public WebSecurityConfig(WebSecurityProperties webSecurityProperties) {
+        this.webSecurityProperties = webSecurityProperties;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -30,7 +37,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:3000");
+        config.setAllowedOrigins(webSecurityProperties.getCors().getAllowedOrigins());
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

@@ -33,7 +33,8 @@ public class UserPreferencesController {
     private final UserPreferencesService userPreferencesService;
 
     @GetMapping("/{userId}/preferences")
-    @PreAuthorize("hasUserId(#userId) or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
+    @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
+            "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
     public ResponseEntity<UserPreferencesDto> getAllPreferences(@PathVariable UUID userId) {
         UserPreferencesDto userPreference = userPreferencesService.getAllPreferences(userId);
 
@@ -41,7 +42,7 @@ public class UserPreferencesController {
     }
 
     @GetMapping("/{userId}/preferences/products")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<List<ProductPreferenceDto>> getProductPreferences(
             @PathVariable UUID userId,
             @RequestParam(required = false) PreferenceType preferenceType) {
@@ -53,7 +54,7 @@ public class UserPreferencesController {
     }
 
     @GetMapping("/{userId}/preferences/categories")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<List<CategoryPreferenceDto>> getCategoryPreferences(
             @PathVariable UUID userId,
             @RequestParam(required = false) PreferenceType preferenceType) {
@@ -65,7 +66,7 @@ public class UserPreferencesController {
     }
 
     @GetMapping("/{userId}/preferences/products/{productId}")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<ProductPreferenceDto> getProductPreference(@PathVariable UUID userId, @PathVariable Long productId) {
         ProductPreferenceDto productPreference = userPreferencesService.getProductPreference(userId, productId);
 
@@ -73,7 +74,7 @@ public class UserPreferencesController {
     }
 
     @GetMapping("/{userId}/preferences/categories/{categoryId}")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CategoryPreferenceDto> getCategoryPreference(@PathVariable UUID userId, @PathVariable Long categoryId) {
         CategoryPreferenceDto categoryPreference = userPreferencesService.getCategoryPreference(userId, categoryId);
 
@@ -81,7 +82,7 @@ public class UserPreferencesController {
     }
 
     @PostMapping("/{userId}/preferences/products")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<ProductPreferenceDto> addProductPreference(
             @PathVariable UUID userId,
             @RequestBody @Valid ProductPreferenceCreationDto productPreferenceDto) {
@@ -93,7 +94,7 @@ public class UserPreferencesController {
     }
 
     @PostMapping("/{userId}/preferences/categories")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CategoryPreferenceDto> addCategoryPreference(
             @PathVariable UUID userId,
             @RequestBody @Valid CategoryPreferenceCreationDto categoryPreferenceDto) {
@@ -105,7 +106,7 @@ public class UserPreferencesController {
     }
 
     @DeleteMapping("/{userId}/preferences/products/{productId}")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> removeProductPreference(@PathVariable UUID userId, @PathVariable Long productId) {
         userPreferencesService.removeProductPreference(userId, productId);
 
@@ -113,7 +114,7 @@ public class UserPreferencesController {
     }
 
     @DeleteMapping("/{userId}/preferences/categories/{categoryId}")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> removeCategoryPreference(@PathVariable UUID userId, @PathVariable Long categoryId) {
         userPreferencesService.removeCategoryPreference(userId, categoryId);
 

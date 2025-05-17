@@ -35,7 +35,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfOrganizations(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -50,6 +50,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/suppliers")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfSuppliers(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -63,7 +64,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<OrganizationDto> getOrganization(@PathVariable Integer id) {
         OrganizationDto organization = organizationService.getOrganization(id);
 
@@ -71,6 +72,7 @@ public class OrganizationController {
     }
 
     @GetMapping("/suppliers/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OrganizationDto> getSupplier(@PathVariable Integer id) {
 
         OrganizationDto supplier = organizationService.getSupplier(id);
@@ -79,7 +81,7 @@ public class OrganizationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<OrganizationDto> createOrganization(
             @RequestBody @Valid OrganizationCreationDto organizationDto) {
 

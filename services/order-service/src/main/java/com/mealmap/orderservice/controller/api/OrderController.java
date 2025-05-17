@@ -35,7 +35,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') and hasRole('OPERATOR')")
+    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<OrderDto>> getPageOfOrders(
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
             @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
@@ -51,7 +51,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("(hasRole('ADMIN') and hasRole('OPERATOR')) or hasRole('SUPPLIER')")
+    @PreAuthorize("hasRole('SUPPLIER') or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<OrderDto> getOrder(@PathVariable ObjectId id) {
         OrderDto order = orderService.getOrder(id);
 
@@ -59,7 +59,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/status")
-    @PreAuthorize("(hasRole('ADMIN') and hasRole('OPERATOR')) or hasRole('SUPPLIER')")
+    @PreAuthorize("hasRole('SUPPLIER') or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<OrderDto> updateOrderStatus(
             @PathVariable ObjectId id,
             @RequestBody @NotNull OrderStatus status) {

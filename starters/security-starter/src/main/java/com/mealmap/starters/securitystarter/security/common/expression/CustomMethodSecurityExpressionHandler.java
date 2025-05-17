@@ -1,4 +1,4 @@
-package com.mealmap.starters.securitystarter.security.expression;
+package com.mealmap.starters.securitystarter.security.common.expression;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.expression.EvaluationContext;

@@ -53,7 +53,8 @@ public class PromoStatController {
     }
 
     @PostMapping
-    @PreAuthorize("hasUserId(#statDto.userId) or (isApplicationService() and hasRole('ORDER_SERVICE'))")
+    @PreAuthorize("(hasUserId(#statDto.userId) and hasRole('CUSTOMER')) " +
+            "or (isApplicationService() and hasRole('ORDER_SERVICE'))")
     public ResponseEntity<PromoStatDto> createPromoStat(
             @RequestBody @Valid PromoStatCreationDto statDto) {
 

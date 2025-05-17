@@ -2,7 +2,7 @@ package com.mealmap.userservice.service.impl;
 
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import com.mealmap.starters.paginationstarter.util.PageBuilder;
-import com.mealmap.starters.securitystarter.security.util.AuthenticationUtil;
+import com.mealmap.starters.securitystarter.security.common.util.AuthenticationUtil;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
 import com.mealmap.userservice.core.dto.history.StatusHistoryDto;

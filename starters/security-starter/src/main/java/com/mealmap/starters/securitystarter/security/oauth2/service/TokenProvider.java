@@ -1,4 +1,4 @@
-package com.mealmap.starters.securitystarter.security.service;
+package com.mealmap.starters.securitystarter.security.oauth2.service;
 
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -34,4 +34,3 @@ public class TokenProvider {
         return client.getAccessToken().getTokenValue();
     }
 }
-

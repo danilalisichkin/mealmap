@@ -1,8 +1,8 @@
-package com.mealmap.starters.securitystarter.security.config;
+package com.mealmap.starters.securitystarter.security.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mealmap.starters.securitystarter.security.properties.WebSecurityProperties;
-import com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor;
+import com.mealmap.starters.securitystarter.security.web.properties.WebSecurityProperties;
+import com.mealmap.starters.securitystarter.security.common.util.JwtClaimsExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,7 +69,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(webSecurityProperties.getAllowedOrigins());
+        config.setAllowedOrigins(webSecurityProperties.getCors().getAllowedOrigins());
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
         config.setAllowCredentials(true);

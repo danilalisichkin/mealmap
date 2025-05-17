@@ -1,6 +1,6 @@
-package com.mealmap.starters.securitystarter.security.config;
+package com.mealmap.starters.securitystarter.security.oauth2.config;
 
-import com.mealmap.starters.securitystarter.security.properties.OAuth2ClientProperties;
+import com.mealmap.starters.securitystarter.security.oauth2.properties.OAuth2ClientProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

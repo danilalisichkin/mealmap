@@ -1,4 +1,4 @@
-package com.mealmap.starters.securitystarter.security.properties;
+package com.mealmap.starters.securitystarter.security.oauth2.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

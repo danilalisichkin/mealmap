@@ -36,7 +36,9 @@ public class UserOrderController {
     private final UserOrderService userOrderService;
 
     @GetMapping("/{userId}/orders")
-    @PreAuthorize("hasUserId(#userId) or (hasRole('ADMIN') and hasRole('OPERATOR')) or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
+    @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
+            "or (hasRole('OPERATOR') and hasRole('ADMIN')) " +
+            "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
     public ResponseEntity<PageDto<OrderDto>> getPageOfUserOrders(
             @PathVariable @UUID String userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
@@ -50,7 +52,7 @@ public class UserOrderController {
     }
 
     @PostMapping("/{userId}/orders")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<OrderDto> createOrder(
             @PathVariable @UUID String userId,
             @RequestBody @Valid OrderCreationDto orderDto) {
@@ -61,7 +63,7 @@ public class UserOrderController {
     }
 
     @PatchMapping("/{userId}/orders/{id}/status")
-    @PreAuthorize("hasUserId(#userId)")
+    @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<OrderDto> updateOrderStatus(
             @PathVariable @UUID String userId,
             @PathVariable ObjectId id,

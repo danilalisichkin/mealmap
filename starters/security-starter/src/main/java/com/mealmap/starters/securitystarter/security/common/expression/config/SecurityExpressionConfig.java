@@ -1,13 +1,13 @@
-package com.mealmap.starters.securitystarter.security.expression.config;
+package com.mealmap.starters.securitystarter.security.common.expression.config;
 
-import com.mealmap.starters.securitystarter.security.expression.CustomMethodSecurityExpressionHandler;
+import com.mealmap.starters.securitystarter.security.common.expression.CustomMethodSecurityExpressionHandler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 
 @Configuration
-public class ExpressionConfig {
+public class SecurityExpressionConfig {
     @Bean
     public MethodSecurityExpressionHandler methodSecurityExpressionHandler(ApplicationContext applicationContext) {
         var handler = new CustomMethodSecurityExpressionHandler();

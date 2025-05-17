@@ -42,7 +42,8 @@ security:
   web:
     cors:
       allowed-origins:
-        - http://localhost:3000
+        - ${ALLOWED_ORIGINS_LOCALHOST:http://localhost:3000}
+        - ${ALLOWED_ORIGINS_PRODUCTION:http://172.20.10.4:3000}
 mongock:
   migration-scan-package: com.mealmap.notificationservice.migration
   transactional: true

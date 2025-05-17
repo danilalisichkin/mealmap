@@ -1,4 +1,4 @@
-package com.mealmap.starters.securitystarter.security.util;
+package com.mealmap.starters.securitystarter.security.common.util;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.AccessLevel;
@@ -10,9 +10,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor.extractClientId;
-import static com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor.extractOrganizationId;
-import static com.mealmap.starters.securitystarter.security.util.JwtClaimsExtractor.extractUserId;
+import static com.mealmap.starters.securitystarter.security.common.util.JwtClaimsExtractor.extractClientId;
+import static com.mealmap.starters.securitystarter.security.common.util.JwtClaimsExtractor.extractOrganizationId;
+import static com.mealmap.starters.securitystarter.security.common.util.JwtClaimsExtractor.extractUserId;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SecurityUtils {

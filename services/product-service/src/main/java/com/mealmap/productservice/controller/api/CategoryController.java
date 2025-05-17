@@ -1,20 +1,14 @@
 package com.mealmap.productservice.controller.api;
 
-import com.mealmap.productservice.core.dto.category.CategoryCreatingDto;
+import com.mealmap.productservice.core.dto.category.CategoryCreationDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
 import com.mealmap.productservice.core.dto.category.CategoryUpdatingDto;
-import com.mealmap.productservice.core.enums.sort.CategorySortField;
 import com.mealmap.productservice.service.CategoryService;
-import com.mealmap.starters.paginationstarter.dto.PageDto;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,16 +34,11 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<PageDto<CategoryDto>> getPageOfCategories(
-            @RequestParam(defaultValue = "0") @PositiveOrZero Integer offset,
-            @RequestParam(defaultValue = "10") @Positive @Max(20) Integer limit,
-            @RequestParam(defaultValue = "id") CategorySortField sortBy,
-            @RequestParam(defaultValue = "ASC") Sort.Direction sortOrder,
-            @RequestParam(required = false) String search) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.getAllCategories();
 
-        PageDto<CategoryDto> page = categoryService.getPageOfCategories(offset, limit, sortBy, sortOrder, search);
-
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 
     @GetMapping("/bulk")
@@ -63,6 +52,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id) {
         CategoryDto category = categoryService.getCategory(id);
 
@@ -70,6 +60,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}/tree")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CategoryTreeDto> getCategoryTree(@PathVariable Long id) {
         CategoryTreeDto categoryTree = categoryService.getCategoryTree(id);
 
@@ -78,7 +69,9 @@ public class CategoryController {
 
     @PostMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CategoryCreatingDto categoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(
+            @RequestBody @Valid CategoryCreationDto categoryDto) {
+
         CategoryDto category = categoryService.createCategory(categoryDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
