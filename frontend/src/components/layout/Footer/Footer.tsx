@@ -33,7 +33,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/about"
+                  to="/greeting"
                   className="text-gray-400 hover:text-green-400 transition"
                 >
                   О нас
@@ -63,10 +63,18 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link
-                  to="/terms"
+                  to="/client-registration"
                   className="text-gray-400 hover:text-green-400 transition"
                 >
-                  Условия использования
+                  Подключить компанию
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/supplier-registration"
+                  className="text-gray-400 hover:text-green-400 transition"
+                >
+                  Стать поставщиком
                 </Link>
               </li>
             </ul>

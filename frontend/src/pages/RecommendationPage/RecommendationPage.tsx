@@ -420,7 +420,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
             className="px-6 py-3 bg-gray-100 text-green-700 rounded-full font-medium hover:bg-green-50 transition-all shadow"
             onClick={handleGenerate}
           >
-            <i className="fas fa-sync-alt mr-2"></i> Сгенерировать заново
+            <i className="fas fa-sync-alt mr-2"></i> Подобрать заново
           </button>
         </div>
       )}

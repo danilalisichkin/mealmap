@@ -14,7 +14,7 @@ const ClientRegistrationPage: React.FC<ClientRegistrationPageProps> = () => {
   }, []);
 
   return (
-    <main className="container min-h-screen mx-auto px-4 py-8">
+    <main className="container min-h-screen overflow-hidden mx-auto px-4 py-8">
       <HeroSection />
 
       <StatsSection />
@@ -74,13 +74,13 @@ const HeroSection: React.FC<{}> = () => {
               </a>
             </div>
           </div>
-          <div className="md:w-1/2 flex justify-center" data-aos="fade-left">
+            <div className="md:w-1/2 flex justify-center" data-aos="fade-left">
             <img
-              src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-              alt="Корпоративное питание"
+              src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+              alt="Сотрудники за обедом"
               className="rounded-xl shadow-xl floating max-w-md w-full"
             />
-          </div>
+            </div>
         </div>
       </div>
     </section>

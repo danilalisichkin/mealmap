@@ -21,7 +21,7 @@ const UserPreferences: React.FC<UserPreferencesProps> = ({
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-bold text-gray-800">Ваши предпочтения</h3>
+        <h3 className="text-lg font-bold text-gray-800">Мои предпочтения</h3>
       </div>
 
       <div className="border-b border-gray-200 mb-6">

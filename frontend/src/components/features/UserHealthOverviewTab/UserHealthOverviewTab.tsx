@@ -48,7 +48,7 @@ const UserHealthOverviewTab: React.FC<UserHealthOverviewTabProps> = ({
 
   const formattedDietGoalWeight = diet ? diet.goalWeight / 1000 : 0;
   const formattedDietStartWeight =
-    weightHistory.length > 0 ? weightHistory[0].weight / 1000 : 0;
+    weightHistory.length > 0 ? weightHistory[weightHistory.length - 1].weight / 1000 : 0;
   const formattedRemainingWeight =
     diet && diet.type === DietType.WEIGHT_LOSS
       ? formattedCurrentWeight - formattedDietGoalWeight

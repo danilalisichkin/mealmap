@@ -48,7 +48,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-xl font-bold text-gray-800">
-              {order.paymentInfo.totalAmount}₽
+              {(order.paymentInfo.totalAmount / 100).toFixed(2)}₽
             </span>
             <button
               className="expand-btn flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-transform"
@@ -115,14 +115,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
                 )}
               </div>
               <div className="mt-6 pt-6 border-t border-gray-200 flex flex-col gap-3">
-                <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md transition-colors">
-                  Повторить заказ
-                </button>
                 <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 rounded-md transition-colors">
                   Отменить заказ
-                </button>
-                <button className="w-full border border-gray-300 hover:bg-gray-50 text-gray-800 py-2 rounded-md transition-colors">
-                  Связаться с поддержкой
                 </button>
               </div>
             </div>

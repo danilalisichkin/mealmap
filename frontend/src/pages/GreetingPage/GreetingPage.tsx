@@ -30,7 +30,7 @@ const GreetingPage: React.FC<GreetingPageProps> = () => {
   }
 
   return (
-    <main className="container min-h-screen mx-auto px-4 py-8">
+    <main className="container min-h-screen overflow-hidden mx-auto px-4 py-8">
       <HeroSection onNavigateToFaq={navigateToFaq} onNavigateToClientReg={navigateToClientRegistration}/>
 
       <StatsSection />
