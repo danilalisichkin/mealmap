@@ -1,28 +1,42 @@
 package com.mealmap.recommendationservice.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mealmap.recommendationservice.core.model.UserInfo;
+import com.mealmap.recommendationservice.ai.constant.PromptTemplates;
+import com.mealmap.recommendationservice.client.dto.enums.PreferenceType;
+import com.mealmap.recommendationservice.core.model.PromptData;
 import com.mealmap.recommendationservice.core.model.health.Diet;
 import com.mealmap.recommendationservice.core.model.health.PhysicHealth;
 import com.mealmap.recommendationservice.core.model.preference.Preferences;
+import com.mealmap.recommendationservice.core.model.product.Product;
 import com.mealmap.recommendationservice.service.HealthService;
 import com.mealmap.recommendationservice.service.OrderService;
 import com.mealmap.recommendationservice.service.PreferenceService;
 import com.mealmap.recommendationservice.service.ProductService;
 import com.mealmap.recommendationservice.service.PromptBuildingService;
-import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
+import com.mealmap.recommendationservice.util.CatalogFilter;
+import com.mealmap.recommendationservice.util.HealthInfoComposer;
+import com.mealmap.recommendationservice.util.JsonSerializer;
+import com.mealmap.recommendationservice.util.PreferenceFilter;
+import com.mealmap.recommendationservice.validator.CatalogValidator;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
-
-import static com.mealmap.recommendationservice.ai.constant.PromptTemplates.USER_RECOMMENDATIONS;
 
 @Service
 @RequiredArgsConstructor
 public class PromptBuildingServiceImpl implements PromptBuildingService {
-    private final ObjectMapper objectMapper;
+    private static final String NO_ALLERGIES = "не указаны";
+
+    private final JsonSerializer jsonSerializer;
+
+    private final HealthInfoComposer healthInfoComposer;
+
+    private final CatalogFilter catalogFilter;
+
+    private final PreferenceFilter preferenceFilter;
+
+    private final CatalogValidator catalogValidator;
 
     private final HealthService healthService;
 
@@ -33,52 +47,47 @@ public class PromptBuildingServiceImpl implements PromptBuildingService {
     private final ProductService productService;
 
     @Override
-    @SneakyThrows
     public String buildPromptUserMessage(UUID userId) {
-        var menu = productService.getAllProducts();
+        List<Product> filteredCatalog = getFilteredCatalog(userId);
+        Preferences preferences = preferenceService.getUserPreferences(userId);
+        PhysicHealth physicHealth = healthService.getUserPhysicHealth(userId);
+        Diet diet = healthService.getUserDiet(userId);
 
-        var userPhysicHealth = getUserPhysicHealth(userId);
-        var userDiet = getUserDiet(userId);
-        var userPreferences = getUserPreferences(userId);
-        var userLastOrders = orderService.getUserLastOrders(userId);
+        PromptData promptData = composePromptData(userId, preferences, filteredCatalog, physicHealth, diet);
 
-        var userInfo = UserInfo.builder()
-                .userId(userId.toString())
-                .physicHealth(userPhysicHealth)
-                .diet(userDiet)
-                .preferences(userPreferences)
-                .lastOrders(userLastOrders)
-                .build();
-
-        var menuAsString = objectMapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(menu);
-        var userInfoAsJson = objectMapper.writerWithDefaultPrettyPrinter()
-                .writeValueAsString(userInfo);
-
-        return String.format(USER_RECOMMENDATIONS, menuAsString, userInfoAsJson);
+        return String.format(
+                PromptTemplates.USER_RECOMMENDATIONS,
+                promptData.catalogJson(),
+                promptData.likedProductsJson(),
+                promptData.likedCategoriesJson(),
+                promptData.ordersJson(),
+                promptData.allergies(),
+                promptData.healthInfo());
     }
 
-    private PhysicHealth getUserPhysicHealth(UUID userId) {
-        try {
-            return healthService.getUserPhysicHealth(userId);
-        } catch (ResourceNotFoundException e) {
-            return null;
-        }
+    private List<Product> getFilteredCatalog(UUID userId) {
+        List<Product> catalog = productService.getAllProducts();
+        catalogValidator.validateCatalogFill(catalog);
+
+        Preferences preferences = preferenceService.getUserPreferences(userId);
+        return catalogFilter.filterCatalog(
+                catalog,
+                preferenceFilter.filterProductPreferences(preferences, PreferenceType.DISLIKED),
+                preferenceFilter.filterCategoryPreferences(preferences, PreferenceType.DISLIKED)
+        );
     }
 
-    private Diet getUserDiet(UUID userId) {
-        try {
-            return healthService.getUserDiet(userId);
-        } catch (ResourceNotFoundException e) {
-            return null;
-        }
-    }
+    private PromptData composePromptData(
+            UUID userId, Preferences preferences, List<Product> filteredCatalog,
+            PhysicHealth physicHealth, Diet diet) {
 
-    private Preferences getUserPreferences(UUID userId) {
-        try {
-            return preferenceService.getUserPreferences(userId);
-        } catch (ResourceNotFoundException e) {
-            return null;
-        }
+        return new PromptData(
+                jsonSerializer.serialize(filteredCatalog),
+                jsonSerializer.serialize(preferenceFilter.filterProductPreferences(preferences, PreferenceType.LIKED)),
+                jsonSerializer.serialize(preferenceFilter.filterCategoryPreferences(preferences, PreferenceType.LIKED)),
+                jsonSerializer.serialize(orderService.getUserLastOrders(userId)),
+                NO_ALLERGIES,
+                healthInfoComposer.composeHealthInfo(physicHealth, diet)
+        );
     }
 }

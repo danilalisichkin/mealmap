@@ -5,5 +5,12 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PromptTemplates {
-    public static final String USER_RECOMMENDATIONS = "menu.json:\n%s user_info.json:\n%s";
+    public static final String USER_RECOMMENDATIONS = """
+            - Меню продуктов: %s
+            - Мои любимые блюда: %s
+            - Мои любимые категории блюд: %s
+            - Мои последние заказы: %s
+            - Мои аллергии: %s.
+            %s
+            """;
 }

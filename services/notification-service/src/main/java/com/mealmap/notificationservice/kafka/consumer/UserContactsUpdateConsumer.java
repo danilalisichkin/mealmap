@@ -2,7 +2,6 @@ package com.mealmap.notificationservice.kafka.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateDto;
-import com.mealmap.notificationservice.kafka.dto.KafkaUserContactsUpdateTgChatDto;
 import com.mealmap.notificationservice.service.UserContactsKafkaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;

@@ -13,7 +13,7 @@ spring:
       base-url: ${AI_OLLAMA_BASE_URL:http://localhost:11434}
       chat:
         options:
-          model: ${AI_OLLAMA_CHAT_MODEL:llama3.2:latest}
+          model: ${AI_OLLAMA_CHAT_MODEL:qwen2.5:3b}
           temperature: ${AI_OLLAMA_CHAT_TEMPERATURE:1.0}
       init:
         pull-model-strategy: ${AI_OLLAMA_PULL_STRATEGY:always}
@@ -26,6 +26,7 @@ security:
     cors:
       allowed-origins:
         - http://localhost:3000
+        - http://172.20.10.4:3000
 mongock:
   migration-scan-package: com.cabaggregator.rideservice.migration
   transactional: true

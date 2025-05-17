@@ -13,6 +13,7 @@ import com.mealmap.starters.paginationstarter.mapper.PageMapper;
 import com.mealmap.starters.paginationstarter.util.PageBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RecommendationServiceImpl implements RecommendationService {
@@ -55,6 +57,8 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Transactional
     public UserRecommendationDto getNewUserRecommendation(UUID userId) {
         var prompt = promptBuildingService.buildPromptUserMessage(userId);
+
+        log.info(prompt);
 
         var response = chatClient
                 .prompt(prompt)

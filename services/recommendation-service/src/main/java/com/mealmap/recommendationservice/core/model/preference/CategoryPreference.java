@@ -1,5 +1,6 @@
 package com.mealmap.recommendationservice.core.model.preference;
 
+import com.mealmap.recommendationservice.client.dto.enums.PreferenceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class CategoryPreference {
     private Long categoryId;
 
-    private String preferenceType;
+    private PreferenceType preferenceType;
 }

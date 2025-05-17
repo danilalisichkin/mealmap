@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PhysicHealth {
-    private String weight;
+    private Integer weight;
 
-    private String height;
+    private Integer height;
 
     private String birthDate;
 
