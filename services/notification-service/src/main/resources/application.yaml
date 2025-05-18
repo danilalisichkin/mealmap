@@ -70,6 +70,10 @@ business:
         name: notification.creation.v1
         consumer:
           group-id: notification.creation.consumer.group
+    template:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
   notifications:
     email:
       enabled: ${NOTIFICATIONS_EMAIL_ENABLED:true}
@@ -104,6 +108,13 @@ management:
     metrics:
       export:
         enabled: true
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT:http://localhost:9411/api/v2/spans}
 logging:
   logstash:
     server: ${LOGSTASH_HOSTPORT:localhost:5000}

@@ -34,6 +34,7 @@
         <minio.version>8.5.17</minio.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <logback.encoder.version>8.0</logback.encoder.version>
+        <datasource.micrometer.version>1.0.6</datasource.micrometer.version>
     </properties>
 
     <dependencyManagement>
@@ -104,6 +105,13 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logback.encoder.version}</version>
+            </dependency>
+
+            <!-- Micrometer Datasource Observation -->
+            <dependency>
+                <groupId>net.ttddyy.observation</groupId>
+                <artifactId>datasource-micrometer-spring-boot</artifactId>
+                <version>${datasource.micrometer.version}</version>
             </dependency>
 
             <!-- MapStruct -->

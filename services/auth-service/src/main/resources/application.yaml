@@ -18,6 +18,10 @@ spring:
         spring.deserializer:
           key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
           value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+    template:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
   security:
     oauth2:
       resourceserver:
@@ -55,6 +59,8 @@ business:
     organization:
       name: ${ORGANIZATION_API_NAME:organization-service}
       path: ${ORGANIZATION_API_PATH:api/v1/organizations}
+keycloak:
+  token-refresh-interval: ${KEYCLOAK_TOKEN_REFRESH_INTERVAL:300}
 security:
   web:
     cors:
@@ -84,6 +90,13 @@ management:
     metrics:
       export:
         enabled: true
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT:http://localhost:9411/api/v2/spans}
 logging:
   logstash:
     server: ${LOGSTASH_HOSTPORT:localhost:5000}

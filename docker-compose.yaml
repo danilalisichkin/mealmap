@@ -618,6 +618,21 @@ services:
     networks:
       - mealmap-network
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: mealmap-zipkin
+    restart: on-failure
+    ports:
+      - "9411:9411"
+    healthcheck:
+      test: curl --silent --fail http://localhost:5601/api/health | grep UP || exit 1
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    networks:
+      - mealmap-network
+
 volumes:
   product-pg-database_data:
   user-pg-database_data:

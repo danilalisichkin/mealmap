@@ -6,6 +6,10 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    template:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
 telegram:
   bot:
     token: ${TG_BOT_TOKEN:7509632284:AAGcvu3Jnq4Ey7CufazKKLxQmr54Xlig_eg}
@@ -50,6 +54,13 @@ management:
     metrics:
       export:
         enabled: true
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_TRACING_ENDPOINT:http://localhost:9411/api/v2/spans}
 logging:
   logstash:
     server: ${LOGSTASH_HOSTPORT:localhost:5000}

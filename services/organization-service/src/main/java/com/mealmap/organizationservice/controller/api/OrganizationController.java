@@ -64,7 +64,8 @@ public class OrganizationController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
+    @PreAuthorize("(hasRole('OPERATOR') and hasRole('ADMIN')) " +
+            "or (isApplicationService() and hasRole('AUTH_SERVICE'))")
     public ResponseEntity<OrganizationDto> getOrganization(@PathVariable Integer id) {
         OrganizationDto organization = organizationService.getOrganization(id);
 
