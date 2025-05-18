@@ -32,9 +32,9 @@ import java.util.Set;
 public class AllergenController {
     private final AllergenService allergenService;
 
-    @GetMapping
+    @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<AllergenDto>> getAllergens() {
+    public ResponseEntity<List<AllergenDto>> getAllAllergens() {
         List<AllergenDto> allergens = allergenService.getAllAllergens();
 
         return ResponseEntity.status(HttpStatus.OK).body(allergens);
@@ -71,7 +71,7 @@ public class AllergenController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
-    public ResponseEntity<AllergenDto> updateCategory(
+    public ResponseEntity<AllergenDto> updateAllergen(
             @PathVariable Long id, @RequestBody @Valid AllergenUpdatingDto allergenDto) {
 
         AllergenDto allergen = allergenService.updateAllergen(id, allergenDto);

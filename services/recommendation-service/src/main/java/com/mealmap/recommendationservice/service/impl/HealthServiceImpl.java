@@ -3,11 +3,14 @@ package com.mealmap.recommendationservice.service.impl;
 import com.mealmap.recommendationservice.client.HealthApiClient;
 import com.mealmap.recommendationservice.core.model.health.Diet;
 import com.mealmap.recommendationservice.core.model.health.PhysicHealth;
+import com.mealmap.recommendationservice.core.model.health.UserAllergen;
 import com.mealmap.recommendationservice.service.HealthService;
 import com.mealmap.starters.exceptionstarter.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,6 +33,15 @@ public class HealthServiceImpl implements HealthService {
             return healthApiClient.getUserDiet(userId);
         } catch (ResourceNotFoundException e) {
             return null;
+        }
+    }
+
+    @Override
+    public List<UserAllergen> getUserAllergens(UUID userId) {
+        try {
+            return healthApiClient.getUserAllergens(userId);
+        } catch (ResourceNotFoundException e) {
+            return Collections.emptyList();
         }
     }
 }

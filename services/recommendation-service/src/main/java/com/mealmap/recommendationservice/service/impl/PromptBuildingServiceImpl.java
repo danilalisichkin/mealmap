@@ -5,6 +5,7 @@ import com.mealmap.recommendationservice.client.dto.enums.PreferenceType;
 import com.mealmap.recommendationservice.core.model.PromptData;
 import com.mealmap.recommendationservice.core.model.health.Diet;
 import com.mealmap.recommendationservice.core.model.health.PhysicHealth;
+import com.mealmap.recommendationservice.core.model.health.UserAllergen;
 import com.mealmap.recommendationservice.core.model.preference.Preferences;
 import com.mealmap.recommendationservice.core.model.product.Product;
 import com.mealmap.recommendationservice.service.HealthService;
@@ -48,12 +49,15 @@ public class PromptBuildingServiceImpl implements PromptBuildingService {
 
     @Override
     public String buildPromptUserMessage(UUID userId) {
-        List<Product> filteredCatalog = getFilteredCatalog(userId);
+        List<Product> catalog = productService.getAllProducts();
         Preferences preferences = preferenceService.getUserPreferences(userId);
         PhysicHealth physicHealth = healthService.getUserPhysicHealth(userId);
         Diet diet = healthService.getUserDiet(userId);
+        List<UserAllergen> userAllergens = healthService.getUserAllergens(userId);
 
-        PromptData promptData = composePromptData(userId, preferences, filteredCatalog, physicHealth, diet);
+        filterCatalog(catalog, preferences, userAllergens);
+
+        PromptData promptData = composePromptData(userId, preferences, catalog, physicHealth, diet);
 
         return String.format(
                 PromptTemplates.USER_RECOMMENDATIONS,
@@ -65,15 +69,17 @@ public class PromptBuildingServiceImpl implements PromptBuildingService {
                 promptData.healthInfo());
     }
 
-    private List<Product> getFilteredCatalog(UUID userId) {
-        List<Product> catalog = productService.getAllProducts();
+    private void filterCatalog(List<Product> catalog, Preferences preferences, List<UserAllergen> allergens) {
         catalogValidator.validateCatalogFill(catalog);
 
-        Preferences preferences = preferenceService.getUserPreferences(userId);
-        return catalogFilter.filterCatalog(
+        var dislikedProducts = preferenceFilter.filterProductPreferences(preferences, PreferenceType.DISLIKED);
+        var dislikedCategories = preferenceFilter.filterCategoryPreferences(preferences, PreferenceType.DISLIKED);
+
+        catalogFilter.filterCatalog(
                 catalog,
-                preferenceFilter.filterProductPreferences(preferences, PreferenceType.DISLIKED),
-                preferenceFilter.filterCategoryPreferences(preferences, PreferenceType.DISLIKED)
+                dislikedProducts,
+                dislikedCategories,
+                allergens
         );
     }
 

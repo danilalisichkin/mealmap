@@ -29,4 +29,6 @@ public class Product {
     private Integer supplierId;
 
     private List<CategorySimple> categories;
+
+    private List<Allergen> allergens;
 }
