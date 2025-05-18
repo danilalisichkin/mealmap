@@ -102,6 +102,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Logging -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+        </dependency>
+
         <!-- Code Generation Dependencies-->
         <dependency>
             <groupId>org.projectlombok</groupId>

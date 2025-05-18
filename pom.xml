@@ -33,6 +33,7 @@
         <telegrambots.version>8.2.0</telegrambots.version>
         <minio.version>8.5.17</minio.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <logback.encoder.version>8.0</logback.encoder.version>
     </properties>
 
     <dependencyManagement>
@@ -96,6 +97,13 @@
                 <groupId>org.telegram</groupId>
                 <artifactId>telegrambots-abilities</artifactId>
                 <version>${telegrambots.version}</version>
+            </dependency>
+
+            <!-- Logback -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logback.encoder.version}</version>
             </dependency>
 
             <!-- MapStruct -->

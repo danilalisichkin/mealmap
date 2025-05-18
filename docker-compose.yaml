@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
 
   product-pg-database:
@@ -507,7 +505,7 @@ services:
     depends_on:
       - zookeeper
 
-  elasticsearch:
+  product-elasticsearch:
     build:
       context: ./system-services/elasticsearch
       dockerfile: Dockerfile
@@ -517,7 +515,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data:Z
+      - product-elasticsearch_data:/usr/share/elasticsearch/data:Z
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       discovery.type: single-node
@@ -559,17 +557,64 @@ services:
     volumes:
       - ./system-services/monitoring/grafana/provisioning:/etc/grafana/provisioning
     ports:
-      - "3100:3100"
+      - "3100:3000"
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_SERVER_HTTP_PORT: 3100
     healthcheck:
       test: curl --fail -s http://localhost:3000/api/health || exit 1
       interval: 10s
       timeout: 5s
       start_period: 10s
       retries: 5
+    networks:
+      - mealmap-network
+
+  log-elasticsearch:
+    image: elasticsearch:7.14.2
+    container_name: mealmap-log-elasticsearch
+    volumes:
+      - log-elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+      ELASTIC_PASSWORD: elastic
+    networks:
+      - mealmap-network
+
+  logstash:
+    image: logstash:7.14.2
+    container_name: mealmap-logstash
+    volumes:
+      - ./system-services/monitoring/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTICSEARCH_HOSTS: http://log-elasticsearch:9200
+      ELASTIC_USERNAME: elastic
+      ELASTIC_PASSWORD: elastic
+    depends_on:
+      - log-elasticsearch
+    networks:
+      - mealmap-network
+
+  kibana:
+    image: kibana:7.14.2
+    container_name: mealmap-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://log-elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: elastic
+      XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: "true"
+    depends_on:
+      - log-elasticsearch
     networks:
       - mealmap-network
 
@@ -594,7 +639,8 @@ volumes:
   organization-redis_data:
   preference-redis_data:
   file-redis_data:
-  elasticsearch_data:
+  product-elasticsearch_data:
+  log-elasticsearch_data:
   minio_data:
 
 networks:

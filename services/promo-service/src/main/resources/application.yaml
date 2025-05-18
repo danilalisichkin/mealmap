@@ -45,5 +45,8 @@ management:
     metrics:
       export:
         enabled: true
+logging:
+  logstash:
+    server: ${LOGSTASH_HOSTPORT:localhost:5000}
 server:
   port: ${SERVER_PORT:8086}
