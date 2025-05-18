@@ -14,6 +14,8 @@ import PopupNotification, {
 } from "../../components/features/PopupNotification/PopupNotification";
 import { FileApi } from "../../api/file/FileApi";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
+import { HealthApi } from "../../api/health/UserHealthApi";
+import { UserAllergenDto } from "../../api/health/dto/UserAllergenDto";
 
 interface ProductPageProps {}
 
@@ -26,8 +28,11 @@ const ProductPage: React.FC<ProductPageProps> = () => {
   );
 
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+
   const [currentPreferenceType, setCurrentPreferenceType] =
     useState<PreferenceType | null>(null);
+  const [userAllergens, setUserAllergens] = useState<UserAllergenDto[]>([]);
+  const [isAllergic, setIsAllergic] = useState<boolean>(false);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -124,6 +129,20 @@ const ProductPage: React.FC<ProductPageProps> = () => {
           status: "500",
         });
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUserAllergens = async () => {
+    if (!userId) return;
+
+    try {
+      setLoading(true);
+      const fetchedAllergens = await HealthApi.getUserAllergens(userId);
+      setUserAllergens(fetchedAllergens);
+    } catch (error) {
+      console.error("Ошибка при загрузке аллергий пользователя:", error);
     } finally {
       setLoading(false);
     }
@@ -227,6 +246,23 @@ const ProductPage: React.FC<ProductPageProps> = () => {
     }
   }, [userId, params.id]);
 
+  useEffect(() => {
+    if (userId) {
+      fetchUserAllergens();
+    }
+
+    if (product && userAllergens.length > 0) {
+      const allergic = product.allergens.some((allergen) =>
+        userAllergens.some(
+          (userAllergen) => userAllergen.allergenId === allergen.id
+        )
+      );
+      setIsAllergic(allergic);
+    } else {
+      setIsAllergic(false);
+    }
+  }, [userId]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -274,6 +310,13 @@ const ProductPage: React.FC<ProductPageProps> = () => {
                 <div className="absolute top-4 right-4 flex space-x-2">
                   <span className="new-badge bg-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
                     новинка
+                  </span>
+                </div>
+              )}
+              {isAllergic && (
+                <div className="absolute top-4 right-4 flex space-x-2">
+                  <span className="new-badge bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                    аллергенный
                   </span>
                 </div>
               )}
@@ -351,6 +394,33 @@ const ProductPage: React.FC<ProductPageProps> = () => {
               Описание
             </h3>
             <p className="text-gray-600 text-sm">{product.description}</p>
+          </div>
+
+          {/* Allergens */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              Аллергены
+            </h3>
+
+            <div className="flex flex-wrap gap-1 mb-2">
+              {product.allergens.map((allergen) => {
+                const isAllergicForUser = userAllergens.some(
+                  (el) => el.allergenId === allergen.id
+                );
+                return (
+                  <div
+                    key={`allergen-${allergen.id}`}
+                    className={`${
+                      isAllergicForUser
+                        ? "bg-red-100 text-red-600"
+                        : "bg-gray-100 text-gray-600"
+                    } text-xs px-2 py-1 rounded`}
+                  >
+                    {allergen.name}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Nutrients */}

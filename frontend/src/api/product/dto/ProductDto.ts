@@ -1,5 +1,6 @@
 import { NutrientDto } from "./NutrientDto";
 import { CategorySimpleDto } from "./CategorySimpleDto";
+import { AllergenDto } from "./AllergenDto";
 
 export interface ProductDto {
   id: number;
@@ -12,4 +13,5 @@ export interface ProductDto {
   isNew: boolean; // Indicates if the product is new
   supplierId: number;
   categories: CategorySimpleDto[]; // List of associated categories
+  allergens: AllergenDto[]; // List of associated allergens
 }

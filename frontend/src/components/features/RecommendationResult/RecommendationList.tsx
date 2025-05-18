@@ -6,11 +6,13 @@ import { PreferenceType } from "../../../api/preference/enums/PreferenceType";
 import { useNavigate } from "react-router-dom";
 import { ProductPreferenceDto } from "../../../api/preference/dto/ProductPreferenceDto";
 import { RecommendationItem } from "../../../api/recommendation/dto/RecommendationItem";
+import { UserAllergenDto } from "../../../api/health/dto/UserAllergenDto";
 
 interface RecommendationListProps {
   recommendations: UserRecommendationDto;
   recommendedProducts: ProductDto[];
   preferredProducts: ProductPreferenceDto[];
+  userAllergens: UserAllergenDto[];
   onAddToCart: (item: RecommendationItem) => void;
   onAddToPreference: (
     productId: number,
@@ -23,6 +25,7 @@ const RecommendationList: React.FC<RecommendationListProps> = ({
   recommendations,
   recommendedProducts,
   preferredProducts,
+  userAllergens,
   onAddToCart,
   onAddToPreference,
   onRemoveFromPreference,
@@ -39,7 +42,11 @@ const RecommendationList: React.FC<RecommendationListProps> = ({
   return (
     <div id="recommendations-result">
       <div
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+        className={`grid ${
+          recommendedProducts.length < 4
+            ? `grid-cols-${recommendedProducts.length} `
+            : "md:grid-cols-3 lg:grid-cols-4"
+        } gap-3`}
         id="recommended-products"
       >
         {recommendations.items.map((recommendationItem) => {
@@ -49,6 +56,12 @@ const RecommendationList: React.FC<RecommendationListProps> = ({
 
           if (!recommendedProduct) return null;
 
+          const isAllergic = recommendedProduct.allergens.some((allergen) =>
+            userAllergens.some(
+              (userAllergen) => userAllergen.allergenId === allergen.id
+            )
+          );
+
           return (
             <div
               className="relative"
@@ -57,6 +70,7 @@ const RecommendationList: React.FC<RecommendationListProps> = ({
               <ProductCard
                 key={recommendedProduct.id}
                 product={recommendedProduct}
+                isAllergic={isAllergic}
                 preferenceType={
                   preferredProducts.find(
                     (pref) => pref.productId === recommendedProduct.id

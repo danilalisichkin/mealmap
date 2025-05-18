@@ -11,13 +11,19 @@ import { ProductPreferenceDto } from "../../../api/preference/dto/ProductPrefere
 import PopupNotification, {
   NotificationType,
 } from "../PopupNotification/PopupNotification";
+import { UserAllergenDto } from "../../../api/health/dto/UserAllergenDto";
 
 interface CatalogProps {
   products: ProductDto[];
   preferredProducts: ProductPreferenceDto[];
+  userAllergens: UserAllergenDto[];
 }
 
-const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
+const Catalog: React.FC<CatalogProps> = ({
+  products,
+  preferredProducts,
+  userAllergens,
+}) => {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
@@ -121,24 +127,34 @@ const Catalog: React.FC<CatalogProps> = ({ products, preferredProducts }) => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-      {products.map((product) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          preferenceType={
-            preferredProducts.find((pref) => pref.productId === product.id)
-              ?.preferenceType ?? null
-          }
-          onAddToCart={() => handleAddToCart(product.id)}
-          onNavigateToProductPage={() =>
-            handleNavigateToProductPage(product.id)
-          }
-          onAddToPreference={(preferenceType: PreferenceType) =>
-            handleAddToPreference(product.id, preferenceType)
-          }
-          onRemoveFromPreference={() => handleRemoveFromPreference(product.id)}
-        />
-      ))}
+      {products.map((product) => {
+        const isAllergic = product.allergens.some((allergen) =>
+          userAllergens.some(
+            (userAllergen) => userAllergen.allergenId === allergen.id
+          )
+        );
+        return (
+          <ProductCard
+            key={product.id}
+            product={product}
+            preferenceType={
+              preferredProducts.find((pref) => pref.productId === product.id)
+                ?.preferenceType ?? null
+            }
+            isAllergic={isAllergic}
+            onAddToCart={() => handleAddToCart(product.id)}
+            onNavigateToProductPage={() =>
+              handleNavigateToProductPage(product.id)
+            }
+            onAddToPreference={(preferenceType: PreferenceType) =>
+              handleAddToPreference(product.id, preferenceType)
+            }
+            onRemoveFromPreference={() =>
+              handleRemoveFromPreference(product.id)
+            }
+          />
+        );
+      })}
       <PopupNotification
         key={notification.id}
         message={notification.message}

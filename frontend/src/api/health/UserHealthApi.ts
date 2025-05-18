@@ -6,6 +6,8 @@ import { PhysicHealthHistoryDto } from "./dto/PhysicHealthHistoryDto";
 import { DietDto } from "./dto/DietDto";
 import { DietCreationDto } from "./dto/DietCreationDto";
 import { DietUpdatingDto } from "./dto/DietUpdatingDto";
+import { UserAllergenDto } from "./dto/UserAllergenDto";
+import { UserAllergenAddingDto } from "./dto/UserAllergenAddingDto";
 
 export const HealthApi = {
   getUserPhysicHealth: async (userId: string): Promise<PhysicHealthDto> => {
@@ -20,6 +22,13 @@ export const HealthApi = {
   ): Promise<PhysicHealthHistoryDto[]> => {
     const response = await ApiClient.get<PhysicHealthHistoryDto[]>(
       `/users/${userId}/physic-health/history`
+    );
+    return response.data;
+  },
+
+  getUserAllergens: async (userId: string): Promise<UserAllergenDto[]> => {
+    const response = await ApiClient.get<UserAllergenDto[]>(
+      `/users/${userId}/allergens`
     );
     return response.data;
   },
@@ -51,6 +60,17 @@ export const HealthApi = {
     return response.data;
   },
 
+  addUserAllergen: async (
+    userId: string,
+    data: UserAllergenAddingDto
+  ): Promise<UserAllergenDto> => {
+    const response = await ApiClient.post<UserAllergenDto>(
+      `/users/${userId}/allergens`,
+      data
+    );
+    return response.data;
+  },
+
   updateUserPhysicHealth: async (
     userId: string,
     data: PhysicHealthUpdatingDto
@@ -75,5 +95,15 @@ export const HealthApi = {
 
   deleteUserDiet: async (userId: string): Promise<void> => {
     await ApiClient.delete(`/users/${userId}/diet`);
+  },
+
+  removeAllergen: async (
+    userId: string,
+    allergenId: number
+  ): Promise<UserAllergenDto> => {
+    const response = await ApiClient.delete<UserAllergenDto>(
+      `/users/${userId}/allergens/${allergenId}`
+    );
+    return response.data;
   },
 };

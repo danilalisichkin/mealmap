@@ -8,9 +8,19 @@ const notifications = [
     userId: '0e3901b5-fb3f-44e4-b691-adac0a735789',
     channel: 'EMAIL',
     status: 'SENT',
+    subject: 'Заказ № 111111111111111111111111 готовится',
+    message: 'Дорогой пользователь, Ваш заказ начали готовить!',
+    sentAt: new Date('2025-04-01T14:40:45Z'),
+    _class: 'com.mealmap.notificationservice.doc.Notification'
+  },
+  {
+    _id: ObjectId('222222222222222222222222'),
+    userId: '0e3901b5-fb3f-44e4-b691-adac0a735789',
+    channel: 'TELEGRAM',
+    status: 'SENT',
     subject: 'Заказ № 111111111111111111111111 собран',
     message: 'Дорогой пользователь, Ваш заказ собран и скоро будет передан в доставку!',
-    sentAt: new Date('2024-01-26T14:40:45Z'),
+    sentAt: new Date('2025-04-01T14:50:45Z'),
     _class: 'com.mealmap.notificationservice.doc.Notification'
   }
 ];

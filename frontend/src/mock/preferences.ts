@@ -72,6 +72,12 @@ export const mockPreferenceProducts: ProductDto[] = [
         parent: undefined,
       },
     ],
+    allergens: [
+      {
+        id: 1,
+        name: "Соя",
+      },
+    ],
   },
   {
     id: 2,
@@ -95,6 +101,12 @@ export const mockPreferenceProducts: ProductDto[] = [
         id: 1,
         name: "Гарниры",
         parent: undefined,
+      },
+    ],
+    allergens: [
+      {
+        id: 2,
+        name: "Грибы",
       },
     ],
   },
@@ -122,6 +134,12 @@ export const mockPreferenceProducts: ProductDto[] = [
         parent: undefined,
       },
     ],
+    allergens: [
+      {
+        id: 3,
+        name: "Сыр",
+      },
+    ],
   },
   {
     id: 4,
@@ -147,6 +165,7 @@ export const mockPreferenceProducts: ProductDto[] = [
         parent: undefined,
       },
     ],
+    allergens: [],
   },
 ];
 

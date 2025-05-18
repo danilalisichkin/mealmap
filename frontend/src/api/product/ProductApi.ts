@@ -1,10 +1,10 @@
 import ApiClient from "./client/ApiClient";
 import { ProductDto } from "./dto/ProductDto";
-import { ProductCreatingDto } from "./dto/ProductCreatingDto";
 import { ProductUpdatingDto } from "./dto/ProductUpdatingDto";
 import { ProductFilter } from "./dto/ProductFilter";
 import { ProductSortField } from "./enums/ProductSortField";
 import { PageDto } from "../common/dto/PageDto";
+import { ProductCreationDto } from "./dto/ProductCreationDto";
 
 export const ProductApi = {
   getProducts: async (
@@ -44,7 +44,7 @@ export const ProductApi = {
   },
 
   createProduct: async (
-    productDto: ProductCreatingDto
+    productDto: ProductCreationDto
   ): Promise<ProductDto> => {
     const response = await ApiClient.post<ProductDto>("/products", productDto);
     return response.data;

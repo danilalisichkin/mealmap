@@ -1,6 +1,6 @@
 import { NutrientDto } from "./NutrientDto";
 
-export interface ProductCreatingDto {
+export interface ProductCreationDto {
   name: string; // Max length: 40
   imageUrl: string;
   price: number; // Must be positive

@@ -19,6 +19,8 @@ import { OrganizationApi } from "../../api/organization/OrganizationApi";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 import CatalogPlaceholder from "../../components/commons/Placeholders/CatalogPlaceholder/CatalogPlaceholder";
+import { HealthApi } from "../../api/health/UserHealthApi";
+import { UserAllergenDto } from "../../api/health/dto/UserAllergenDto";
 
 interface CatalogPageProps {}
 
@@ -75,6 +77,8 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   const [productPreferences, setProductPreferences] = useState<
     ProductPreferenceDto[]
   >([]);
+  const [userAllergens, setUserAllergens] = useState<UserAllergenDto[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
 
@@ -112,8 +116,8 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await CategoryApi.getCategories();
-      const formattedCategories = response.items.map((category) => ({
+      const response = await CategoryApi.getAllCategories();
+      const formattedCategories = response.map((category) => ({
         label: category.name,
         value: category.id.toString(),
       }));
@@ -155,6 +159,25 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
     }
   };
 
+  const fetchUserAllergens = async () => {
+    if (!userId) return;
+
+    try {
+      setLoading(true);
+      const response = await HealthApi.getUserAllergens(userId);
+      setUserAllergens(response);
+    } catch (err: any) {
+      console.error("Ошибка при загрузке аллергий пользователя:", err);
+      setError({
+        title: "Не получилось загрузить аллергии",
+        detail: err.response?.data.detail,
+        status: "500",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchProducts(filter, searchText);
   }, [fetchProducts]);
@@ -162,6 +185,12 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   useEffect(() => {
     if (userId) {
       fetchProductPreferences();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserAllergens();
     }
   }, [userId]);
 
@@ -280,6 +309,7 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
               <Catalog
                 products={productPage.items}
                 preferredProducts={productPreferences}
+                userAllergens={userAllergens}
               />
               <Pagination
                 page={currentPage}

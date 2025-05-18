@@ -1,28 +1,12 @@
 import ApiClient from "./client/ApiClient";
 import { CategoryDto } from "./dto/CategoryDto";
-import { CategoryCreatingDto } from "./dto/CategoryCreatingDto";
 import { CategoryUpdatingDto } from "./dto/CategoryUpdatingDto";
 import { CategoryTreeDto } from "./dto/CategoryTreeDto";
-import { CategorySortField } from "./enums/CategorySortField";
-import { PageDto } from "../common/dto/PageDto";
+import { CategoryCreationDto } from "./dto/CategoryCreationDto";
 
 export const CategoryApi = {
-  getCategories: async (
-    offset: number = 0,
-    limit: number = 20,
-    sortBy: CategorySortField = CategorySortField.ID,
-    sortOrder: "ASC" | "DESC" = "ASC",
-    search?: string
-  ): Promise<PageDto<CategoryDto>> => {
-    const response = await ApiClient.get<PageDto<CategoryDto>>("/categories", {
-      params: {
-        offset,
-        limit,
-        sortBy,
-        sortOrder,
-        search,
-      },
-    });
+  getAllCategories: async (): Promise<CategoryDto[]> => {
+    const response = await ApiClient.get<CategoryDto[]>("/categories/all");
     return response.data;
   },
 
@@ -49,7 +33,7 @@ export const CategoryApi = {
   },
 
   createCategory: async (
-    categoryDto: CategoryCreatingDto
+    categoryDto: CategoryCreationDto
   ): Promise<CategoryDto> => {
     const response = await ApiClient.post<CategoryDto>(
       "/categories",

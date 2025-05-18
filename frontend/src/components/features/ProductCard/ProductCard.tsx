@@ -9,6 +9,7 @@ import LoadingSpinner from "../../commons/LoadingSpinner/LoadingSpinner";
 interface ProductCardProps {
   product: ProductDto;
   preferenceType: PreferenceType | null;
+  isAllergic: boolean | null;
   onAddToCart: () => void;
   onNavigateToProductPage: () => void;
   onAddToPreference: (preferenceType: PreferenceType) => void;
@@ -18,6 +19,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
   preferenceType,
+  isAllergic,
   onAddToCart,
   onNavigateToProductPage,
   onAddToPreference,
@@ -98,6 +100,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {product.isNew && (
           <span className="absolute top-1 right-1 bg-orange-500 text-white text-xs px-1 py-0.5 rounded-full">
             новинка
+          </span>
+        )}
+        {isAllergic && (
+          <span className="absolute bottom-1 right-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded-full">
+            аллергенный
           </span>
         )}
 

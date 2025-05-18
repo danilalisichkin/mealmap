@@ -4,7 +4,6 @@ import { PhysicHealthDto } from "../../../api/health/dto/PhysicHealthDto";
 interface UserHealthPhysicalTabProps {
   physicHealth: PhysicHealthDto;
   age: number | string;
-  successMessage: string | null;
   onSaveWeight: (newWeight: number) => void;
 }
 
@@ -17,7 +16,6 @@ const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
   physicHealth,
   age,
   onSaveWeight,
-  successMessage,
 }) => {
   const formattedCurrentWeight = physicHealth.weight / 1000;
 
@@ -91,7 +89,9 @@ const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
               max="200"
               step="0.1"
               defaultValue={formattedCurrentWeight.toFixed(1)}
-              onChange={(e) => handleWeightChange(parseFloat(e.target.value) * 1000)}
+              onChange={(e) =>
+                handleWeightChange(parseFloat(e.target.value) * 1000)
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
             />
           </div>
@@ -102,9 +102,6 @@ const UserHealthPhysicalTab: React.FC<UserHealthPhysicalTabProps> = ({
             Сохранить
           </button>
         </form>
-        {successMessage && (
-          <p className="text-green-500 text-sm mt-2">{successMessage}</p>
-        )}
       </div>
     </div>
   );

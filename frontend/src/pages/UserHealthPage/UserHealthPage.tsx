@@ -15,6 +15,13 @@ import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { ErrorDetail } from "../../api/common/dto/ErrorDetail";
 import { PhysicHealthCreationDto } from "../../api/health/dto/PhysicHealthCreationDto";
 import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
+import UserHealthAllergensTab from "../../components/features/UserHealthAllergensTab/UserHealthAllergensTab";
+import { UserAllergenDto } from "../../api/health/dto/UserAllergenDto";
+import PopupNotification, {
+  NotificationType,
+} from "../../components/features/PopupNotification/PopupNotification";
+import { AllergenDto } from "../../api/product/dto/AllergenDto";
+import { AllergenApi } from "../../api/product/AllergenApi";
 
 interface UserHealthPageProps {}
 
@@ -22,6 +29,7 @@ const TABS = [
   { key: "overview", label: "Общие сведения" },
   { key: "diet", label: "Диета" },
   { key: "physical", label: "Физические показатели" },
+  { key: "allergens", label: "Аллергии" },
 ];
 
 const UserHealthPage: React.FC<UserHealthPageProps> = () => {
@@ -35,10 +43,36 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
     []
   );
   const [diet, setDiet] = useState<DietDto | null>(null);
+  const [userAllergens, setUserAllergens] = useState<UserAllergenDto[]>([]);
+
+  const [allAllergens, setAllAllergens] = useState<AllergenDto[]>([]);
+
   const [bmi, setBmi] = useState<string>("-");
+
   const [isPhysicModalOpen, setPhysicModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("overview");
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [notification, setNotification] = useState<{
+    id: number;
+    message: string;
+    type: NotificationType;
+    isVisible: boolean;
+  }>({
+    id: 0,
+    message: "",
+    type: NotificationType.SUCCESS,
+    isVisible: false,
+  });
+
+  const showNotification = (message: string, type: NotificationType) => {
+    setNotification({
+      id: Date.now(),
+      message,
+      type,
+      isVisible: true,
+    });
+  };
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
 
@@ -143,11 +177,63 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
     }
   }, [userId]);
 
+  const fetchUserAllergens = useCallback(async () => {
+    if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await HealthApi.getUserAllergens(userId);
+      setUserAllergens(response);
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        console.error("Ошибка при загрузке аллергий:", err);
+        setWeightHistory([]);
+      } else if (err.response?.status === 500) {
+        console.error("Ошибка при загрузке аллергий:", err);
+        setError({
+          title: "Что-то пошло не так",
+          detail: err.response?.data.detail,
+          status: "500",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchAllAllergens = async () => {
+      try {
+        const allergens = await AllergenApi.getAllAllergens();
+        setAllAllergens(allergens);
+      } catch (err) {
+        console.error("Ошибка при загрузке всех аллергенов:", err);
+      }
+    };
+    fetchAllAllergens();
+  }, []);
+
   useEffect(() => {
     fetchPhysicHealth();
     fetchDiet();
     fetchPhysicHealthHistory();
-  }, [fetchPhysicHealth, fetchDiet, fetchPhysicHealthHistory]);
+    fetchUserAllergens();
+  }, [
+    fetchPhysicHealth,
+    fetchDiet,
+    fetchPhysicHealthHistory,
+    fetchUserAllergens,
+  ]);
 
   useEffect(() => {
     if (physicHealth) {
@@ -180,7 +266,10 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
         data
       );
       setPhysicHealth(newPhysicHealth);
-      setSuccessMessage("Информация о здоровье успешно добавлена!");
+      showNotification(
+        "Информация о здоровье успешно добавлена!",
+        NotificationType.SUCCESS
+      );
       setPhysicModalOpen(false);
     } catch (err: any) {
       console.error("Ошибка при создании информации о здоровье:", err);
@@ -202,7 +291,6 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
     try {
       setLoading(true);
       setError(null);
-      setSuccessMessage(null);
 
       const updatedPhysicHealth = await HealthApi.updateUserPhysicHealth(
         userId,
@@ -214,7 +302,7 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
       fetchPhysicHealthHistory();
 
-      setSuccessMessage("Вес успешно обновлён!");
+      showNotification("Вес успешно обновлён!", NotificationType.SUCCESS);
     } catch (err: any) {
       if (err.response?.status === 400) {
         setError({
@@ -244,7 +332,7 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
 
       await HealthApi.deleteUserDiet(userId);
       setDiet(null);
-      setSuccessMessage("Диета успешно завершена!");
+      showNotification("Диета успешно завершена!", NotificationType.SUCCESS);
     } catch (err: any) {
       if (err.response?.status === 400) {
         setError({
@@ -281,7 +369,75 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
         goalWeight: goalWeight * 1000,
       });
       setDiet(newDiet);
-      setSuccessMessage("Новая диета успешно создана!");
+      showNotification(
+        "Новая диета успешно создана!",
+        NotificationType.SUCCESS
+      );
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        setError({
+          title: "Некорректный запрос",
+          detail: err.response?.data.detail,
+          status: "400",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveAllergen = async (id: number) => {
+    if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      await HealthApi.removeAllergen(userId, id);
+
+      setUserAllergens((prev) => prev.filter((al) => al.allergenId !== id));
+      showNotification("Аллерген успешно удален!", NotificationType.SUCCESS);
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        setError({
+          title: "Некорректный запрос",
+          detail: err.response?.data.detail,
+          status: "400",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddAllergen = async (allergenId: number) => {
+    if (!userId) {
+      setError({
+        title: "Пользователь не авторизован",
+        detail: "Пользователь не авторизован",
+        status: "401",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      await HealthApi.addUserAllergen(userId, { allergenId });
+
+      setUserAllergens((prev) => [
+        ...prev,
+        { id: Date.now(), allergenId }, // id можно заменить на реальный, если возвращается с бэка
+      ]);
+      showNotification("Аллерген успешно добавлен!", NotificationType.SUCCESS);
     } catch (err: any) {
       if (err.response?.status === 400) {
         setError({
@@ -363,7 +519,15 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
                 physicHealth={physicHealth}
                 age={age}
                 onSaveWeight={handleSaveWeight}
-                successMessage={successMessage}
+              />
+            )}
+
+            {activeTab === "allergens" && (
+              <UserHealthAllergensTab
+                userAllergens={userAllergens}
+                allAllergens={allAllergens}
+                onRemoveAllergen={handleRemoveAllergen}
+                onAddAllergen={handleAddAllergen}
               />
             )}
           </div>
@@ -373,6 +537,12 @@ const UserHealthPage: React.FC<UserHealthPageProps> = () => {
         isOpen={isPhysicModalOpen}
         onClose={() => setPhysicModalOpen(false)}
         onSubmit={handleCreatePhysicHealth}
+      />
+      <PopupNotification
+        key={notification.id}
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
       />
     </main>
   );

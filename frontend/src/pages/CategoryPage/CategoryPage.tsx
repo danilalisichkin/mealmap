@@ -25,6 +25,8 @@ import CatalogFilter from "../../components/features/CatalogFilter/CatalogFilter
 import Catalog from "../../components/features/Catalog/Catalog";
 import CatalogPlaceholder from "../../components/commons/Placeholders/CatalogPlaceholder/CatalogPlaceholder";
 import Pagination from "../../components/commons/Pagination/Pagination";
+import { UserAllergenDto } from "../../api/health/dto/UserAllergenDto";
+import { HealthApi } from "../../api/health/UserHealthApi";
 
 const DEFAULT_FILTER: ProductFilter = {
   minPrice: undefined,
@@ -66,6 +68,7 @@ const CategoryPage: React.FC = () => {
   const [productPreferences, setProductPreferences] = useState<
     ProductPreferenceDto[]
   >([]);
+  const [userAllergens, setUserAllergens] = useState<UserAllergenDto[]>([]);
 
   const [suppliers, setSuppliers] = useState<
     { label: string; value: string }[]
@@ -211,6 +214,25 @@ const CategoryPage: React.FC = () => {
     }
   };
 
+  const fetchUserAllergens = async () => {
+    if (!userId) return;
+
+    try {
+      setLoading(true);
+      const response = await HealthApi.getUserAllergens(userId);
+      setUserAllergens(response);
+    } catch (err: any) {
+      console.error("Ошибка при загрузке аллергий пользователя:", err);
+      setError({
+        title: "Не получилось загрузить аллергии",
+        detail: err.response?.data.detail,
+        status: "500",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAddToPreference = async (
     categoryId: number,
     preferenceType: PreferenceType
@@ -285,6 +307,12 @@ const CategoryPage: React.FC = () => {
   useEffect(() => {
     if (userId) {
       fetchProductPreferences();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserAllergens();
     }
   }, [userId]);
 
@@ -479,6 +507,7 @@ const CategoryPage: React.FC = () => {
               <Catalog
                 products={productPage.items}
                 preferredProducts={productPreferences}
+                userAllergens={userAllergens}
               />
               <Pagination
                 page={currentPage}

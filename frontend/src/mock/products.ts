@@ -26,6 +26,12 @@ export const mockProducts: ProductDto[] = [
         parent: undefined,
       },
     ],
+    allergens: [
+      {
+        id: 1,
+        name: "Соя",
+      },
+    ],
   },
   {
     id: 55,
@@ -67,6 +73,7 @@ export const mockProducts: ProductDto[] = [
         },
       },
     ],
+    allergens: [],
   },
 ];
 

@@ -16,6 +16,8 @@ import { UserRecommendationDto } from "../../api/recommendation/dto/UserRecommen
 import { ProductDto } from "../../api/product/dto/ProductDto";
 import ErrorBanner from "../../components/commons/ErrorBanner/ErrorBanner";
 import { RecommendationItem } from "../../api/recommendation/dto/RecommendationItem";
+import { UserAllergenDto } from "../../api/health/dto/UserAllergenDto";
+import { HealthApi } from "../../api/health/UserHealthApi";
 
 interface RecommendationPageProps {}
 
@@ -44,6 +46,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
   const [productPreferences, setProductPreferences] = useState<
     ProductPreferenceDto[]
   >([]);
+  const [userAllergens, setUserAllergens] = useState<UserAllergenDto[]>([]);
 
   const [aiMessageIndex, setAiMessageIndex] = useState(0);
   const [typedText, setTypedText] = useState(AI_MESSAGES[0].slice(0, 0));
@@ -254,6 +257,17 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
     }
   };
 
+  const fetchUserAllergens = async () => {
+    if (!userId) return;
+
+    try {
+      const response = await HealthApi.getUserAllergens(userId);
+      setUserAllergens(response);
+    } catch (err: any) {
+      console.error("Ошибка при загрузке аллергий пользователя:", err);
+    }
+  };
+
   useEffect(() => {
     if (stage === "shuffling") {
       typeMessage(AI_MESSAGES[aiMessageIndex]);
@@ -274,6 +288,12 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
   useEffect(() => {
     if (userId) {
       fetchProductPreferences();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserAllergens();
     }
   }, [userId]);
 
@@ -432,6 +452,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
             recommendations={recommendations}
             recommendedProducts={recommendedProducts}
             preferredProducts={productPreferences}
+            userAllergens={userAllergens}
             onAddToCart={handleAddToCart}
             onAddToPreference={handleAddToPreference}
             onRemoveFromPreference={handleRemoveFromPreference}
@@ -462,7 +483,7 @@ const RecommendationPage: React.FC<RecommendationPageProps> = () => {
           }}
         />
       )}
-      
+
       <PopupNotification
         key={notification.id}
         message={notification.message}
