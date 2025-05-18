@@ -14,11 +14,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
@@ -73,6 +77,44 @@ public class RestExceptionHandler {
                 .body(ProblemDetail.forStatusAndDetail(
                         BAD_REQUEST,
                         errorMap.toString()));
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ProblemDetail> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException e) {
+
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ProblemDetail> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ProblemDetail> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ProblemDetail> handleMultipartException(MultipartException e) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(
+                        BAD_REQUEST,
+                        e.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)
