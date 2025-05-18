@@ -42,7 +42,7 @@ public class SecurityAutoConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    public UserAuthorizationFilter userAuthorizationFilter() {
-        return new UserAuthorizationFilter();
+    public UserAuthorizationFilter userAuthorizationFilter(WebSecurityProperties webSecurityProperties) {
+        return new UserAuthorizationFilter(webSecurityProperties);
     }
 }

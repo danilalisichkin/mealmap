@@ -1,8 +1,8 @@
 package com.mealmap.starters.securitystarter.security.web.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mealmap.starters.securitystarter.security.web.properties.WebSecurityProperties;
 import com.mealmap.starters.securitystarter.security.common.util.JwtClaimsExtractor;
+import com.mealmap.starters.securitystarter.security.web.properties.WebSecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +26,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.List;
+
+import static com.mealmap.starters.securitystarter.security.common.util.RequestMatcherMapper.toAntRequestMatchers;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -48,6 +52,8 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        List<String> actuatorEndpoints = webSecurityProperties.getOpenEndpoints().getActuator();
+
         return http
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
@@ -58,8 +64,12 @@ public class WebSecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler())
                         .authenticationEntryPoint(authenticationEntryPoint()))
                 .authorizeHttpRequests(r -> r
+                        .requestMatchers(
+                                toAntRequestMatchers(actuatorEndpoints))
+                        .permitAll()
                         .anyRequest()
                         .authenticated())
+                .anonymous(Customizer.withDefaults())
                 .exceptionHandling(h -> h
                         .accessDeniedHandler(accessDeniedHandler())
                         .authenticationEntryPoint(authenticationEntryPoint()))

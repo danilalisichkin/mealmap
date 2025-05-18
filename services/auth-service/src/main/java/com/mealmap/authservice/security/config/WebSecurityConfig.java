@@ -13,6 +13,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.List;
+
+import static com.mealmap.authservice.security.util.RequestMatcherMapper.toAntRequestMatchers;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -24,13 +28,20 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        List<String> actuatorEndpoints = webSecurityProperties.getOpenEndpoints().getActuator();
+
         return http
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(c -> c
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/api/v1/auth/**")
+                        .permitAll()
+                        .requestMatchers(
+                                toAntRequestMatchers(actuatorEndpoints))
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .build();
     }
 

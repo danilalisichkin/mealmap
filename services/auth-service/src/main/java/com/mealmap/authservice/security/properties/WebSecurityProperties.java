@@ -11,10 +11,17 @@ import java.util.List;
 @ConfigurationProperties(prefix = "security.web")
 public class WebSecurityProperties {
     private final Cors cors;
+    private final OpenEndpoints openEndpoints;
 
     @Getter
     @AllArgsConstructor
     public static class Cors {
         private final List<String> allowedOrigins;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class OpenEndpoints {
+        private final List<String> actuator;
     }
 }

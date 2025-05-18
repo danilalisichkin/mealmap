@@ -1,12 +1,15 @@
 package com.mealmap.starters.securitystarter.security.web.filter;
 
+import com.mealmap.starters.securitystarter.security.web.properties.WebSecurityProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,7 +21,10 @@ import static com.mealmap.starters.securitystarter.security.common.util.Security
 import static com.mealmap.starters.securitystarter.security.common.util.SecurityUtils.isTemporaryBlocked;
 
 @Component
+@RequiredArgsConstructor
 public class UserAuthorizationFilter extends OncePerRequestFilter {
+    private final WebSecurityProperties webSecurityProperties;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -38,5 +44,11 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return webSecurityProperties.getOpenEndpoints().getActuator().stream()
+                .anyMatch(pattern -> new AntPathRequestMatcher(pattern).matches(request));
     }
 }

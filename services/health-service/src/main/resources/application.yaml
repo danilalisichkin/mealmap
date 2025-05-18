@@ -21,6 +21,9 @@ security:
       allowed-origins:
         - ${ALLOWED_ORIGINS_LOCALHOST:http://localhost:3000}
         - ${ALLOWED_ORIGINS_PRODUCTION:http://172.20.10.4:3000}
+    open-endpoints:
+      actuator:
+        - /actuator/**
 eureka:
   client:
     service-url:
@@ -28,5 +31,18 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,info,metrics
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   port: ${SERVER_PORT:8089}
