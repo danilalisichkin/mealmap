@@ -1,5 +1,6 @@
 package com.example.fileservice.controller.api;
 
+import com.example.fileservice.controller.doc.FileControllerDoc;
 import com.example.fileservice.service.FileService;
 import com.example.fileservice.util.FileUtils;
 import jakarta.validation.constraints.NotBlank;
@@ -20,9 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/files")
-public class FileController {
+public class FileController implements FileControllerDoc {
     private final FileService fileService;
 
+    @Override
     @PostMapping("/{filename}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> upload(
@@ -34,7 +36,9 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Override
     @GetMapping("/{filename}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<byte[]> download(
             @PathVariable @NotBlank @Size(min = 3, max = 200) String filename) {
 
@@ -43,6 +47,7 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.OK).contentType(FileUtils.getMediaType(filename)).body(file);
     }
 
+    @Override
     @DeleteMapping("/{filename}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> delete(

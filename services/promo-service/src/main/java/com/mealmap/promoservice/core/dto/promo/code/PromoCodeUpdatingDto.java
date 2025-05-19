@@ -1,5 +1,6 @@
 package com.mealmap.promoservice.core.dto.promo.code;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 
 @Value
 @AllArgsConstructor
+@Schema(description = "Информация для обновления промокода")
 public class PromoCodeUpdatingDto {
     @NotNull
     @Min(1)

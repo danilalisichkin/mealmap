@@ -2,6 +2,7 @@ package com.mealmap.notificationservice.core.dto.notification;
 
 import com.mealmap.notificationservice.doc.enums.Channel;
 import com.mealmap.notificationservice.doc.enums.NotificationStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
+@Schema(description = "Информация об уведомлении")
 public class NotificationDto {
     private ObjectId id;
 

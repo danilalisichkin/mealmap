@@ -1,6 +1,7 @@
 package com.mealmap.productservice.core.dto.product;
 
 import com.mealmap.productservice.core.dto.nutrient.NutrientDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Value
 @Builder
+@Schema(description = "Информация для создания продукта")
 public class ProductCreationDto {
     @NotEmpty
     @Size(max = 40)

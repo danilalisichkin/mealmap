@@ -1,5 +1,6 @@
 package com.mealmap.productservice.controller.api;
 
+import com.mealmap.productservice.controller.doc.ProductControllerDoc;
 import com.mealmap.productservice.core.dto.filter.ProductFilter;
 import com.mealmap.productservice.core.dto.product.ProductCreationDto;
 import com.mealmap.productservice.core.dto.product.ProductDto;
@@ -37,9 +38,10 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
-public class ProductController {
+public class ProductController implements ProductControllerDoc {
     private final ProductService productService;
 
+    @Override
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PageDto<ProductDto>> getPageOfProducts(
@@ -55,6 +57,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/all")
     @PreAuthorize("isApplicationService() and hasRole('RECOMMENDATION_SERVICE')")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
@@ -63,6 +66,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(allProducts);
     }
 
+    @Override
     @GetMapping("/bulk")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<ProductDto>> bulkGetProducts(
@@ -73,6 +77,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
@@ -81,6 +86,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('SUPPLIER') and hasRole('ADMIN') and isOrganizationMember(#productDto.supplierId)")
     public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductCreationDto productDto) {
@@ -89,6 +95,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
+    @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('SUPPLIER') and hasRole('ADMIN') and isOrganizationMember(#productDto.supplierId)")
     public ResponseEntity<ProductDto> updateProduct(
@@ -99,6 +106,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {

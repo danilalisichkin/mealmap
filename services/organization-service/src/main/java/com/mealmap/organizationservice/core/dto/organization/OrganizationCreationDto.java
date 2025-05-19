@@ -1,6 +1,7 @@
 package com.mealmap.organizationservice.core.dto.organization;
 
 import com.mealmap.organizationservice.entity.enums.OrganizationType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Schema(description = "Информация для регистрации организации")
 public class OrganizationCreationDto {
     @Positive
     @NotNull

@@ -1,5 +1,6 @@
 package com.mealmap.cartservice.controller.api;
 
+import com.mealmap.cartservice.controller.doc.UserCartControllerDoc;
 import com.mealmap.cartservice.core.dto.cart.CartDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemAddingDto;
 import com.mealmap.cartservice.core.dto.cart.CartItemDto;
@@ -28,9 +29,10 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserCartController {
+public class UserCartController implements UserCartControllerDoc {
     private final UserCartService userCartService;
 
+    @Override
     @GetMapping("/{userId}/cart")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CartDto> getCart(@PathVariable UUID userId) {
@@ -39,6 +41,7 @@ public class UserCartController {
         return ResponseEntity.status(HttpStatus.OK).body(cart);
     }
 
+    @Override
     @PostMapping("/{userId}/cart/items")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CartDto> addItemToCart(
@@ -50,6 +53,7 @@ public class UserCartController {
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
+    @Override
     @PatchMapping("/{userId}/cart/items/{itemId}/quantity")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CartItemDto> changeCartItemQuantity(
@@ -62,6 +66,7 @@ public class UserCartController {
         return ResponseEntity.status(HttpStatus.OK).body(cartItem);
     }
 
+    @Override
     @DeleteMapping("/{userId}/cart/items/{itemId}")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> deleteItemFromCart(
@@ -73,6 +78,7 @@ public class UserCartController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @DeleteMapping("/{userId}/cart")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> clearCart(@PathVariable UUID userId) {

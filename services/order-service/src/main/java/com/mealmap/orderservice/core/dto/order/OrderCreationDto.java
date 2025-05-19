@@ -1,6 +1,7 @@
 package com.mealmap.orderservice.core.dto.order;
 
 import com.mealmap.orderservice.doc.value.Address;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -18,6 +19,7 @@ import static com.mealmap.orderservice.core.message.ApplicationMessages.TOO_MANY
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Информация для создания заказа")
 public class OrderCreationDto {
     @Valid
     private Address deliveryAddress;

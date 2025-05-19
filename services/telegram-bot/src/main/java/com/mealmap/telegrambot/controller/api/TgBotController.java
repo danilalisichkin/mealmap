@@ -1,5 +1,6 @@
 package com.mealmap.telegrambot.controller.api;
 
+import com.mealmap.telegrambot.controller.doc.TgBotControllerDoc;
 import com.mealmap.telegrambot.service.TgLinkService;
 import com.mealmap.telegrambot.service.TgNotificationService;
 import jakarta.validation.constraints.NotBlank;
@@ -21,11 +22,12 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/telegram-bot")
-public class TgBotController {
+public class TgBotController implements TgBotControllerDoc {
     private final TgNotificationService tgNotificationService;
 
     private final TgLinkService tgLinkService;
 
+    @Override
     @PostMapping("/chats/{chatId}/message")
     @PreAuthorize("isApplicationService() and hasRole('NOTIFICATION_SERVICE')")
     public ResponseEntity<Void> sendMessageToChat(
@@ -37,6 +39,7 @@ public class TgBotController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @Override
     @GetMapping("/links/write")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> generateWriteLink() {
@@ -45,6 +48,7 @@ public class TgBotController {
         return ResponseEntity.status(HttpStatus.OK).body(link);
     }
 
+    @Override
     @GetMapping("/links/start")
     @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<String> generateStartLink(@RequestParam UUID userId) {

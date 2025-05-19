@@ -1,5 +1,6 @@
 package com.mealmap.recommendationservice.controller.api;
 
+import com.mealmap.recommendationservice.controller.doc.UserRecommendationControllerDoc;
 import com.mealmap.recommendationservice.core.dto.UserRecommendationDto;
 import com.mealmap.recommendationservice.core.enums.sort.UserRecommendationSortField;
 import com.mealmap.recommendationservice.service.RecommendationService;
@@ -25,9 +26,10 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserRecommendationController {
+public class UserRecommendationController implements UserRecommendationControllerDoc {
     private final RecommendationService recommendationService;
 
+    @Override
     @GetMapping("/{userId}/recommendations")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<PageDto<UserRecommendationDto>> getUserRecommendations(
@@ -43,6 +45,7 @@ public class UserRecommendationController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{userId}/recommendations/new")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<UserRecommendationDto> getNewUserRecommendation(@PathVariable UUID userId) {

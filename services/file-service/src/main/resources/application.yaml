@@ -36,6 +36,11 @@ security:
     open-endpoints:
       actuator:
         - /actuator/**
+      open-api:
+        - /swagger-ui/**
+        - /swagger-resources/**
+        - /v3/api-docs/**
+        - /v3/api-docs.yaml
 eureka:
   client:
     service-url:

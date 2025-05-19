@@ -1,5 +1,6 @@
 package com.mealmap.productservice.controller.api;
 
+import com.mealmap.productservice.controller.doc.SyncControllerDoc;
 import com.mealmap.productservice.service.ElasticsearchSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/sync")
-public class SyncController {
+public class SyncController implements SyncControllerDoc {
     private final ElasticsearchSyncService esSyncService;
 
+    @Override
     @PostMapping("/products")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> syncProducts() {
@@ -23,6 +25,7 @@ public class SyncController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @PostMapping("/categories")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> syncCategories() {

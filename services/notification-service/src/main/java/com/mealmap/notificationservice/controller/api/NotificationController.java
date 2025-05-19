@@ -1,5 +1,6 @@
 package com.mealmap.notificationservice.controller.api;
 
+import com.mealmap.notificationservice.controller.doc.NotificationControllerDoc;
 import com.mealmap.notificationservice.core.dto.filter.NotificationFilter;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
 import com.mealmap.notificationservice.core.enums.sort.NotificationSortField;
@@ -26,9 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notifications")
-public class NotificationController {
+public class NotificationController implements NotificationControllerDoc {
     private final NotificationService notificationService;
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(

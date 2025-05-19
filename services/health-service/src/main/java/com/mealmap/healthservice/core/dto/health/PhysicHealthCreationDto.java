@@ -1,6 +1,7 @@
 package com.mealmap.healthservice.core.dto.health;
 
 import com.mealmap.healthservice.entity.enums.Gender;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Positive;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Информация для добавления физического здоровья")
 public class PhysicHealthCreationDto {
     @NotNull
     @Positive

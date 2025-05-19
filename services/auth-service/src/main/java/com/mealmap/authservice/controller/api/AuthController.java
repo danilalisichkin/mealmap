@@ -1,5 +1,6 @@
 package com.mealmap.authservice.controller.api;
 
+import com.mealmap.authservice.controller.doc.AuthControllerDoc;
 import com.mealmap.authservice.core.dto.KeycloakAccessTokenDto;
 import com.mealmap.authservice.core.dto.UserDto;
 import com.mealmap.authservice.core.dto.UserLoginDto;
@@ -20,9 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDoc {
     private final AuthenticationService authService;
 
+    @Override
     @PostMapping("/sign-in")
     public ResponseEntity<KeycloakAccessTokenDto> signIn(@RequestBody @Valid UserLoginDto loginDto) {
         KeycloakAccessTokenDto accessTokens = authService.loginUser(loginDto);
@@ -30,6 +32,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(accessTokens);
     }
 
+    @Override
     @PostMapping("/sign-up")
     public ResponseEntity<UserDto> signUp(@RequestBody @Valid UserRegisterDto registerDto) {
         UserDto registeredUserDto = authService.registerUser(registerDto);
@@ -37,6 +40,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registeredUserDto);
     }
 
+    @Override
     @PostMapping("/refresh-token")
     public ResponseEntity<KeycloakAccessTokenDto> refreshToken(@RequestBody @NotEmpty String refreshToken) {
         KeycloakAccessTokenDto accessTokens = authService.refreshUserAccessToken(refreshToken);

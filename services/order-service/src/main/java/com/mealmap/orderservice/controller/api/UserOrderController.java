@@ -1,5 +1,6 @@
 package com.mealmap.orderservice.controller.api;
 
+import com.mealmap.orderservice.controller.doc.UserOrderControllerDoc;
 import com.mealmap.orderservice.core.dto.order.OrderCreationDto;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
@@ -32,9 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserOrderController {
+public class UserOrderController implements UserOrderControllerDoc {
     private final UserOrderService userOrderService;
 
+    @Override
     @GetMapping("/{userId}/orders")
     @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
             "or (hasRole('OPERATOR') and hasRole('ADMIN')) " +
@@ -51,6 +53,7 @@ public class UserOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @PostMapping("/{userId}/orders")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<OrderDto> createOrder(
@@ -62,6 +65,7 @@ public class UserOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
+    @Override
     @PatchMapping("/{userId}/orders/{id}/status")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<OrderDto> updateOrderStatus(

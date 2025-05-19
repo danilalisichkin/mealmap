@@ -1,5 +1,6 @@
 package com.mealmap.preferenceservice.controller.api;
 
+import com.mealmap.preferenceservice.controller.doc.UserPreferencesControllerDoc;
 import com.mealmap.preferenceservice.core.dto.CategoryPreferenceCreationDto;
 import com.mealmap.preferenceservice.core.dto.CategoryPreferenceDto;
 import com.mealmap.preferenceservice.core.dto.ProductPreferenceCreationDto;
@@ -29,9 +30,10 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserPreferencesController {
+public class UserPreferencesController implements UserPreferencesControllerDoc {
     private final UserPreferencesService userPreferencesService;
 
+    @Override
     @GetMapping("/{userId}/preferences")
     @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
             "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
@@ -41,6 +43,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.OK).body(userPreference);
     }
 
+    @Override
     @GetMapping("/{userId}/preferences/products")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<List<ProductPreferenceDto>> getProductPreferences(
@@ -53,6 +56,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.OK).body(productPreferences);
     }
 
+    @Override
     @GetMapping("/{userId}/preferences/categories")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<List<CategoryPreferenceDto>> getCategoryPreferences(
@@ -65,6 +69,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.OK).body(categoryPreferences);
     }
 
+    @Override
     @GetMapping("/{userId}/preferences/products/{productId}")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<ProductPreferenceDto> getProductPreference(@PathVariable UUID userId, @PathVariable Long productId) {
@@ -73,6 +78,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.OK).body(productPreference);
     }
 
+    @Override
     @GetMapping("/{userId}/preferences/categories/{categoryId}")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CategoryPreferenceDto> getCategoryPreference(@PathVariable UUID userId, @PathVariable Long categoryId) {
@@ -81,6 +87,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.OK).body(categoryPreference);
     }
 
+    @Override
     @PostMapping("/{userId}/preferences/products")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<ProductPreferenceDto> addProductPreference(
@@ -93,6 +100,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productPreference);
     }
 
+    @Override
     @PostMapping("/{userId}/preferences/categories")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<CategoryPreferenceDto> addCategoryPreference(
@@ -105,6 +113,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryPreference);
     }
 
+    @Override
     @DeleteMapping("/{userId}/preferences/products/{productId}")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> removeProductPreference(@PathVariable UUID userId, @PathVariable Long productId) {
@@ -113,6 +122,7 @@ public class UserPreferencesController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @DeleteMapping("/{userId}/preferences/categories/{categoryId}")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> removeCategoryPreference(@PathVariable UUID userId, @PathVariable Long categoryId) {

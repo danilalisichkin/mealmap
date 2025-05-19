@@ -1,5 +1,6 @@
 package com.mealmap.productservice.controller.api;
 
+import com.mealmap.productservice.controller.doc.AllergenControllerDoc;
 import com.mealmap.productservice.core.dto.allergen.AllergenCreationDto;
 import com.mealmap.productservice.core.dto.allergen.AllergenDto;
 import com.mealmap.productservice.core.dto.allergen.AllergenUpdatingDto;
@@ -29,9 +30,10 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/allergens")
-public class AllergenController {
+public class AllergenController implements AllergenControllerDoc {
     private final AllergenService allergenService;
 
+    @Override
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<AllergenDto>> getAllAllergens() {
@@ -40,6 +42,7 @@ public class AllergenController {
         return ResponseEntity.status(HttpStatus.OK).body(allergens);
     }
 
+    @Override
     @GetMapping("/bulk")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<AllergenDto>> bulkGetAllergens(
@@ -51,6 +54,7 @@ public class AllergenController {
         return ResponseEntity.status(HttpStatus.OK).body(allergens);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<AllergenDto> getAllergen(@PathVariable Long id) {
@@ -59,6 +63,7 @@ public class AllergenController {
         return ResponseEntity.status(HttpStatus.OK).body(allergen);
     }
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<AllergenDto> createAllergen(
@@ -69,6 +74,7 @@ public class AllergenController {
         return ResponseEntity.status(HttpStatus.CREATED).body(allergen);
     }
 
+    @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<AllergenDto> updateAllergen(
@@ -79,6 +85,7 @@ public class AllergenController {
         return ResponseEntity.status(HttpStatus.OK).body(allergen);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAllergen(@PathVariable Long id) {

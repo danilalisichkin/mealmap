@@ -1,6 +1,7 @@
 package com.mealmap.notificationservice.core.dto.notification;
 
 import com.mealmap.notificationservice.doc.enums.Channel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Информация для создания уведомления")
 public class NotificationCreationDto {
     @NotNull
     private Channel channel;

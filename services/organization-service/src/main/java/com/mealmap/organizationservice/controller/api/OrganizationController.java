@@ -1,5 +1,6 @@
 package com.mealmap.organizationservice.controller.api;
 
+import com.mealmap.organizationservice.controller.doc.OrganizationControllerDoc;
 import com.mealmap.organizationservice.core.dto.filter.OrganizationFilter;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationCreationDto;
 import com.mealmap.organizationservice.core.dto.organization.OrganizationDto;
@@ -31,9 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/organizations")
-public class OrganizationController {
+public class OrganizationController implements OrganizationControllerDoc {
     private final OrganizationService organizationService;
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfOrganizations(
@@ -49,6 +51,7 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/suppliers")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PageDto<OrganizationDto>> getPageOfSuppliers(
@@ -63,6 +66,7 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("(hasRole('OPERATOR') and hasRole('ADMIN')) " +
             "or (isApplicationService() and hasRole('AUTH_SERVICE'))")
@@ -72,6 +76,7 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(organization);
     }
 
+    @Override
     @GetMapping("/suppliers/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OrganizationDto> getSupplier(@PathVariable Integer id) {
@@ -81,6 +86,7 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.OK).body(supplier);
     }
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<OrganizationDto> createOrganization(
@@ -91,6 +97,7 @@ public class OrganizationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(organization);
     }
 
+    @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and (isOrganizationMember(#id) or hasRole('OPERATOR'))")
     public ResponseEntity<OrganizationDto> updateOrganization(

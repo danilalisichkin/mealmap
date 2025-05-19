@@ -1,5 +1,6 @@
 package com.mealmap.promoservice.core.dto.promo.code;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -18,6 +19,7 @@ import static com.mealmap.promoservice.validator.RangeValidator.isValidRange;
 
 @Value
 @AllArgsConstructor
+@Schema(description = "Информация для создания промокода")
 public class PromoCodeCreationDto {
     @NotEmpty
     @Size(min = 2, max = 20)

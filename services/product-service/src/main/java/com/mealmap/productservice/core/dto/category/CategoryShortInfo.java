@@ -1,5 +1,6 @@
 package com.mealmap.productservice.core.dto.category;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Краткая информация о категории")
 public class CategoryShortInfo {
     private Long id;
 

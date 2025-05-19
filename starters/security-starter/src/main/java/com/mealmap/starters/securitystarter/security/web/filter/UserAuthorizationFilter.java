@@ -48,7 +48,12 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return webSecurityProperties.getOpenEndpoints().getActuator().stream()
+        boolean matchesOpenApi = webSecurityProperties.getOpenEndpoints().getOpenApi().stream()
                 .anyMatch(pattern -> new AntPathRequestMatcher(pattern).matches(request));
+
+        boolean matchesActuator = webSecurityProperties.getOpenEndpoints().getActuator().stream()
+                .anyMatch(pattern -> new AntPathRequestMatcher(pattern).matches(request));
+
+        return matchesOpenApi || matchesActuator;
     }
 }

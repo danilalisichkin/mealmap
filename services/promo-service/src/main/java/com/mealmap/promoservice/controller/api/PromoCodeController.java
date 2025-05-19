@@ -1,5 +1,6 @@
 package com.mealmap.promoservice.controller.api;
 
+import com.mealmap.promoservice.controller.doc.PromoCodeControllerDoc;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeCreationDto;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeDto;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeUpdatingDto;
@@ -30,9 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/promo-codes")
-public class PromoCodeController {
+public class PromoCodeController implements PromoCodeControllerDoc {
     private final PromoCodeService promoCodeService;
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<PromoCodeDto>> getPageOfPromoCodes(
@@ -46,6 +48,7 @@ public class PromoCodeController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{code}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PromoCodeDto> getPromoCode(@PathVariable @Size(min = 2, max = 20) String code) {
@@ -54,6 +57,7 @@ public class PromoCodeController {
         return ResponseEntity.status(HttpStatus.OK).body(promoCode);
     }
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PromoCodeDto> createPromoCode(@RequestBody @Valid PromoCodeCreationDto codeDto) {
@@ -62,6 +66,7 @@ public class PromoCodeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(promoCode);
     }
 
+    @Override
     @PutMapping("/{code}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PromoCodeDto> updatePromoCode(

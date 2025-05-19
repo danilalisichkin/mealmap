@@ -1,5 +1,6 @@
 package com.mealmap.notificationservice.controller.api;
 
+import com.mealmap.notificationservice.controller.doc.UserNotificationControllerDoc;
 import com.mealmap.notificationservice.core.dto.contacts.UserContactsDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationCreationDto;
 import com.mealmap.notificationservice.core.dto.notification.NotificationDto;
@@ -29,9 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserNotificationController {
+public class UserNotificationController implements UserNotificationControllerDoc {
     private final UserNotificationService userNotificationService;
 
+    @Override
     @GetMapping("/{userId}/notifications")
     @PreAuthorize("hasUserId(#userId)")
     public ResponseEntity<PageDto<NotificationDto>> getPageOfNotifications(
@@ -47,6 +49,7 @@ public class UserNotificationController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{userId}/contacts")
     @PreAuthorize("hasUserId(#userId) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<UserContactsDto> getContacts(@PathVariable @UUID String userId) {
@@ -55,6 +58,7 @@ public class UserNotificationController {
         return ResponseEntity.status(HttpStatus.OK).body(contacts);
     }
 
+    @Override
     @PostMapping("/{userId}/notifications")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<NotificationDto> createNotification(

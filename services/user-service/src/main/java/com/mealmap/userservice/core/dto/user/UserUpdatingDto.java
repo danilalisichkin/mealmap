@@ -1,5 +1,6 @@
 package com.mealmap.userservice.core.dto.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.Value;
 
 @Value
 @Builder
+@Schema(description = "Информация для обновления пользователя")
 public class UserUpdatingDto {
     @Email
     @NotEmpty

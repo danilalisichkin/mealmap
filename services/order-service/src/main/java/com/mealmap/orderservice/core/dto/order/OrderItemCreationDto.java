@@ -1,5 +1,6 @@
 package com.mealmap.orderservice.core.dto.order;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import static com.mealmap.orderservice.core.message.ApplicationMessages.TOO_MANY
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Информация для добавления позиции в заказ")
 public class OrderItemCreationDto {
     @NotNull
     private Long productId;

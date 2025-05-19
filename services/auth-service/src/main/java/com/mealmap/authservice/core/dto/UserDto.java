@@ -1,6 +1,7 @@
 package com.mealmap.authservice.core.dto;
 
 import com.mealmap.authservice.core.enums.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@Schema(description = "Информация о пользователе")
 public class UserDto {
     private UUID id;
 

@@ -53,6 +53,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         List<String> actuatorEndpoints = webSecurityProperties.getOpenEndpoints().getActuator();
+        List<String> openApiEndpoints = webSecurityProperties.getOpenEndpoints().getOpenApi();
 
         return http
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -66,6 +67,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(r -> r
                         .requestMatchers(
                                 toAntRequestMatchers(actuatorEndpoints))
+                        .permitAll()
+                        .requestMatchers(
+                                toAntRequestMatchers(openApiEndpoints))
                         .permitAll()
                         .anyRequest()
                         .authenticated())

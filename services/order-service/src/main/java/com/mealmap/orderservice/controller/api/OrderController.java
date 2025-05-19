@@ -1,5 +1,6 @@
 package com.mealmap.orderservice.controller.api;
 
+import com.mealmap.orderservice.controller.doc.OrderControllerDoc;
 import com.mealmap.orderservice.core.dto.filter.OrderFilter;
 import com.mealmap.orderservice.core.dto.order.OrderDto;
 import com.mealmap.orderservice.core.enums.OrderStatus;
@@ -31,9 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
-public class OrderController {
+public class OrderController implements OrderControllerDoc {
     private final OrderService orderService;
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<OrderDto>> getPageOfOrders(
@@ -50,6 +52,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('SUPPLIER') or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<OrderDto> getOrder(@PathVariable ObjectId id) {
@@ -58,6 +61,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
+    @Override
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasRole('SUPPLIER') or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<OrderDto> updateOrderStatus(

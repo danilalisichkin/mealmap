@@ -1,5 +1,6 @@
 package com.mealmap.promoservice.controller.api;
 
+import com.mealmap.promoservice.controller.doc.PromoStatControllerDoc;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatCreationDto;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatDto;
 import com.mealmap.promoservice.core.enums.sort.PromoStatSortField;
@@ -28,9 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/promo-stats")
-public class PromoStatController {
+public class PromoStatController implements PromoStatControllerDoc {
     private final PromoStatService promoStatService;
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<PromoStatDto>> getPageOfPromoStats(
@@ -44,6 +46,7 @@ public class PromoStatController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PromoStatDto> getPromoStat(@PathVariable ObjectId id) {
@@ -52,6 +55,7 @@ public class PromoStatController {
         return ResponseEntity.status(HttpStatus.OK).body(promoStat);
     }
 
+    @Override
     @PostMapping
     @PreAuthorize("(hasUserId(#statDto.userId) and hasRole('CUSTOMER')) " +
             "or (isApplicationService() and hasRole('ORDER_SERVICE'))")

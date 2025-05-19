@@ -1,5 +1,6 @@
 package com.mealmap.productservice.core.dto.nutrient;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Информация о питательности")
 public class NutrientDto {
     @NotNull
     private Integer calories;

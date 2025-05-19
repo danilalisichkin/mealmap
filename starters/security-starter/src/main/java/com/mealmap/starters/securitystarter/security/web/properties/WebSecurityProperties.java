@@ -23,5 +23,6 @@ public class WebSecurityProperties {
     @AllArgsConstructor
     public static class OpenEndpoints {
         private final List<String> actuator;
+        private final List<String> openApi;
     }
 }

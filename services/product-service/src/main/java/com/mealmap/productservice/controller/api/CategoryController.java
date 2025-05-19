@@ -1,5 +1,6 @@
 package com.mealmap.productservice.controller.api;
 
+import com.mealmap.productservice.controller.doc.CategoryControllerDoc;
 import com.mealmap.productservice.core.dto.category.CategoryCreationDto;
 import com.mealmap.productservice.core.dto.category.CategoryDto;
 import com.mealmap.productservice.core.dto.category.CategoryTreeDto;
@@ -30,9 +31,10 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/categories")
-public class CategoryController {
+public class CategoryController implements CategoryControllerDoc {
     private final CategoryService categoryService;
 
+    @Override
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
@@ -41,6 +43,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 
+    @Override
     @GetMapping("/bulk")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CategoryDto>> bulkGetCategories(
@@ -51,6 +54,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long id) {
@@ -59,6 +63,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
+    @Override
     @GetMapping("/{id}/tree")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CategoryTreeDto> getCategoryTree(@PathVariable Long id) {
@@ -67,6 +72,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(categoryTree);
     }
 
+    @Override
     @PostMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> createCategory(
@@ -77,6 +83,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
+    @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> updateCategory(
@@ -87,6 +94,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {

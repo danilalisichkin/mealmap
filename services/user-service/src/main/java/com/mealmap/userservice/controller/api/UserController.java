@@ -1,6 +1,7 @@
 package com.mealmap.userservice.controller.api;
 
 import com.mealmap.starters.paginationstarter.dto.PageDto;
+import com.mealmap.userservice.controller.doc.UserControllerDoc;
 import com.mealmap.userservice.core.dto.filter.UserFilter;
 import com.mealmap.userservice.core.dto.filter.UserStatusHistoryFilter;
 import com.mealmap.userservice.core.dto.history.StatusHistoryCreationDto;
@@ -39,10 +40,11 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserController {
+public class UserController implements UserControllerDoc {
 
     private final UserService userService;
 
+    @Override
     @GetMapping
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<PageDto<UserDto>> getPageOfUsers(
@@ -58,6 +60,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @GetMapping("/{id}")
     @PreAuthorize("hasUserId(#id) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
@@ -66,6 +69,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @Override
     @PutMapping("/{id}")
     @PreAuthorize("hasUserId(#id) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<UserDto> updateUser(
@@ -76,6 +80,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @Override
     @PostMapping("/{id}/role")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<UserDto> assignRole(
@@ -86,6 +91,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @Override
     @DeleteMapping("/{id}/role")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<UserDto> unassignRole(
@@ -96,6 +102,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @Override
     @GetMapping("/{id}/status-history")
     @PreAuthorize("hasUserId(#id) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<PageDto<StatusHistoryDto>> getUserStatusHistory(
@@ -112,6 +119,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
+    @Override
     @PostMapping("/{id}/activate")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> activateUser(
@@ -122,6 +130,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
+    @Override
     @PostMapping("/{id}/deactivate")
     @PreAuthorize("hasUserId(#id) or (hasRole('OPERATOR') and hasRole('ADMIN'))")
     public ResponseEntity<StatusHistoryDto> deactivateUser(
@@ -132,6 +141,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
+    @Override
     @PostMapping("/{id}/block")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> blockUser(
@@ -142,6 +152,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
+    @Override
     @PostMapping("/{id}/temporary-block")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> temporaryBlockUser(
@@ -152,6 +163,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(history);
     }
 
+    @Override
     @PostMapping("/{id}/unblock")
     @PreAuthorize("hasRole('OPERATOR') and hasRole('ADMIN')")
     public ResponseEntity<StatusHistoryDto> unblockUser(

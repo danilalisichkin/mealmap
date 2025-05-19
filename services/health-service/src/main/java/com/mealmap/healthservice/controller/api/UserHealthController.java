@@ -1,5 +1,6 @@
 package com.mealmap.healthservice.controller.api;
 
+import com.mealmap.healthservice.controller.doc.UserHealthControllerDoc;
 import com.mealmap.healthservice.core.dto.allergen.AllergenAddingDto;
 import com.mealmap.healthservice.core.dto.allergen.AllergenDto;
 import com.mealmap.healthservice.core.dto.diet.DietCreationDto;
@@ -32,9 +33,10 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
-public class UserHealthController {
+public class UserHealthController implements UserHealthControllerDoc {
     private final UserHealthService userHealthService;
 
+    @Override
     @GetMapping("/{userId}/physic-health")
     @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
             "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
@@ -44,6 +46,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(physicHealth);
     }
 
+    @Override
     @GetMapping("/{userId}/physic-health/history")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<List<PhysicHealthHistoryDto>> getUserPhysicHealthHistory(@PathVariable UUID userId) {
@@ -52,6 +55,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(healthHistory);
     }
 
+    @Override
     @GetMapping("/{userId}/diet")
     @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
             "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
@@ -61,6 +65,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }
 
+    @Override
     @GetMapping("/{userId}/allergens")
     @PreAuthorize("(hasUserId(#userId) and hasRole('CUSTOMER')) " +
             "or (isApplicationService() and hasRole('RECOMMENDATION_SERVICE'))")
@@ -70,6 +75,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(allregens);
     }
 
+    @Override
     @PostMapping("/{userId}/physic-health")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<PhysicHealthDto> createUserPhysicHealth(
@@ -81,6 +87,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(physicHealth);
     }
 
+    @Override
     @PostMapping("/{userId}/diet")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<DietDto> createUserDiet(
@@ -92,6 +99,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userDiet);
     }
 
+    @Override
     @PostMapping("/{userId}/allergens")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<AllergenDto> addUserAllergen(
@@ -103,6 +111,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(allergen);
     }
 
+    @Override
     @PutMapping("/{userId}/physic-health")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<PhysicHealthDto> updateUserPhysicHealth(
@@ -114,6 +123,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(physicHealth);
     }
 
+    @Override
     @PutMapping("/{userId}/diet")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<DietDto> updateUserDiet(
@@ -125,6 +135,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.OK).body(userDiet);
     }
 
+    @Override
     @DeleteMapping("/{userId}/diet")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<Void> deleteUserDiet(@PathVariable UUID userId) {
@@ -133,6 +144,7 @@ public class UserHealthController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Override
     @DeleteMapping("/{userId}/allergens/{allergenId}")
     @PreAuthorize("hasUserId(#userId) and hasRole('CUSTOMER')")
     public ResponseEntity<AllergenDto> removeUserAllergen(

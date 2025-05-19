@@ -1,6 +1,7 @@
 package com.mealmap.userservice.core.dto.history;
 
 import com.mealmap.userservice.entity.enums.StatusEvent;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Информация об изменении истории статуса пользователя")
 public class StatusHistoryDto {
     private Long id;
 

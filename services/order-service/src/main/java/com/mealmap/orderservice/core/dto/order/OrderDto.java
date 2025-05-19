@@ -3,6 +3,7 @@ package com.mealmap.orderservice.core.dto.order;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.doc.value.Address;
 import com.mealmap.orderservice.doc.value.PaymentInfo;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@Schema(description = "Информация о заказе")
 public class OrderDto {
     private ObjectId id;
 
