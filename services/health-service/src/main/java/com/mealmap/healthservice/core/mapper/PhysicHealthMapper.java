@@ -15,7 +15,8 @@ public interface PhysicHealthMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "diet", ignore = true)
-    @Mapping(target = "history", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "allergens", ignore = true)
     PhysicHealth dtoToEntity(PhysicHealthCreationDto dto);
 
     @Mapping(target = "id", ignore = true)
@@ -25,5 +26,6 @@ public interface PhysicHealthMapper {
     @Mapping(target = "gender", ignore = true)
     @Mapping(target = "diet", ignore = true)
     @Mapping(target = "history", ignore = true)
+    @Mapping(target = "allergens", ignore = true)
     void updateEntityFromDto(@MappingTarget PhysicHealth entity, PhysicHealthUpdatingDto dto);
 }

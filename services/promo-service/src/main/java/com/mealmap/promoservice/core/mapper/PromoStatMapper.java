@@ -4,6 +4,7 @@ import com.mealmap.promoservice.core.dto.promo.stat.PromoStatCreationDto;
 import com.mealmap.promoservice.core.dto.promo.stat.PromoStatDto;
 import com.mealmap.promoservice.document.PromoStat;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface PromoStatMapper {
     PromoStatDto docToDto(PromoStat doc);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     PromoStat dtoToDoc(PromoStatCreationDto dto);
 
     List<PromoStatDto> docListToDtoList(List<PromoStat> docList);

@@ -27,7 +27,7 @@ public class DeliveryOrderHandler implements OrderLifecycleHandler {
         // TODO: send notification via AOP / Events
         notificationClient.sendNotification(new Notification(
                 UUID.fromString(order.getUserId()),
-                Channel.EMAIL,
+                Channel.TELEGRAM,
                 ORDER_IS_IN_DELIVERY_SUBJECT.formatted(order.getId().toHexString()),
                 ORDER_IS_IN_DELIVERY_MESSAGE
         ));

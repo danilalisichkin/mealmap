@@ -16,4 +16,16 @@ public final class NotificationTemplates {
                
                С уважением, команда MealMap.
             """;
+
+    public static final String USER_REGISTRATION_COMPLETE_SUBJECT =
+            "Регистрация пользователя";
+    public static final String USER_REGISTRATION_COMPLETE_MESSAGE =
+            """
+               Дорогой пользователь, спасибо за регистрацию в нашем сервисе!.
+               
+               Мы надеемся, что Вам понравится пользоваться нашими услугами,
+               и Ваш обед на работе станет удобнее и интереснее!
+               
+               С уважением, команда MealMap.
+            """;
 }

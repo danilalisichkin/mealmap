@@ -18,7 +18,7 @@ minio:
   buckets:
     - ${MINIO_BUCKETS_PRODUCTS:products}
     - ${MINIO_BUCKETS_CATEGORIES:categories}
-    - ${MINIO_BUCKETS_PRODUCTS:organizations}
+    - ${MINIO_BUCKETS_ORGANIZATIONS:organizations}
 cache:
   file:
     name: ${CACHE_FILE_NAME:fileCache}

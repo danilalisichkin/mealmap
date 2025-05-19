@@ -28,8 +28,8 @@ cache:
     name: ${CACHE_CATEGORY_NAME:categoryCache}
     ttl: ${CACHE_CATEGORY_TTL:36000}
   allergen:
-    name: ${CACHE_CATEGORY_NAME:allergenCache}
-    ttl: ${CACHE_CATEGORY_TTL:86400}
+    name: ${CACHE_ALLERGEN_NAME:allergenCache}
+    ttl: ${CACHE_ALLERGEN_TTL:86400}
 security:
   oauth2:
     client:

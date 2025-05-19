@@ -5,6 +5,7 @@ import com.mealmap.promoservice.core.dto.promo.code.PromoCodeDto;
 import com.mealmap.promoservice.core.dto.promo.code.PromoCodeUpdatingDto;
 import com.mealmap.promoservice.document.PromoCode;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,8 @@ public interface PromoCodeMapper {
 
     PromoCode dtoToDoc(PromoCodeCreationDto dto);
 
+    @Mapping(target = "value", ignore = true)
+    @Mapping(target = "startDate", ignore = true)
     void updateDocFromDto(@MappingTarget PromoCode doc, PromoCodeUpdatingDto dto);
 
     List<PromoCodeDto> docListToDtoList(List<PromoCode> docList);

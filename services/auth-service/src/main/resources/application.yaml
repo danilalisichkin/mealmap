@@ -26,7 +26,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI:http://localhost:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs}
+          jwk-set-uri: ${OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI:http://localhost:8080/realms/mealmap-realm/protocol/openid-connect/certs}
 business:
   keycloak:
     server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}

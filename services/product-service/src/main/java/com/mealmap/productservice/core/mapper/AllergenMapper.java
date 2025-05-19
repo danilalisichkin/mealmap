@@ -20,6 +20,7 @@ public interface AllergenMapper {
 
     AllergenDto entityToDto(Allergen entity);
 
+    @Mapping(target = "id", ignore = true)
     Allergen dtoToEntity(AllergenCreationDto dto);
 
     @Mapping(target = "id", ignore = true)

@@ -1,4 +1,5 @@
 services:
+  #  === PostgreSQL ===
 
   product-pg-database:
     image: postgres:17
@@ -147,6 +148,8 @@ services:
     networks:
       - mealmap-network
 
+  #  === MongoDB ===
+
   order-mongo-database1:
     container_name: mealmap-order-mongo-database1
     image: mongo:7.0
@@ -291,19 +294,7 @@ services:
     networks:
       - mealmap-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: mealmap-pgadmin
-    restart: on-failure
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    volumes:
-      - ./management/pgadmin/servers.json:/pgadmin4/servers.json
-    networks:
-      - mealmap-network
+  #  === Redis ===
 
   product-redis:
     image: redis:7.4-alpine
@@ -400,6 +391,8 @@ services:
     networks:
       - mealmap-network
 
+  #  === Keycloak ===
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4
     container_name: mealmap-keycloak
@@ -427,6 +420,8 @@ services:
       - mealmap-network
     depends_on:
       - keycloak-pg-database
+
+  #  === MinIO ===
 
   minio:
     image: minio/minio:RELEASE.2025-04-22T22-12-26Z
@@ -464,6 +459,8 @@ services:
     networks:
       - mealmap-network
 
+  #  === Kafka ===
+
   zookeeper:
     image: zookeeper:3.7.0
     container_name: mealmap-zookeeper
@@ -485,6 +482,7 @@ services:
     restart: on-failure
     ports:
       - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
       KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
@@ -504,6 +502,8 @@ services:
       - mealmap-network
     depends_on:
       - zookeeper
+
+  #  === Elasticsearch (products) ===
 
   product-elasticsearch:
     build:
@@ -529,6 +529,24 @@ services:
       retries: 5
     networks:
       - mealmap-network
+
+  #  === PgAdmin ===
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: mealmap-pgadmin
+    restart: on-failure
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - ./management/pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - mealmap-network
+
+  #  === Prometheus + Grafana ===
 
   prometheus:
     image: prom/prometheus:v3.1.0
@@ -569,6 +587,8 @@ services:
       retries: 5
     networks:
       - mealmap-network
+
+  #  === ELK ===
 
   log-elasticsearch:
     image: elasticsearch:7.14.2
@@ -618,6 +638,8 @@ services:
     networks:
       - mealmap-network
 
+  #  === Zipkin ===
+
   zipkin:
     image: openzipkin/zipkin
     container_name: mealmap-zipkin
@@ -633,7 +655,565 @@ services:
     networks:
       - mealmap-network
 
+  # === Ollama ===
+
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    container_name: mealmap-ollama
+    restart: on-failure
+    environment:
+      OLLAMA_KEEP_ALIVE: 24h
+      OLLAMA_HOST: 0.0.0.0
+    ports:
+      - 7869:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    tty: true
+    networks:
+      - mealmap-network
+
+  #  === Eureka Server ===
+
+  eureka-server:
+    build:
+      context: ./services/eureka-server
+      dockerfile: Dockerfile
+    container_name: mealmap-eureka-server
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8761
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8761/actuator/health && wget -qO- http://localhost:8761/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    networks:
+      - mealmap-network
+
+  #  === Services ===
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: mealmap-auth-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/mealmap-realm/protocol/openid-connect/certs
+      KEYCLOAK_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_REALM: mealmap-realm
+      KEYCLOAK_GRANT_TYPE: client_credentials
+      KEYCLOAK_ADMIN_CLIENT_ID: auth-service
+      KEYCLOAK_ADMIN_CLIENT_SECRET: gbLelnwDQ3xKPvokRNSRX1rriyhhU2rd
+      KEYCLOAK_EMAIL_SERVICE_ENABLED: false
+      KEYCLOAK_TOKEN_REFRESH_INTERVAL: 300
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8083:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - keycloak
+      - kafka
+
+  cart-service:
+    build:
+      context: ./services/cart-service
+      dockerfile: Dockerfile
+    container_name: mealmap-cart-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      DB_URL: cart-pg-database:5432/cart_database
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      OAUTH2_CLIENT_CLIENT_ID: cart-service
+      OAUTH2_CLIENT_CLIENT_SECRET: uwLKx3pwga1ySl4bGGnKtlO1BZ1P8phH
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8085:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - cart-pg-database
+      - kafka
+
+  file-service:
+    build:
+      context: ./services/file-service
+      dockerfile: Dockerfile
+    container_name: mealmap-file-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      REDIS_HOST: file-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      REDIS_DATABASE: 0
+      MINIO_URL: minio:9002
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKETS_PRODUCTS: products
+      MINIO_BUCKETS_CATEGORIES: categories
+      MINIO_BUCKETS_ORGANIZATIONS: organizations
+      CACHE_FILE_NAME: fileCache
+      CACHE_FILE_TTL: 300
+      OAUTH2_CLIENT_CLIENT_ID: file-service
+      OAUTH2_CLIENT_CLIENT_SECRET: rlceoDknbCkoqCz72jEhzjbfhhDid8uz
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8093:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - minio
+      - file-redis
+
+  health-service:
+    build:
+      context: ./services/health-service
+      dockerfile: Dockerfile
+    container_name: mealmap-health-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: health-pg-database:5432/health_database
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      OAUTH2_CLIENT_CLIENT_ID: health-service
+      OAUTH2_CLIENT_CLIENT_SECRET: d17hPRAz1H8kWs7XIyBOieoDl4qzkaus
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8089:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - health-pg-database
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile
+    container_name: mealmap-notification-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: notification-mongo-database1:27017
+      DB_USERNAME: mongo
+      DB_PASSWORD: root
+      DB_REPLICA_SET_NAME: rs0
+      DB_NAME: notification_database
+      MAIL_SERVICE_HOST: smtp.mailersend.net
+      MAIL_SERVICE_PORT: 587
+      MAIL_SERVICE_CLIENT_USERNAME: MS_7Truiz@trial-xkjn41m21p04z781.mlsender.net
+      MAIL_SERVICE_CLIENT_PASSWORD: mssp.xaYg5O5.0r83ql3j78pgzw1j.XPFbmTP
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      OAUTH2_CLIENT_CLIENT_ID: notification-service
+      OAUTH2_CLIENT_CLIENT_SECRET: IZkO3Ga47lVqu9Iwo4n5W9gbVy0Myqgi
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      NOTIFICATIONS_EMAIL_ENABLED: true
+      NOTIFICATIONS_EMAIL_SENDER_EMAIL: mealmap@trial-xkjn41m21p04z781.mlsender.net
+      NOTIFICATIONS_EMAIL_SENDER_NAME: MealMap - сервис организации корпоративного питания
+      NOTIFICATIONS_TELEGRAM_ENABLED: true
+      NOTIFICATIONS_SMS_ENABLED: false
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8091:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - notification-mongo-database1
+      - kafka
+
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: mealmap-order-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: order-mongo-database1:27017
+      DB_USERNAME: mongo
+      DB_PASSWORD: root
+      DB_REPLICA_SET_NAME: rs0
+      DB_NAME: order_database
+      OAUTH2_CLIENT_CLIENT_ID: order-service
+      OAUTH2_CLIENT_CLIENT_SECRET: iTQe3mUJH8Fe6cjvc7gT2DVWxjTDQjq7
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8084:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - order-mongo-database1
+
+  organization-service:
+    build:
+      context: ./services/organization-service
+      dockerfile: Dockerfile
+    container_name: mealmap-organization-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: organization-pg-database:5432/organization_database
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      REDIS_HOST: organization-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      REDIS_DATABASE: 0
+      CACHE_ORGANIZATION_NAME: organizationCache
+      CACHE_ORGANIZATION_TTL: 7200
+      OAUTH2_CLIENT_CLIENT_ID: organization-service
+      OAUTH2_CLIENT_CLIENT_SECRET: OEFH4kqAgr7DdKYim6ZVo5O30kaWXagN
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8087:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - organization-pg-database
+      - organization-redis
+
+  preference-service:
+    build:
+      context: ./services/preference-service
+      dockerfile: Dockerfile
+    container_name: mealmap-preference-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: preference-pg-database:5432/preference_database
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      REDIS_HOST: preference-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      REDIS_DATABASE: 0
+      KAFKA_BOOTSTRAP_SERVERS: 29092
+      CACHE_USER_PREFERENCES_NAME: userPreferencesCache
+      CACHE_USER_PREFERENCES_TTL: 3600
+      OAUTH2_CLIENT_CLIENT_ID: preference-service
+      OAUTH2_CLIENT_CLIENT_SECRET: ZZg5TJNas4AqXWeKzxGQaoI7w79TMuOL
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8088:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - preference-pg-database
+      - preference-redis
+      - kafka
+
+  product-service:
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
+    container_name: mealmap-product-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: product-pg-database:5432/product_database
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      ELASTICSEARCH_URL: product-elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: elastic
+      REDIS_HOST: product-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      REDIS_DATABASE: 0
+      CACHE_PRODUCT_NAME: categoryCache
+      CACHE_PRODUCT_TTL: 36000
+      CACHE_CATEGORY_NAME: productCache
+      CACHE_CATEGORY_TTL: 3600
+      CACHE_ALLERGEN_NAME: allergenCache
+      CACHE_ALLERGEN_TTL: 86400
+      OAUTH2_CLIENT_CLIENT_ID: product-service
+      OAUTH2_CLIENT_CLIENT_SECRET: HtJsADcOSQfg8PYWlrgK7umZZxDeBZ7V
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      ELASTIC_PRODUCT_SYNC_ENABLED: true
+      ELASTIC_PRODUCT_SYNC_INTERVAL: 3600
+      ELASTIC_CATEGORY_SYNC_ENABLED: true
+      ELASTIC_CATEGORY_SYNC_INTERVAL: 36000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8081:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - product-pg-database
+      - product-redis
+      - product-elasticsearch
+
+  promo-service:
+    build:
+      context: ./services/promo-service
+      dockerfile: Dockerfile
+    container_name: mealmap-promo-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: promo-mongo-database1:27017
+      DB_USERNAME: mongo
+      DB_PASSWORD: root
+      DB_NAME: promo_database
+      OAUTH2_CLIENT_CLIENT_ID: promo-service
+      OAUTH2_CLIENT_CLIENT_SECRET: JHcA6IvV87TLa9HisfZU232rkkjmLPGm
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8086:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - promo-mongo-database1
+
+  recommendation-service:
+    build:
+      context: ./services/recommendation-service
+      dockerfile: Dockerfile
+    container_name: mealmap-recommendation-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: recommendation-mongo-database1:27017
+      DB_USERNAME: mongo
+      DB_PASSWORD: root
+      DB_NAME: recommendation_database
+      AI_OLLAMA_BASE_URL: http://ollama:11434
+      AI_OLLAMA_CHAT_MODEL: qwen2:5:3b
+      AI_OLLAMA_CHAT_TEMPERATURE: 1.0
+      AI_OLLAMA_PULL_STRATEGY: always
+      OAUTH2_CLIENT_CLIENT_ID: recommendation-service
+      OAUTH2_CLIENT_CLIENT_SECRET: YO4pPxzpV0RofhaEVg7t5tcdGJwL6gJ3
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      RECOMMENDATION_SETTINGS_LAST_ORDERS_COUNT: 10
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8090:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - recommendation-mongo-database1
+      - ollama
+
+  telegram-bot:
+    build:
+      context: ./services/telegram-bot
+      dockerfile: Dockerfile
+    container_name: mealmap-telegram-bot
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      TG_BOT_TOKEN: 8100969019:AAH-l7PfAyfdOhQGVRzeLkrab0to0jEn9S8
+      TG_BOT_USERNAME: melmap_by_chatbot
+      OAUTH2_CLIENT_CLIENT_ID: telegram-bot
+      OAUTH2_CLIENT_CLIENT_SECRET: fGxyiddJQOB4mHOQhPDXJJk27ItCYwfI
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8092:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - kafka
+
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: mealmap-user-service
+    restart: on-failure
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: user-pg-database:5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      REDIS_HOST: user-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      REDIS_DATABASE: 0
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      CACHE_USER_PROFILE_NAME: userProfileCache
+      CACHE_USER_PROFILE_TTL: 7200
+      OAUTH2_CLIENT_CLIENT_ID: user-service
+      OAUTH2_CLIENT_CLIENT_SECRET: KIWfKreN9sVqxFibdShwYodDdtgjiqHq
+      ALLOWED_ORIGINS_LOCALHOST: http://localhost:3000
+      ALLOWED_ORIGINS_PRODUCTION: http://172.20.10.4:3000
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      LOGSTASH_HOSTPORT: logstash:5000
+    ports:
+      - "8082:8080"
+    networks:
+      - mealmap-network
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8080/actuator/health && wget -qO- http://localhost:8080/actuator/health | grep UP || exit 1
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - eureka-server
+      - user-pg-database
+      - user-redis
+      - kafka
+
+  # === Frontend ===
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_SERVER_HOST: 172.20.10.4
+    container_name: mealmap-frontend
+    ports:
+      - "3000:80"
+    restart: on-failure
+    networks:
+      - mealmap-network
+
 volumes:
+  #  === PostgreSQL ===
   product-pg-database_data:
   user-pg-database_data:
   organization-pg-database_data:
@@ -641,6 +1221,7 @@ volumes:
   preference-pg-database_data:
   health-pg-database_data:
   keycloak-pg-database_data:
+  #  === MongoDB ===
   order-mongo-database1_data:
   order-mongo-database2_data:
   promo-mongo-database1_data:
@@ -649,14 +1230,20 @@ volumes:
   recommendation-mongo-database2_data:
   notification-mongo-database1_data:
   notification-mongo-database2_data:
+  #  === Redis ===
   product-redis_data:
   user-redis_data:
   organization-redis_data:
   preference-redis_data:
   file-redis_data:
-  product-elasticsearch_data:
-  log-elasticsearch_data:
+  #  === MinIO ===
   minio_data:
+  #  === ElasticSearch (products) ===
+  product-elasticsearch_data:
+  #  === ELK ===
+  log-elasticsearch_data:
+  # === Ollama ===
+  ollama_data:
 
 networks:
   mealmap-network:

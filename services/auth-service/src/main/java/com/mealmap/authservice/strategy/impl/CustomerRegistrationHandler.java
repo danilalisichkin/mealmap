@@ -8,19 +8,29 @@ import com.mealmap.authservice.sevice.UserService;
 import com.mealmap.authservice.strategy.UserRegistrationBaseHandler;
 import com.mealmap.authservice.util.UserDefaults;
 import com.mealmap.authservice.validator.UserOrganizationValidator;
+import com.mealmap.starters.notificationstarter.client.NotificationClient;
+import com.mealmap.starters.notificationstarter.dto.Notification;
+import com.mealmap.starters.notificationstarter.enums.Channel;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.mealmap.authservice.notification.NotificationTemplates.USER_REGISTRATION_COMPLETE_MESSAGE;
+import static com.mealmap.authservice.notification.NotificationTemplates.USER_REGISTRATION_COMPLETE_SUBJECT;
+
 @Component
 public class CustomerRegistrationHandler extends UserRegistrationBaseHandler {
+    private final NotificationClient notificationClient;
+
     @Autowired
     public CustomerRegistrationHandler(
             UserService userService,
             UserMapper userMapper,
-            UserOrganizationValidator userOrganizationValidator) {
+            UserOrganizationValidator userOrganizationValidator,
+            NotificationClient notificationClient) {
 
         super(userOrganizationValidator, userService, userMapper);
+        this.notificationClient = notificationClient;
     }
 
     @Override
@@ -33,6 +43,12 @@ public class CustomerRegistrationHandler extends UserRegistrationBaseHandler {
 
         UserDto userDto = userMapper.keycloakRepresentationToDto(registeredUser);
         userDto.setRole(getSupportedUserRole());
+
+        notificationClient.sendNotification(new Notification(
+                userDto.getId(),
+                Channel.EMAIL,
+                USER_REGISTRATION_COMPLETE_SUBJECT,
+                USER_REGISTRATION_COMPLETE_MESSAGE));
 
         return userDto;
     }

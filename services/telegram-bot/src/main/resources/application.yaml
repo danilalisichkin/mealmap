@@ -12,8 +12,8 @@ spring:
       observation-enabled: true
 telegram:
   bot:
-    token: ${TG_BOT_TOKEN:7509632284:AAGcvu3Jnq4Ey7CufazKKLxQmr54Xlig_eg}
-    username: ${TG_BOT_USERNAME:CustomPublisherBot}
+    token: ${TG_BOT_TOKEN:8100969019:AAH-l7PfAyfdOhQGVRzeLkrab0to0jEn9S8}
+    username: ${TG_BOT_USERNAME:melmap_by_chatbot}
 security:
   oauth2:
     client:
