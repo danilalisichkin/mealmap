@@ -32,8 +32,8 @@ const UserProfilePage: React.FC<UserProfilePageProps> = () => {
 
   const [tgChatId, setTgChatId] = useState<number | null>(null);
 
-  const totalOrders = 20;
-  const totalDiscounted = 1000;
+  const totalOrders = 1;
+  const totalDiscounted = 1.99;
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<ErrorDetail | null>(null);

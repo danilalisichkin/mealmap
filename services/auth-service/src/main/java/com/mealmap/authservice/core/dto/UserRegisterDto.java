@@ -23,7 +23,7 @@ public class UserRegisterDto {
 
     @Email
     @NotEmpty
-    @Size(max = 50)
+    @Size(max = 100)
     String email;
 
     @NotEmpty

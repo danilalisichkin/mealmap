@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Document("promo_codes")
 public class PromoCode {
     @Id
-    private String value;
+    private String id;
 
     private Long limit;
 

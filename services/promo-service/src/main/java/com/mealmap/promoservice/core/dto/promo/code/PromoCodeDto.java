@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Schema(description = "Информация о промокоде")
 public class PromoCodeDto {
-    private String value;
+    private String id;
 
     private Long limit;
 

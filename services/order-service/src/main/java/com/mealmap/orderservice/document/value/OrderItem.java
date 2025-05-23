@@ -1,4 +1,4 @@
-package com.mealmap.orderservice.doc.value;
+package com.mealmap.orderservice.document.value;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

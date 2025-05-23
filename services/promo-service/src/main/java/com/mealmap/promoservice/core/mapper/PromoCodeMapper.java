@@ -19,7 +19,7 @@ public interface PromoCodeMapper {
 
     PromoCode dtoToDoc(PromoCodeCreationDto dto);
 
-    @Mapping(target = "value", ignore = true)
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "startDate", ignore = true)
     void updateDocFromDto(@MappingTarget PromoCode doc, PromoCodeUpdatingDto dto);
 

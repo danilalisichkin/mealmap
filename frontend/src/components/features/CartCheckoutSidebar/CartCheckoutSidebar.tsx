@@ -39,7 +39,7 @@ const CartCheckoutSidebar: React.FC<CartCheckoutSidebarProps> = ({
         <div className="flex justify-between">
           <span className="text-gray-600">Товары:</span>
           <span id="checkout-subtotal" className="font-medium">
-            ₽{totalPrice}
+            ₽{totalPrice.toFixed(2)}
           </span>
         </div>
         <div className="flex justify-between items-center">
@@ -75,14 +75,14 @@ const CartCheckoutSidebar: React.FC<CartCheckoutSidebarProps> = ({
             className="flex justify-between text-green-600"
           >
             <span>Скидка:</span>
-            <span>-₽{discountAmount}</span>
+            <span>-₽{discountAmount.toFixed(2)}</span>
           </div>
         )}
       </div>
       <div className="border-t border-gray-200 pt-4 mb-4">
         <div className="flex justify-between font-bold text-lg">
           <span>Всего:</span>
-          <span id="checkout-total">₽{totalPrice - discountAmount}</span>
+          <span id="checkout-total">₽{(totalPrice - discountAmount).toFixed(2)}</span>
         </div>
       </div>
       <button

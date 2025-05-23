@@ -35,7 +35,7 @@ public class CategoryController implements CategoryControllerDoc {
     private final CategoryService categoryService;
 
     @Override
-    @GetMapping
+    @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         List<CategoryDto> categories = categoryService.getAllCategories();

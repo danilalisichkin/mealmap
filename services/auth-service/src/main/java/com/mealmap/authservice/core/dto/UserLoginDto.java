@@ -11,7 +11,7 @@ import lombok.Value;
 @Schema(description = "Учетные данные для входа в систему")
 public class UserLoginDto {
     @NotEmpty
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 100)
     String identifier;
 
     @NotEmpty

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PromoCodeDto {
-    private String value;
+    private String id;
 
     private Integer discountPercentage;
 }

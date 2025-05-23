@@ -1,6 +1,6 @@
 package com.mealmap.orderservice.core.dto.order;
 
-import com.mealmap.orderservice.doc.value.Address;
+import com.mealmap.orderservice.document.value.Address;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

@@ -23,7 +23,7 @@ import static com.mealmap.promoservice.validator.RangeValidator.isValidRange;
 public class PromoCodeCreationDto {
     @NotEmpty
     @Size(min = 2, max = 20)
-    String value;
+    String id;
 
     @NotNull
     @Positive

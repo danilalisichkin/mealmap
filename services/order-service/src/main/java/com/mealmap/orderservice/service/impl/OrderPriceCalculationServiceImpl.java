@@ -23,7 +23,7 @@ public class OrderPriceCalculationServiceImpl implements OrderPriceCalculationSe
     @Override
     public long recalculatePriceWithDiscount(PriceRecalculationRequest recalculationRequest) {
         PromoCodeDto promoCode = promoCodeService.getPromoCode(recalculationRequest.getPromoCode());
-        promoCodeService.createPromoStat(recalculationRequest.getUserId(), promoCode.getValue());
+        promoCodeService.createPromoStat(recalculationRequest.getUserId(), promoCode.getId());
 
         Long originalBasePrice = recalculationRequest.getBasePrice();
         Integer discountPercentage = promoCode.getDiscountPercentage();

@@ -1,9 +1,9 @@
-package com.mealmap.orderservice.doc;
+package com.mealmap.orderservice.document;
 
 import com.mealmap.orderservice.core.enums.OrderStatus;
-import com.mealmap.orderservice.doc.value.Address;
-import com.mealmap.orderservice.doc.value.OrderItem;
-import com.mealmap.orderservice.doc.value.PaymentInfo;
+import com.mealmap.orderservice.document.value.Address;
+import com.mealmap.orderservice.document.value.OrderItem;
+import com.mealmap.orderservice.document.value.PaymentInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -11,8 +11,8 @@ spring:
   mail:
     host: ${MAIL_SERVICE_HOST:smtp.mailersend.net}
     port: ${MAIL_SERVICE_PORT:587}
-    username: ${MAIL_SERVICE_CLIENT_USERNAME:MS_7Truiz@trial-xkjn41m21p04z781.mlsender.net}
-    password: ${MAIL_SERVICE_CLIENT_PASSWORD:mssp.xaYg5O5.0r83ql3j78pgzw1j.XPFbmTP}
+    username: ${MAIL_SERVICE_CLIENT_USERNAME:MS_lme1Wd@test-nrw7gym6oxog2k8e.mlsender.net}
+    password: ${MAIL_SERVICE_CLIENT_PASSWORD:mssp.PxRuWP4.0p7kx4xnmm8g9yjr.ccVpOXd}
     protocol: smtp
     properties:
       mail:
@@ -83,7 +83,7 @@ business:
     email:
       enabled: ${NOTIFICATIONS_EMAIL_ENABLED:true}
       sender:
-        email: ${NOTIFICATIONS_EMAIL_SENDER_EMAIL:mealmap@trial-xkjn41m21p04z781.mlsender.net}
+        email: ${NOTIFICATIONS_EMAIL_SENDER_EMAIL:mealmap@test-nrw7gym6oxog2k8e.mlsender.net}
         name: ${NOTIFICATIONS_EMAIL_SENDER_NAME:MealMap - сервис организации корпоративного питания}
     telegram:
       enabled: ${NOTIFICATIONS_TELEGRAM_ENABLED:true}

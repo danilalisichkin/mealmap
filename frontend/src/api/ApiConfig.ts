@@ -1,4 +1,4 @@
-const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
+const SERVER_HOST = "172.20.10.4";
 
 const ApiConfig = {
   AUTH_API: {

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 import AuthModal from "../../features/AuthModal/AuthModal";
 import ShoppingCart from "../../features/Cart/Cart";
-import { useAuth } from "../../../contexts/AuthContext";
+import {useAuth} from "../../../contexts/AuthContext";
 import LogoutModal from "../../features/LogoutModal/LogoutModal";
 
 interface HeaderProps {
@@ -32,8 +32,6 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
 
   const navigate = useNavigate();
 
-  const ITEMS_IN_CART = 0; // TODO: API CALL / FROM LOCAL STORAGE
-
   const handleLogout = () => {
     logout();
     closeLogoutModal();
@@ -52,7 +50,6 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
           openAuthModal={openAuthModal}
           openCart={openCart}
           openLogoutModal={openLogoutModal}
-          ITEMS_IN_CART={ITEMS_IN_CART}
         />
       </div>
 
@@ -61,7 +58,6 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         <MobileHeader
           title={title}
           userId={userId}
-          ITEMS_IN_CART={ITEMS_IN_CART}
           isMobileMenuOpen={isMobileMenuOpen}
           openCart={openCart}
           toggleMobileMenu={toggleMobileMenu}
@@ -90,7 +86,6 @@ const DesktopHeader: React.FC<{
   openAuthModal: () => void;
   openCart: () => void;
   openLogoutModal: () => void;
-  ITEMS_IN_CART: number;
 }> = ({
   title,
   userId,
@@ -99,7 +94,6 @@ const DesktopHeader: React.FC<{
   openAuthModal,
   openCart,
   openLogoutModal,
-  ITEMS_IN_CART,
 }) => {
   return (
     <nav
@@ -153,11 +147,6 @@ const DesktopHeader: React.FC<{
               onClick={openCart}
             >
               <i className="fas fa-shopping-cart text-lg mr-1"></i> Корзина
-              {ITEMS_IN_CART > 0 && (
-                <span className="absolute badge bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                  {ITEMS_IN_CART}
-                </span>
-              )}
             </button>
 
             {/* User Info */}
@@ -219,7 +208,6 @@ const DesktopHeader: React.FC<{
 const MobileHeader: React.FC<{
   title: string;
   userId: string | null;
-  ITEMS_IN_CART: number;
   isMobileMenuOpen: boolean;
   openCart: () => void;
   toggleMobileMenu: () => void;
@@ -228,7 +216,6 @@ const MobileHeader: React.FC<{
 }> = ({
   title,
   userId,
-  ITEMS_IN_CART,
   isMobileMenuOpen,
   openCart,
   toggleMobileMenu,
@@ -253,11 +240,6 @@ const MobileHeader: React.FC<{
             onClick={openCart}
           >
             <i className="fas fa-shopping-cart text-lg mr-1"></i> Корзина
-            {ITEMS_IN_CART > 0 && (
-              <span className="absolute badge bg-orange-500 text-white rounded-full w-5 h-5 flex items-center justify-center">
-                {ITEMS_IN_CART}
-              </span>
-            )}
           </button>
         )}
 

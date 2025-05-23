@@ -53,7 +53,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     @Override
     @Transactional
     public PromoCodeDto createPromoCode(PromoCodeCreationDto codeDto) {
-        promoCodeValidator.validateCodeUniqueness(codeDto.getValue());
+        promoCodeValidator.validateCodeUniqueness(codeDto.getId());
 
         PromoCode promoCodeToCreate = promoCodeMapper.dtoToDoc(codeDto);
 

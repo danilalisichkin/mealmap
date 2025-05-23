@@ -3,7 +3,7 @@ package com.mealmap.orderservice.strategy.impl;
 import com.mealmap.orderservice.core.enums.OrderLifecyclePhase;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.PaymentStatus;
-import com.mealmap.orderservice.doc.Order;
+import com.mealmap.orderservice.document.Order;
 import com.mealmap.orderservice.strategy.OrderLifecycleHandler;
 import com.mealmap.starters.notificationstarter.client.NotificationClient;
 import com.mealmap.starters.notificationstarter.dto.Notification;
@@ -23,9 +23,9 @@ public class CancellingOrderHandler implements OrderLifecycleHandler {
 
     @Override
     public void handle(Order order) {
-        if (order.getPaymentInfo().getPaymentStatus().equals(PaymentStatus.PAID)) {
-            // TODO: refund money to account via payment-service
-        }
+//        if (order.getPaymentInfo().getPaymentStatus().equals(PaymentStatus.PAID)) {
+//            // TODO: refund money to account via payment-service
+//        }
 
         order.setStatus(OrderStatus.CANCELED);
 

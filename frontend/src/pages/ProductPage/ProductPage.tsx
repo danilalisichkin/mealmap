@@ -497,7 +497,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
           {/* Price & Quantity */}
           <div className="flex items-center justify-between space-x-2 mb-6">
             <span className="text-2xl font-bold text-green-600">
-              {(product.price / 100).toFixed(2)}₽
+              {(quantity * (product.price / 100)).toFixed(2)}₽
             </span>
             <div className="flex items-center space-x-2">
               <button

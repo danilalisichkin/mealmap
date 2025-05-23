@@ -1,4 +1,4 @@
-package com.mealmap.orderservice.doc.value;
+package com.mealmap.orderservice.document.value;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

@@ -27,6 +27,7 @@ import CatalogPlaceholder from "../../components/commons/Placeholders/CatalogPla
 import Pagination from "../../components/commons/Pagination/Pagination";
 import { UserAllergenDto } from "../../api/health/dto/UserAllergenDto";
 import { HealthApi } from "../../api/health/UserHealthApi";
+import LoadingSpinner from "../../components/commons/LoadingSpinner/LoadingSpinner";
 
 const DEFAULT_FILTER: ProductFilter = {
   minPrice: undefined,
@@ -372,6 +373,14 @@ const CategoryPage: React.FC = () => {
       handleAddToPreference(category!.id, type);
     }
   };
+
+  if (loading) {
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+    );
+  }
 
   if (!category) {
     return (

@@ -3,7 +3,7 @@ package com.mealmap.orderservice.strategy.impl;
 import com.mealmap.orderservice.core.enums.OrderLifecyclePhase;
 import com.mealmap.orderservice.core.enums.OrderStatus;
 import com.mealmap.orderservice.core.enums.PaymentStatus;
-import com.mealmap.orderservice.doc.Order;
+import com.mealmap.orderservice.document.Order;
 import com.mealmap.orderservice.strategy.OrderLifecycleHandler;
 import com.mealmap.starters.exceptionstarter.exception.ForbiddenException;
 import org.springframework.stereotype.Component;
