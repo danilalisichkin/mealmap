@@ -1,0 +1,7 @@
+BEGIN;
+
+TRUNCATE TABLE organizations CASCADE;
+
+ALTER SEQUENCE organizations_id_seq RESTART WITH 1;
+
+COMMIT;

@@ -4,20 +4,20 @@ const COLLECTION_NAME = "promo_codes";
 
 const promo_codes = [
   {
-    value: 'SPRING 2025',
+    _id: 'SPRING 2025',
     limit: 100,
     discountPercentage: 10,
     startDate: new Date('2025-03-01'),
     endDate: new Date('2025-06-01'),
-    _class: 'com.mealmap.promoservice.doc.PromoCode'
+    _class: 'com.mealmap.promoservice.document.PromoCode'
   },
   {
-    value: '2025',
+    _id: '2025',
     limit: 9999,
     discountPercentage: 5,
     startDate: new Date('2025-01-01'),
     endDate: new Date('2026-01-01'),
-    _class: 'com.mealmap.promoservice.doc.PromoCode'
+    _class: 'com.mealmap.promoservice.document.PromoCode'
   },
 ];
 

@@ -1,0 +1,23 @@
+BEGIN;
+
+TRUNCATE TABLE nutrients CASCADE;
+
+ALTER SEQUENCE nutrients_id_seq RESTART WITH 1;
+
+TRUNCATE TABLE allergens CASCADE;
+
+ALTER SEQUENCE allergens_id_seq RESTART WITH 1;
+
+TRUNCATE TABLE categories CASCADE;
+
+ALTER SEQUENCE categories_id_seq RESTART WITH 1;
+
+TRUNCATE TABLE products CASCADE;
+
+ALTER SEQUENCE products_id_seq RESTART WITH 1;
+
+TRUNCATE TABLE product_categories;
+
+TRUNCATE TABLE product_allergens;
+
+COMMIT;
