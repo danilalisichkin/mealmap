@@ -14,12 +14,6 @@ const GENDER_LABELS: Record<string, string> = {
   FEMALE: "Женщина",
 };
 
-const DIET_LABELS: Record<string, string> = {
-  WEIGHT_LOSS: "Похудение",
-  WEIGHT_GAIN: "Набор массы",
-  MAINTENANCE: "Поддержка текущего веса",
-};
-
 const PhysicHealthModal: React.FC<PhysicHealthModalProps> = ({
   isOpen,
   onClose,

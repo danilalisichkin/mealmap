@@ -3,11 +3,38 @@ import { UserRegisterDto } from "../../../api/auth/dto/UserRegisterDto";
 import { AuthApi } from "../../../api/auth/AuthApi";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Role } from "../../../api/auth/enums/Role";
+import { OrganizationDto } from "../../../api/organization/dto/OrganizationDto";
+import { OrganizationType } from "../../../api/organization/enums/OrganizationType";
 
 interface RegisterFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const mockOrganizations: OrganizationDto[] = [
+  {
+    id: 3,
+    upn: 591361425,
+    name: 'ЧУП "СтоКвадратовПлюс"',
+    legalAddress:
+      "Гродененская область, Лидский район, г. Лида, ул. Фурманова 27",
+    phoneNumber: "375295343842",
+    email: "info@krismas.by",
+    type: OrganizationType.CUSTOMER,
+    createdAt: "2025-05-22",
+  },
+  {
+    id: 7,
+    upn: 143242345,
+    name: 'ООО "ЛидаСкайПарк"',
+    legalAddress:
+      "Гродененская область, Лидский район, г. Лида, ул. 8 Марта, 16",
+    phoneNumber: "375291236655",
+    email: "lida-skypark@mail.ru",
+    type: OrganizationType.CUSTOMER,
+    createdAt: "2025-05-22",
+  },
+];
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
   const [registerData, setRegisterData] = useState<UserRegisterDto>({
@@ -16,8 +43,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
     password: "",
     firstName: "",
     lastName: "",
-    organizationId: 1, //TODO: allow to choose
-    role: Role.CUSTOMER, //TODO: allow to choose
+    organizationId: 7 ,
+    role: Role.CUSTOMER,
   });
 
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -133,6 +160,31 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose }) => {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           required
         />
+      </div>
+      <div className="mb-4">
+        <label
+          htmlFor="organization-select"
+          className="block text-sm  font-medium text-gray-700 mb-1"
+        >
+          Организация
+        </label>
+        <select
+          id="organizationId"
+          value={registerData.organizationId}
+          onChange={(e) =>
+            setRegisterData((prev) => ({
+              ...prev,
+              organizationId: Number(e.target.value),
+            }))
+          }
+          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+        >
+          {mockOrganizations.map((org) => (
+            <option key={org.id} value={org.id}>
+              {org.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="mb-4">
         <label

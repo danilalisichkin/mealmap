@@ -66,9 +66,9 @@ const CatalogPage: React.FC<CatalogPageProps> = () => {
   const [filter, setFilter] = useState<ProductFilter>(DEFAULT_FILTER);
   const [isFilterOpened, setFilterOpened] = useState(false);
   const [sortField, setSortField] = useState<ProductSortField>(
-    ProductSortField.ID
+    ProductSortField.NEWNESS
   );
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(
     DEFAULT_PAGINATION_OPTIONS.PAGE_NUMBER

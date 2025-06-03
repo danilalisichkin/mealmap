@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserAllergenDto } from "../../../api/health/dto/UserAllergenDto";
 import { AllergenDto } from "../../../api/product/dto/AllergenDto";
-import AllergenChip from "../../AllergenChip/AllergenChip";
+import AllergenChip from "../../commons/AllergenChip/AllergenChip";
 
 interface UserHealthAllergensTabProps {
   userAllergens: UserAllergenDto[];
