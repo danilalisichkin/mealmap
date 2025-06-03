@@ -15,8 +15,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.mealmap.authservice.notification.NotificationTemplates.USER_REGISTRATION_COMPLETE_MESSAGE;
-import static com.mealmap.authservice.notification.NotificationTemplates.USER_REGISTRATION_COMPLETE_SUBJECT;
+import static com.mealmap.authservice.notification.NotificationTemplates.USER_ACTIVATION_IS_PENDING_SUBJECT;
+import static com.mealmap.authservice.notification.NotificationTemplates.USER_ACTIVATION_IS_PENDING_MESSAGE;
 
 @Component
 public class CustomerRegistrationHandler extends UserRegistrationBaseHandler {
@@ -47,8 +47,8 @@ public class CustomerRegistrationHandler extends UserRegistrationBaseHandler {
         notificationClient.sendNotification(new Notification(
                 userDto.getId(),
                 Channel.EMAIL,
-                USER_REGISTRATION_COMPLETE_SUBJECT,
-                USER_REGISTRATION_COMPLETE_MESSAGE));
+                USER_ACTIVATION_IS_PENDING_SUBJECT,
+                USER_ACTIVATION_IS_PENDING_MESSAGE));
 
         return userDto;
     }
