@@ -1,4 +1,4 @@
-INSERT INTO category_preferences(id, category_id, user_preference_id, preference_type)
+INSERT INTO category_preferences(id, category_id, user_preferences_id, preference_type)
 VALUES
     (1, 1, 1, 1),
     (2, 3, 1, 1),
